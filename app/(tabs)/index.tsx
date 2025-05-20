@@ -1,12 +1,55 @@
 import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { Button, StyleSheet, Text, View } from 'react-native';
 
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 
+import { useWalletConnectModal, WalletConnectModal } from "@walletconnect/modal-react-native";
+import { useEffect, useState } from 'react';
+import { Address, createPublicClient, formatEther, http } from "viem";
+import { mainnet } from "viem/chains";
+import './../../polyfills';
+
+const publicClient = createPublicClient({
+  chain: mainnet,
+  transport: http("https://eth-mainnet.g.alchemy.com/v2/UHBAZE98I0zYLOiYg7cC6lmMPkjM1vy7"),
+})
+
+const projectId = 'a8939eb579704ac1cfe8a6b7bf5b2fc9'
+
+const providerMetadata = {
+  name: 'Zap X',
+  description: 'Zap X is a wallet that allows you to send and receive crypto assets.',
+  url: 'https://callstack.com/',
+  icons: ['https://example.com/'],
+  redirect: {
+    native: 'YOUR_APP_SCHEME://',
+    universal: 'YOUR_APP_UNIVERSAL_LINK.com'
+  }
+}
+
 export default function HomeScreen() {
+  const [blockNumber, setBlockNumber] = useState(0n)
+  const [gasPrice, setGasPrice] = useState(0n)
+  const { open, isConnected, provider, address: wcAddress } = useWalletConnectModal()
+  const address = wcAddress as Address | undefined;
+
+  useEffect(() => {
+    const getNetworkData = async () => {
+      const [blockNumber, gasPrice] = await Promise.all([
+          publicClient.getBlockNumber(),
+          publicClient.getGasPrice(),
+      ])
+
+      setBlockNumber(blockNumber)
+      setGasPrice(gasPrice)
+    }
+
+    getNetworkData();
+}, []);
+  
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
@@ -21,35 +64,28 @@ export default function HomeScreen() {
         <HelloWave />
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
+        <ThemedText type="subtitle">Block number: {String(blockNumber)}</ThemedText>
+        <ThemedText type="subtitle">Gas price: {formatEther(gasPrice)} ETH </ThemedText>
+
+        {isConnected && (
+          <View style={styles.block}>
+            <Text numberOfLines={1}>Address: {address}</Text>
+          </View>
+        )}
+
+        <View style={styles.block}>
+          {isConnected ? (
+            <Button
+              title="Disconnect"
+              onPress={() => provider?.disconnect()}
+              color="red"
+            />
+          ) : (
+            <Button title="Connect" onPress={() => open()} />
+          )}
+        </View>
+
+        <WalletConnectModal projectId={projectId} providerMetadata={providerMetadata}/>
       </ThemedView>
     </ParallaxScrollView>
   );
@@ -71,5 +107,8 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     position: 'absolute',
+  },
+  block: {
+    marginTop: 32,
   },
 });
