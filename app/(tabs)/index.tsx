@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
 
-import { Button, StyleSheet, Text, View } from 'react-native';
+import { Button, Text, View } from 'react-native';
 
 import {
   useWalletConnectModal,
   WalletConnectModal,
 } from '@walletconnect/modal-react-native';
 import { Image } from 'expo-image';
-import { Address, createPublicClient, formatEther, http } from 'viem';
-import { mainnet } from 'viem/chains';
+import { Address, formatEther } from 'viem';
+import { publicClient, projectId, providerMetadata, styles } from '@/constants/ConnectWallet';
 
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
@@ -16,27 +16,6 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 
 import './../../polyfills';
-
-const publicClient = createPublicClient({
-  chain: mainnet,
-  transport: http(
-    'https://eth-mainnet.g.alchemy.com/v2/UHBAZE98I0zYLOiYg7cC6lmMPkjM1vy7'
-  ),
-});
-
-const projectId = 'a8939eb579704ac1cfe8a6b7bf5b2fc9';
-
-const providerMetadata = {
-  name: 'Zap X',
-  description:
-    'Zap X is a wallet that allows you to send and receive crypto assets.',
-  url: 'https://callstack.com/',
-  icons: ['https://example.com/'],
-  redirect: {
-    native: 'YOUR_APP_SCHEME://',
-    universal: 'YOUR_APP_UNIVERSAL_LINK.com',
-  },
-};
 
 export default function HomeScreen() {
   const [blockNumber, setBlockNumber] = useState(0n);
@@ -104,7 +83,7 @@ export default function HomeScreen() {
         </View>
 
         <WalletConnectModal
-          projectId={projectId}
+          projectId={projectId ?? 'defaultProjectId'}
           providerMetadata={providerMetadata}
         />
       </ThemedView>
@@ -112,24 +91,3 @@ export default function HomeScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-  block: {
-    marginTop: 32,
-  },
-});
