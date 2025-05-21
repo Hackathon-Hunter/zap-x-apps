@@ -8,14 +8,19 @@ import {
 } from '@walletconnect/modal-react-native';
 import { Image } from 'expo-image';
 import { Address, formatEther } from 'viem';
-import { publicClient, projectId, providerMetadata, styles } from '@/constants/ConnectWallet';
 
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import {
+  publicClient,
+  projectId,
+  providerMetadata,
+} from '@/constants/ConnectWallet';
 
 import './../../polyfills';
+import { styles } from './styles';
 
 export default function HomeScreen() {
   const [blockNumber, setBlockNumber] = useState(0n);
@@ -90,4 +95,3 @@ export default function HomeScreen() {
     </ParallaxScrollView>
   );
 }
-

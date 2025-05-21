@@ -1,4 +1,3 @@
-import { StyleSheet } from 'react-native';
 import { createPublicClient, http } from 'viem';
 import { mainnet } from 'viem/chains';
 
@@ -22,25 +21,3 @@ export const providerMetadata = {
         universal: 'YOUR_APP_UNIVERSAL_LINK.com',
     },
 };
-
-export const styles = StyleSheet.create({
-    titleContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 8,
-    },
-    stepContainer: {
-        gap: 8,
-        marginBottom: 8,
-    },
-    reactLogo: {
-        height: 178,
-        width: 290,
-        bottom: 0,
-        left: 0,
-        position: 'absolute',
-    },
-    block: {
-        marginTop: 32,
-    },
-});  
