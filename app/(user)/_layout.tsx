@@ -1,7 +1,8 @@
-import { Stack } from 'expo-router';
 import { useEffect, useState } from 'react';
+
+import { Stack, Redirect } from 'expo-router';
+
 import { getCurrentUser, Role } from '../../constants/auth';
-import { Redirect } from 'expo-router';
 
 export default function UserLayout() {
   const [user, setUser] = useState<{ role: Role; name: string } | null>(null);
@@ -16,7 +17,7 @@ export default function UserLayout() {
     fetchUser();
   }, []);
 
-  if (loading) return null; 
+  if (loading) return null;
 
   if (!user || user.role !== 'user') {
     return <Redirect href="/(auth)/login" />;
