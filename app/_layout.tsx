@@ -8,12 +8,17 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 
+import '../global.css';
+
 import { useColorScheme } from '@/hooks/useColorScheme';
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    'Geist-Regular': require('../assets/fonts/Geist-Regular.ttf'),
+    'Geist-Medium': require('../assets/fonts/Geist-Medium.ttf'),
+    'GeistMono-Regular': require('../assets/fonts/GeistMono-Regular.ttf'),
+    'GeistMono-Medium': require('../assets/fonts/GeistMono-Medium.ttf'),
   });
 
   if (!loaded) {
