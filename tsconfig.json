@@ -13,12 +13,10 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
-
     "declaration": true,
     "declarationMap": false,
     "sourceMap": false,
     "removeComments": true,
-
     "jsx": "react-native",
     "lib": [
       "es2019",
@@ -35,11 +33,21 @@
       "es2022.object",
       "es2022.string"
     ],
-    "types": ["react-native", "expo"],
-
+    "types": [
+      "react-native",
+      "expo"
+    ],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": [
+        "./*"
+      ]
     }
   },
-  "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"]
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    ".expo/types/**/*.ts",
+    "expo-env.d.ts",
+    "nativewind-env.d.ts"
+  ]
 }
