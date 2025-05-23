@@ -1,52 +1,73 @@
 import React from 'react';
 
-import { Platform } from 'react-native';
+import { Text, View } from 'react-native';
 
-import { Tabs } from 'expo-router';
+import { Tabs, TabTrigger, TabSlot, TabList } from 'expo-router/ui';
 
-import { HapticTab } from '@/components/HapticTab';
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import TabBarBackground from '@/components/ui/TabBarBackground';
-import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
+  const menus: {
+    name: string;
+    route: '/home' | '/scan' | '/transactions';
+    label: string;
+  }[] = [
+    {
+      name: 'home',
+      route: '/home',
+      label: 'Home',
+    },
+    {
+      name: 'scan',
+      route: '/scan',
+      label: 'Scan',
+    },
+    {
+      name: 'transactions',
+      route: '/transactions',
+      label: 'Transactions',
+    },
+  ];
+
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: 'absolute',
-          },
-          default: {},
-        }),
-      }}
-    >
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="house.fill" color={color} />
-          ),
+    <Tabs>
+      <TabSlot />
+      <TabList
+        style={{
+          height: 80,
+          backgroundColor: 'black',
+          flexDirection: 'row',
         }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="paperplane.fill" color={color} />
-          ),
-        }}
-      />
+      >
+        {menus.map(({ name, label, route }) => (
+          <TabTrigger
+            key={name}
+            name={name}
+            href={route}
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              height: '100%',
+            }}
+          >
+            <View
+              style={{
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: '100%',
+                borderTopWidth: 2,
+                borderTopColor: 'white',
+              }}
+            >
+              <Text style={{ color: 'white' }}>{label}</Text>
+            </View>
+          </TabTrigger>
+        ))}
+      </TabList>
     </Tabs>
   );
 }
