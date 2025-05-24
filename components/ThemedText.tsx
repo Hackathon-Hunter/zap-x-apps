@@ -1,24 +1,22 @@
-import { StyleSheet, Text, type TextProps } from 'react-native';
-
-import { useThemeColor } from '@/hooks/useThemeColor';
+import { Text, type TextProps } from 'react-native';
 
 export type ThemedTextProps = TextProps & {
   lightColor?: string;
   darkColor?: string;
   type?: 'default' | 'title' | 'defaultSemiBold' | 'subtitle' | 'link' | 'mono';
   numbersOnly?: boolean;
+  color?: string;
 };
 
 export function ThemedText({
   style,
   lightColor,
   darkColor,
+  color,
   type = 'default',
   numbersOnly = false,
   ...rest
 }: ThemedTextProps) {
-  const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
-
   const fontFamily = numbersOnly ? 'GeistMono-Regular' : 'Geist-Regular';
 
   const fontWeight =
@@ -30,46 +28,5 @@ export function ThemedText({
 
   const finalFontFamily = type === 'mono' ? 'GeistMono-Regular' : fontWeight;
 
-  return (
-    <Text
-      style={[
-        { color, fontFamily: finalFontFamily },
-        type === 'default' ? styles.default : undefined,
-        type === 'title' ? styles.title : undefined,
-        type === 'defaultSemiBold' ? styles.defaultSemiBold : undefined,
-        type === 'subtitle' ? styles.subtitle : undefined,
-        type === 'link' ? styles.link : undefined,
-        type === 'mono' ? styles.mono : undefined,
-        style,
-      ]}
-      {...rest}
-    />
-  );
+  return <Text style={[{ color, fontFamily: finalFontFamily }]} {...rest} />;
 }
-
-const styles = StyleSheet.create({
-  default: {
-    fontSize: 16,
-    lineHeight: 24,
-  },
-  defaultSemiBold: {
-    fontSize: 16,
-    lineHeight: 24,
-  },
-  title: {
-    fontSize: 32,
-    lineHeight: 32,
-  },
-  subtitle: {
-    fontSize: 20,
-  },
-  link: {
-    lineHeight: 30,
-    fontSize: 16,
-    color: '#0a7ea4',
-  },
-  mono: {
-    fontSize: 16,
-    lineHeight: 24,
-  },
-});
