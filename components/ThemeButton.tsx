@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 
 import {
   TouchableOpacity,
@@ -30,6 +30,39 @@ type ButtonProps = {
   borderColor?: string;
 };
 
+const VARIANT_COLORS = {
+  primary: {
+    bg: ColorPalette.green.accent,
+    text: ColorPalette.black,
+    border: ColorPalette.green.accent,
+  },
+  secondary: {
+    bg: ColorPalette.yellow,
+    text: ColorPalette.black,
+    border: ColorPalette.yellow,
+  },
+  success: {
+    bg: ColorPalette.green[600],
+    text: ColorPalette.white,
+    border: ColorPalette.green[600],
+  },
+  warning: {
+    bg: ColorPalette.yellow,
+    text: ColorPalette.black,
+    border: ColorPalette.yellow,
+  },
+  error: {
+    bg: ColorPalette.red,
+    text: ColorPalette.white,
+    border: ColorPalette.red,
+  },
+  accent: {
+    bg: ColorPalette.gray[800],
+    text: ColorPalette.white,
+    border: ColorPalette.gray[700],
+  },
+} as const;
+
 const ThemeButton: React.FC<ButtonProps> = ({
   text,
   onPress,
@@ -42,70 +75,19 @@ const ThemeButton: React.FC<ButtonProps> = ({
   textColor,
   borderColor,
 }) => {
-  const accentColor = ColorPalette.green.accent;
-  const primaryText = ColorPalette.white;
-  const getVariantColors = useCallback(
-    (variant: ButtonVariant) => {
-      switch (variant) {
-        case 'primary':
-          return {
-            bg: accentColor,
-            text: ColorPalette.black,
-            border: accentColor,
-          };
-        case 'secondary':
-          return {
-            bg: ColorPalette.yellow,
-            text: ColorPalette.black,
-            border: ColorPalette.yellow,
-          };
-        case 'success':
-          return {
-            bg: ColorPalette.green[600],
-            text: ColorPalette.white,
-            border: ColorPalette.green[600],
-          };
-        case 'warning':
-          return {
-            bg: ColorPalette.yellow,
-            text: ColorPalette.black,
-            border: ColorPalette.yellow,
-          };
-        case 'error':
-          return {
-            bg: ColorPalette.red,
-            text: ColorPalette.white,
-            border: ColorPalette.red,
-          };
-        case 'accent':
-          return {
-            bg: ColorPalette.gray[800],
-            text: primaryText,
-            border: ColorPalette.gray[700],
-          };
-        default:
-          return {
-            bg: accentColor,
-            text: ColorPalette.black,
-            border: accentColor,
-          };
-      }
-    },
-    [accentColor, primaryText]
-  );
-
-  const variantColors = getVariantColors(variant);
-  const finalBackgroundColor = backgroundColor || variantColors.bg;
-  const finalTextColor = textColor || variantColors.text;
-  const finalBorderColor = borderColor || variantColors.border;
+  const variantColors = VARIANT_COLORS[variant];
 
   const buttonStyle = [
     styles.button,
     {
-      backgroundColor: outline ? 'transparent' : finalBackgroundColor,
-      borderColor: outline ? finalBorderColor : 'transparent',
+      backgroundColor: outline
+        ? 'transparent'
+        : backgroundColor || variantColors.bg,
+      borderColor: outline
+        ? borderColor || variantColors.border
+        : 'transparent',
       borderWidth: outline ? 2 : 0,
-      width: width,
+      width,
       opacity: disabled ? 0.6 : 1,
     },
   ];
@@ -113,8 +95,8 @@ const ThemeButton: React.FC<ButtonProps> = ({
   const textStyle = [
     styles.text,
     {
-      color: finalTextColor,
-      fontSize: fontSize,
+      color: textColor || variantColors.text,
+      fontSize,
     },
   ];
 
