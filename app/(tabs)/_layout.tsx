@@ -20,7 +20,7 @@ export default function TabLayout() {
 
   const currentRoute = segments[segments.length - 1];
 
-  const role = USER_ROLE.MERCHANT;
+  const role = USER_ROLE.USER;
 
   const renderMerchantTabs = () => (
     <Tabs>
@@ -56,7 +56,24 @@ export default function TabLayout() {
     <Tabs>
       <TabSlot />
       <TabList asChild>
-        <ThemedTabList></ThemedTabList>
+        <ThemedTabList>
+          <TabTrigger name="home" href="/(tabs)/user/home" asChild>
+            <ThemedTabTrigger Icon={HomeIcon} />
+          </TabTrigger>
+          <TabTrigger name="scanToPay" href="/(tabs)/user/scanToPay" asChild>
+            <ThemedTabTrigger Icon={QRIcon} />
+          </TabTrigger>
+          <TabTrigger
+            name="transactionHistory"
+            href="/(tabs)/user/transactionHistory"
+            asChild
+          >
+            <ThemedTabTrigger Icon={FileIcon} />
+          </TabTrigger>
+          <TabTrigger name="profile" href="/(tabs)/user/profile" asChild>
+            <ThemedTabTrigger Icon={ProfileIcon} />
+          </TabTrigger>
+        </ThemedTabList>
       </TabList>
     </Tabs>
   );
