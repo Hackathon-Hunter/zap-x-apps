@@ -40,6 +40,12 @@ module.exports = {
         'transaction-item': TailwindColors.components['transaction-item'],
       },
 
+      // Gradient background utilities
+      backgroundImage: {
+        'radial-white':
+          'radial-gradient(72.2% 100% at 50% 0%, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0) 100%)',
+      },
+
       // Border color utilities
       borderColor: {
         accent: TailwindColors.border.accent,
