@@ -4,6 +4,8 @@ import { Text, View } from 'react-native';
 
 import { Tabs, TabTrigger, TabSlot, TabList } from 'expo-router/ui';
 
+import ThemedTabList from '@/components/ThemedTabList';
+import ThemedTabTrigger from '@/components/ThemedTabTrigger';
 import { useColorScheme } from '@/hooks/useColorScheme';
 
 export default function TabLayout() {
@@ -34,39 +36,14 @@ export default function TabLayout() {
   return (
     <Tabs>
       <TabSlot />
-      <TabList
-        style={{
-          height: 80,
-          backgroundColor: 'black',
-          flexDirection: 'row',
-        }}
-      >
-        {menus.map(({ name, label, route }) => (
-          <TabTrigger
-            key={name}
-            name={name}
-            href={route}
-            style={{
-              flex: 1,
-              justifyContent: 'center',
-              alignItems: 'center',
-              height: '100%',
-            }}
-          >
-            <View
-              style={{
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-                width: '100%',
-                borderTopWidth: 2,
-                borderTopColor: 'white',
-              }}
-            >
-              <Text style={{ color: 'white' }}>{label}</Text>
-            </View>
-          </TabTrigger>
-        ))}
+      <TabList asChild>
+        <ThemedTabList>
+          {menus.map(({ name, label, route }) => (
+            <TabTrigger key={name} name={name} href={route} asChild>
+              <ThemedTabTrigger />
+            </TabTrigger>
+          ))}
+        </ThemedTabList>
       </TabList>
     </Tabs>
   );
