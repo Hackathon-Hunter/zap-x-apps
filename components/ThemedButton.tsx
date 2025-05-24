@@ -1,130 +1,115 @@
 import React from 'react';
 
-import {
-  TouchableOpacity,
-  Text,
-  StyleSheet,
-  DimensionValue,
-} from 'react-native';
+import { TouchableOpacity, StyleSheet, View } from 'react-native';
 
-import { ColorPalette } from '@/constants/Colors';
+import Svg, {
+  Defs,
+  LinearGradient,
+  RadialGradient,
+  Rect,
+  Stop,
+} from 'react-native-svg';
 
-type ButtonVariant =
-  | 'primary'
-  | 'secondary'
-  | 'success'
-  | 'warning'
-  | 'error'
-  | 'accent';
+import { Colors } from '@/constants/Colors';
+
+import { ThemedText } from './ThemedText';
+
+type ButtonVariant = 'primary' | 'secondary';
 
 type ButtonProps = {
   text: string;
   onPress: () => void;
   variant?: ButtonVariant;
-  outline?: boolean;
   disabled?: boolean;
-  fontSize?: number;
-  width?: DimensionValue;
-  backgroundColor?: string;
-  textColor?: string;
-  borderColor?: string;
 };
-
-const VARIANT_COLORS = {
-  primary: {
-    bg: ColorPalette.green.accent,
-    text: ColorPalette.black,
-    border: ColorPalette.green.accent,
-  },
-  secondary: {
-    bg: ColorPalette.yellow,
-    text: ColorPalette.black,
-    border: ColorPalette.yellow,
-  },
-  success: {
-    bg: ColorPalette.green[600],
-    text: ColorPalette.white,
-    border: ColorPalette.green[600],
-  },
-  warning: {
-    bg: ColorPalette.yellow,
-    text: ColorPalette.black,
-    border: ColorPalette.yellow,
-  },
-  error: {
-    bg: ColorPalette.red,
-    text: ColorPalette.white,
-    border: ColorPalette.red,
-  },
-  accent: {
-    bg: ColorPalette.gray[800],
-    text: ColorPalette.white,
-    border: ColorPalette.gray[700],
-  },
-} as const;
 
 const ThemeButton: React.FC<ButtonProps> = ({
   text,
   onPress,
   variant = 'primary',
-  outline = false,
   disabled = false,
-  fontSize = 16,
-  width = '100%',
-  backgroundColor,
-  textColor,
-  borderColor,
 }) => {
-  const variantColors = VARIANT_COLORS[variant];
+  function GradientBackground() {
+    return (
+      <Svg
+        height="100%"
+        width="100%"
+        fill="none"
+        style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
+      >
+        <Rect width="100%" height="100%" fill="url(#grad)" />
+        <Defs>
+          <RadialGradient
+            id="grad"
+            cx="50%"
+            cy="0"
+            r="100%"
+            gradientUnits="userSpaceOnUse"
+          >
+            <Stop offset="0%" stopColor="#fff" stopOpacity={0.2} />
+            <Stop offset="30%" stopColor="#fff" stopOpacity={0.15} />
+            <Stop offset="50%" stopColor="#fff" stopOpacity={0.12} />
+            <Stop offset="70%" stopColor="#fff" stopOpacity={0.06} />
+            <Stop offset="85%" stopColor="#fff" stopOpacity={0.02} />
+            <Stop offset="85%" stopColor="#fff" stopOpacity={0.02} />
+            <Stop offset="90%" stopColor="#fff" stopOpacity={0.01} />
+            <Stop offset="95%" stopColor="#fff" stopOpacity={0.005} />
+            <Stop offset="100%" stopColor="#fff" stopOpacity={0} />
+          </RadialGradient>
+        </Defs>
+      </Svg>
+    );
+  }
 
-  const buttonStyle = [
-    styles.button,
-    {
-      backgroundColor: outline
-        ? 'transparent'
-        : backgroundColor || variantColors.bg,
-      borderColor: outline
-        ? borderColor || variantColors.border
-        : 'transparent',
-      borderWidth: outline ? 2 : 0,
-      width,
-      opacity: disabled ? 0.6 : 1,
-    },
-  ];
+  function GradientBorderBox() {
+    return (
+      <Svg style={StyleSheet.absoluteFill} preserveAspectRatio="none">
+        <Defs>
+          <LinearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <Stop offset="0%" stopColor="#414651" />
+            <Stop offset="50%" stopColor="#FFFFFF" />
+            <Stop offset="100%" stopColor="#414651" />
+          </LinearGradient>
+        </Defs>
+        <Rect width="100%" height="100%" fill="url(#grad)" />
+      </Svg>
+    );
+  }
 
-  const textStyle = [
-    styles.text,
-    {
-      color: textColor || variantColors.text,
-      fontSize,
-    },
-  ];
+  function renderPrimary() {
+    return (
+      <View className="w-full relative">
+        <GradientBorderBox />
+        <View className="bg-black py-4 justify-center items-center mx-[0.5px] my-[0.5px]">
+          <GradientBackground />
+          <ThemedText
+            color={Colors.dark.text.primary}
+            className="text-base font-medium"
+          >
+            {text}
+          </ThemedText>
+        </View>
+      </View>
+    );
+  }
 
+  function renderSecondary() {
+    return (
+      <View className="w-full py-4 justify-center items-center mx-[0.5px] my-[0.5px]">
+        <ThemedText
+          color={Colors.dark.text.primary}
+          className="text-base font-medium"
+        >
+          {text}
+        </ThemedText>
+      </View>
+    );
+  }
   return (
-    <TouchableOpacity
-      onPress={onPress}
-      style={buttonStyle}
-      disabled={disabled}
-      activeOpacity={0.8}
-    >
-      <Text style={textStyle}>{text}</Text>
+    <TouchableOpacity onPress={onPress} disabled={disabled}>
+      {variant === 'primary' ? renderPrimary() : renderSecondary()}
     </TouchableOpacity>
   );
 };
-
-const styles = StyleSheet.create({
-  button: {
-    paddingVertical: 16,
-    paddingHorizontal: 24,
-    borderRadius: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: 56,
-  },
-  text: {
-    fontWeight: '600',
-    textAlign: 'center',
-  },
-});
 
 export default ThemeButton;
