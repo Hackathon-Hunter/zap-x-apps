@@ -13,6 +13,7 @@ import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import ThemeImage from '@/components/ThemeImage';
 import {
   publicClient,
   projectId,
@@ -90,6 +91,13 @@ export default function HomeScreen() {
         <WalletConnectModal
           projectId={projectId ?? 'defaultProjectId'}
           providerMetadata={providerMetadata}
+        />
+
+        <ThemeImage
+          source={{ uri: 'https://img.freepik.com/premium-vector/vector-flat-illustration-grayscale-avatar-user-profile-person-icon-gender-neutral-silhouette-profile-picture-suitable-social-media-profiles-icons-screensavers-as-templatex9xa_719432-875.jpg?semt=ais_hybrid&w=740' }}
+          width="50%"
+          height={200}
+          resizeMode="cover"
         />
       </ThemedView>
     </ParallaxScrollView>
