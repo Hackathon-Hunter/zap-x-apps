@@ -4,6 +4,8 @@ import { ScrollView, View } from 'react-native';
 
 import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
 
+import QRIcon from '@/components/icons/QRIcon';
+import ThemeButton from '@/components/ThemedButton';
 import { ThemedText } from '@/components/ThemedText';
 import TokenBalanceCarousel from '@/components/ui/TokenBalanceCarousel';
 import TransactionItemCard from '@/components/ui/TransactionItemCard';
@@ -51,9 +53,23 @@ const DUMMY_TRANSACTIONS = [
 const UserHome = () => {
   return (
     <ScrollView>
-      <View className="flex gap-11 pb-10">
-        <View>
+      <View className="flex gap-6 pb-10">
+        <View className="flex gap-6">
           <TokenBalanceCarousel />
+          <View>
+            <ThemeButton
+              variant="primary"
+              onPress={() => {}}
+              text="Scan to Pay"
+              LeftIcon={QRIcon}
+            />
+            <ThemedText
+              color={Colors.dark.text.secondary}
+              className="text-xs mt-2 text-center"
+            >
+              Scan merchant QR to start swap and pay
+            </ThemedText>
+          </View>
         </View>
         <View className="flex gap-3">
           <View className="flex flex-row justify-between">

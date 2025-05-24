@@ -36,7 +36,8 @@ const TokenBalanceCarousel = () => {
         )}
         mode="parallax"
         modeConfig={{
-          parallaxScrollingScale: 0.9,
+          parallaxScrollingScale: 1,
+          parallaxAdjacentItemScale: 0.9,
           parallaxScrollingOffset: 50,
         }}
       />
