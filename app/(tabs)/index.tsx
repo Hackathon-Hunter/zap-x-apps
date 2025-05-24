@@ -13,6 +13,8 @@ import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import ThemeCircleButton from '@/components/ThemedCircleButton';
+import { AntDesign } from '@expo/vector-icons';
 import {
   publicClient,
   projectId,
@@ -46,6 +48,11 @@ export default function HomeScreen() {
 
     getNetworkData();
   }, []);
+
+  const handleClick = () => {
+    console.log("button pressed");
+    
+  }
 
   return (
     <ParallaxScrollView
@@ -91,6 +98,25 @@ export default function HomeScreen() {
           projectId={projectId ?? 'defaultProjectId'}
           providerMetadata={providerMetadata}
         />
+
+        <ThemeCircleButton
+          size={60}
+          backgroundColor="#007AFF"
+          onPress={handleClick}
+          borderColor="#005BBB"
+          borderWidth={2}
+        >
+          <AntDesign name="plus" size={28} color="white" />
+        </ThemeCircleButton>
+
+        <ThemeCircleButton
+          size={50}
+          backgroundColor="yellow"
+          onPress={() => console.log('Clicked!')}
+          style={{ marginTop: 20 }}
+        >
+          <Text style={{ fontWeight: 'bold', fontSize: 18 }}>A</Text>
+        </ThemeCircleButton>
       </ThemedView>
     </ParallaxScrollView>
   );
