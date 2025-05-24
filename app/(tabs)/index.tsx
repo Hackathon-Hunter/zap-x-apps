@@ -11,8 +11,10 @@ import { Address, formatEther } from 'viem';
 
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
+import ThemeButton from '@/components/ThemeButton';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { ColorPalette } from '@/constants/Colors';
 import {
   publicClient,
   projectId,
@@ -46,6 +48,10 @@ export default function HomeScreen() {
 
     getNetworkData();
   }, []);
+
+  const handlePress = () => {
+    console.log('button pressed');
+  };
 
   return (
     <ParallaxScrollView
@@ -90,6 +96,14 @@ export default function HomeScreen() {
         <WalletConnectModal
           projectId={projectId ?? 'defaultProjectId'}
           providerMetadata={providerMetadata}
+        />
+
+        <ThemeButton
+          text="Custom Yellow Button"
+          onPress={handlePress}
+          backgroundColor={ColorPalette.yellow}
+          textColor={ColorPalette.black}
+          fontSize={18}
         />
       </ThemedView>
     </ParallaxScrollView>
