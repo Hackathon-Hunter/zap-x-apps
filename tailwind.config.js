@@ -14,9 +14,6 @@ module.exports = {
         // Import the shared color palette
         ...ColorPalette,
 
-        // Import structured Tailwind colors
-        ...TailwindColors,
-
         // Flatten component colors for easier access
         'qr-button': TailwindColors.components['qr-button'],
         'transaction-item': TailwindColors.components['transaction-item'],

@@ -18,7 +18,7 @@ const TokenBalanceCarousel = () => {
   const progress = useSharedValue<number>(0);
 
   return (
-    <View className="h-64">
+    <View className="h-40">
       <Carousel
         ref={ref}
         height={150}
