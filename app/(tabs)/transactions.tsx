@@ -4,7 +4,7 @@ import { View, Text } from 'react-native';
 
 const Transactions = () => {
   return (
-    <View>
+    <View className="h-screen justify-center items-center">
       <Text>Transactions</Text>
     </View>
   );

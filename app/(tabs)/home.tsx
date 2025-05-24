@@ -4,7 +4,7 @@ import { View, Text } from 'react-native';
 
 const Home = () => {
   return (
-    <View>
+    <View className="h-screen justify-center items-center bg-black">
       <Text>Home</Text>
     </View>
   );
