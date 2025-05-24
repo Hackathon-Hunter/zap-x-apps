@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ElementType } from 'react';
 
 import { TouchableOpacity, StyleSheet, View } from 'react-native';
 
@@ -21,6 +21,7 @@ type ButtonProps = {
   onPress: () => void;
   variant?: ButtonVariant;
   disabled?: boolean;
+  LeftIcon?: ElementType;
 };
 
 const ThemeButton: React.FC<ButtonProps> = ({
@@ -28,6 +29,7 @@ const ThemeButton: React.FC<ButtonProps> = ({
   onPress,
   variant = 'primary',
   disabled = false,
+  LeftIcon,
 }) => {
   function GradientBackground() {
     return (
@@ -82,12 +84,21 @@ const ThemeButton: React.FC<ButtonProps> = ({
         <GradientBorderBox />
         <View className="bg-black py-4 justify-center items-center mx-[0.5px] my-[0.5px]">
           <GradientBackground />
-          <ThemedText
-            color={Colors.dark.text.primary}
-            className="text-base font-medium"
-          >
-            {text}
-          </ThemedText>
+          <View className="flex gap-3 flex-row h-6 items-center">
+            {LeftIcon && (
+              <LeftIcon
+                color={Colors.dark.text.primary}
+                height={24}
+                width={24}
+              />
+            )}
+            <ThemedText
+              color={Colors.dark.text.primary}
+              className="text-base font-medium"
+            >
+              {text}
+            </ThemedText>
+          </View>
         </View>
       </View>
     );
@@ -100,7 +111,21 @@ const ThemeButton: React.FC<ButtonProps> = ({
           color={Colors.dark.text.primary}
           className="text-base font-medium"
         >
-          {text}
+          <View className="flex gap-3 flex-row h-6 items-center">
+            {LeftIcon && (
+              <LeftIcon
+                color={Colors.dark.text.primary}
+                height={24}
+                width={24}
+              />
+            )}
+            <ThemedText
+              color={Colors.dark.text.primary}
+              className="text-base font-medium"
+            >
+              {text}
+            </ThemedText>
+          </View>
         </ThemedText>
       </View>
     );
