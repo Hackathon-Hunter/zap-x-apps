@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { View, Text, Pressable } from 'react-native';
+import { View, Text, Pressable, Platform, StatusBar } from 'react-native';
 
 import { Router } from 'expo-router';
 
@@ -22,11 +22,11 @@ const ThemedHeader = ({
 }: ThemedHeaderProps) => {
   const renderNormal = () => (
     <View className="justify-center items-center">
-      {currentRoute === 'home' ? (
+      {currentRoute?.toLowerCase().includes('home') ? (
         <Logo />
       ) : (
         <Text className="color-white text-xl font-medium">
-          {currentRoute ? formatRouteTitle(currentRoute) : 'App'}
+          {currentRoute ? formatRouteTitle(currentRoute) : <Logo />}
         </Text>
       )}
     </View>
@@ -45,7 +45,12 @@ const ThemedHeader = ({
   );
 
   return (
-    <View className="bg-black w-full py-6 px-4 justify-center">
+    <View
+      className="bg-black w-full py-6 px-4 justify-center"
+      style={{
+        marginTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+      }}
+    >
       {canGoBack ? renderCanBack() : renderNormal()}
     </View>
   );
