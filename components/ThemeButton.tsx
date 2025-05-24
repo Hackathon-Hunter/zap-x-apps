@@ -47,47 +47,47 @@ const ThemeButton: React.FC<ButtonProps> = ({
   const getVariantColors = useCallback(
     (variant: ButtonVariant) => {
       switch (variant) {
-      case 'primary':
-        return {
-          bg: accentColor,
-          text: ColorPalette.black,
-            border: accentColor,
-        };
-      case 'secondary':
-        return {
-          bg: ColorPalette.yellow,
-          text: ColorPalette.black,
-          border: ColorPalette.yellow,
-          };
-      case 'success':
-        return {
-          bg: ColorPalette.green[600],
-            text: ColorPalette.white,
-          border: ColorPalette.green[600],
-        };
-      case 'warning':
-        return {
-          bg: ColorPalette.yellow,
+        case 'primary':
+          return {
+            bg: accentColor,
             text: ColorPalette.black,
-          border: ColorPalette.yellow,
-        };
-      case 'error':
+            border: accentColor,
+          };
+        case 'secondary':
           return {
-          bg: ColorPalette.red,
-          text: ColorPalette.white,
-          border: ColorPalette.red,
-        };
-      case 'accent':
-        return {
+            bg: ColorPalette.yellow,
+            text: ColorPalette.black,
+            border: ColorPalette.yellow,
+          };
+        case 'success':
+          return {
+            bg: ColorPalette.green[600],
+            text: ColorPalette.white,
+            border: ColorPalette.green[600],
+          };
+        case 'warning':
+          return {
+            bg: ColorPalette.yellow,
+            text: ColorPalette.black,
+            border: ColorPalette.yellow,
+          };
+        case 'error':
+          return {
+            bg: ColorPalette.red,
+            text: ColorPalette.white,
+            border: ColorPalette.red,
+          };
+        case 'accent':
+          return {
             bg: ColorPalette.gray[800],
-          text: primaryText,
-          border: ColorPalette.gray[700],
-        };
-      default:
+            text: primaryText,
+            border: ColorPalette.gray[700],
+          };
+        default:
           return {
-          bg: accentColor,
-          text: ColorPalette.black,
-          border: accentColor,
+            bg: accentColor,
+            text: ColorPalette.black,
+            border: accentColor,
           };
       }
     },
