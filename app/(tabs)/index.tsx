@@ -11,7 +11,7 @@ import { Address, formatEther } from 'viem';
 
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
-import ThemeButton from '@/components/ThemeButton';
+import ThemeButton from '@/components/ThemedButton';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { ColorPalette } from '@/constants/Colors';
