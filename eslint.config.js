@@ -8,6 +8,12 @@ module.exports = defineConfig([
   {
     ignores: ['dist/*'],
     rules: {
+      'prettier/prettier': [
+        'error',
+        {
+          endOfLine: 'auto',
+        },
+      ],
       // Indentation rules
       indent: ['error', 2],
       'react/jsx-indent': ['error', 2],

@@ -3,6 +3,7 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "always"
   },
+  "files.eol": "\n",
   "eslint.validate": [
     "javascript",
     "javascriptreact",
