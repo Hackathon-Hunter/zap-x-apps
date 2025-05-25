@@ -56,7 +56,7 @@ const MerchantHome = () => {
           <View>
             <ThemeButton
               variant="primary"
-              onPress={() => { }}
+              onPress={() => {}}
               text="Scan to Pay"
               LeftIcon={QRIcon}
             />
