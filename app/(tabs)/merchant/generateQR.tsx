@@ -1,18 +1,23 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Pressable, TextInput, ScrollView } from 'react-native';
+
+import {
+  View,
+  StyleSheet,
+  Pressable,
+  TextInput,
+  ScrollView,
+} from 'react-native';
+
 import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
 
-import { Colors } from '@/constants/Colors';
-import { ThemedText } from '@/components/ThemedText';
-import ThemeButton from '@/components/ThemedButton';
 import QRIcon from '@/components/icons/QRIcon';
-import FilterDropdown from '@/components/ui/FilterDropdown';
 import WalletIcon from '@/components/icons/WalletIcon';
+import ThemeButton from '@/components/ThemedButton';
+import { ThemedText } from '@/components/ThemedText';
+import FilterDropdown from '@/components/ui/FilterDropdown';
+import { Colors } from '@/constants/Colors';
 
-const DEFAULT_CURRENCY_OPTIONS = [
-  'IDR',
-  'USD',
-];
+const DEFAULT_CURRENCY_OPTIONS = ['IDR', 'USD'];
 
 function GradientBorderBox() {
   return (
@@ -49,12 +54,10 @@ const GenerateQRForm = () => {
       <View className="bg-black mx-[0.5px] my-[0.5px]">
         {/* Amount Input & Currency Dropdown */}
         <View className="flex-col mb-4 px-4 pt-6">
-          <ThemedText
-            className="text-lg"
-            color={Colors.dark.text.secondary}>
+          <ThemedText className="text-lg" color={Colors.dark.text.secondary}>
             Amount
           </ThemedText>
-          <View className='flex-row items-center'>
+          <View className="flex-row items-center">
             <TextInput
               value={amount}
               onChangeText={setAmount}
@@ -68,11 +71,9 @@ const GenerateQRForm = () => {
               <FilterDropdown
                 selectedValue={DEFAULT_CURRENCY_OPTIONS[0]}
                 options={DEFAULT_CURRENCY_OPTIONS}
-                onSelect={() => { }}
+                onSelect={() => {}}
                 isOpen={false}
-                onToggle={() => {
-
-                }}
+                onToggle={() => {}}
                 LeftIcon={WalletIcon}
               />
             </View>
@@ -81,41 +82,46 @@ const GenerateQRForm = () => {
 
         {/* Transfer Info */}
         <View className="flex-row mb-6 px-4 gap-32">
-          <View className='flex-col items-start'>
+          <View className="flex-col items-start">
             <ThemedText
               className="text-base text-right"
-              color={Colors.dark.text.secondary}>
+              color={Colors.dark.text.secondary}
+            >
               Min. Transfer
             </ThemedText>
-            <View className='flex-row items-end gap-2'>
+            <View className="flex-row items-end gap-2">
               <ThemedText
                 color={Colors.dark.text.secondary}
-                className="text-right text-xs">
+                className="text-right text-xs"
+              >
                 IDR
               </ThemedText>
               <ThemedText
                 color={Colors.dark.text.primary}
-                className="text-right">
+                className="text-right"
+              >
                 100.000
               </ThemedText>
             </View>
           </View>
-          <View className='flex-col items-start'>
+          <View className="flex-col items-start">
             <ThemedText
               color={Colors.dark.text.secondary}
               className="text-base text-right"
             >
               Max. Transfer
             </ThemedText>
-            <View className='flex-row items-end gap-2'>
+            <View className="flex-row items-end gap-2">
               <ThemedText
                 color={Colors.dark.text.secondary}
-                className="text-right text-xs">
+                className="text-right text-xs"
+              >
                 IDR
               </ThemedText>
               <ThemedText
                 color={Colors.dark.text.primary}
-                className="text-right">
+                className="text-right"
+              >
                 100.000
               </ThemedText>
             </View>
@@ -125,7 +131,7 @@ const GenerateQRForm = () => {
         {/* Generate QR Button */}
         <ThemeButton
           variant="primary"
-          onPress={() => { }}
+          onPress={() => {}}
           text="Generate QR"
           RightIcon={QRIcon}
         />
@@ -133,20 +139,17 @@ const GenerateQRForm = () => {
 
       {/* OR Separator */}
       <View className="flex-row justify-center items-center py-4 bg-black">
-        <ThemedText
-          color={Colors.dark.text.primary}>─────────</ThemedText>
-        <ThemedText
-          color={Colors.dark.text.primary}> OR </ThemedText>
-        <ThemedText
-          color={Colors.dark.text.primary}>─────────</ThemedText>
+        <ThemedText color={Colors.dark.text.primary}>─────────</ThemedText>
+        <ThemedText color={Colors.dark.text.primary}> OR </ThemedText>
+        <ThemedText color={Colors.dark.text.primary}>─────────</ThemedText>
       </View>
 
       {/* Generate Static QR */}
 
-      <View className='bg-black'>
+      <View className="bg-black">
         <ThemeButton
           variant="primary"
-          onPress={() => { }}
+          onPress={() => {}}
           text="Generate Static QR"
           LeftIcon={QRIcon}
         />
