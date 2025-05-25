@@ -1,28 +1,32 @@
 import React from 'react';
 
-import { View, Text, ScrollView } from 'react-native';
+import { View, ScrollView } from 'react-native';
 
-import QRIcon from '@/components/icons/QRIcon';
-import ThemeButton from '@/components/ThemedButton';
 import { ThemedText } from '@/components/ThemedText';
-import TokenBalanceCarousel from '@/components/ui/TokenBalanceCarousel';
+import TokenBalanceMerchant from '@/components/ui/TokenBalanceMerchant';
 import TransactionItemCard from '@/components/ui/TransactionItemCard';
 import { ColorPalette, Colors } from '@/constants/Colors';
+import { USER_ROLE } from '@/constants/User';
+import { truncateAddress } from '@/utils/textUtils';
+
+const address = '0x1ABC7154748D1CE5144478CDEB574AE244B939B5';
 
 const DUMMY_TRANSACTIONS = [
   {
-    type: 'SEND',
+    type: truncateAddress(address),
     date: 'MAY 16, 2025 - 10:50 PM',
     pair: 'IDR',
-    amount: 'USD 50',
+    amount: 'USD 200',
     amountColor: ColorPalette.green.DEFAULT,
+    role: USER_ROLE.MERCHANT,
   },
   {
-    type: 'SEND',
+    type: truncateAddress(address),
     date: 'MAY 16, 2025 - 11:10 PM',
     pair: 'IDR',
     amount: 'USD 200',
     amountColor: ColorPalette.green.DEFAULT,
+    role: USER_ROLE.MERCHANT,
   },
   {
     type: 'SEND',
@@ -30,6 +34,7 @@ const DUMMY_TRANSACTIONS = [
     pair: 'IDR',
     amount: 'IDR 1.2',
     amountColor: ColorPalette.green.DEFAULT,
+    role: USER_ROLE.MERCHANT,
   },
   {
     type: 'SEND',
@@ -37,6 +42,7 @@ const DUMMY_TRANSACTIONS = [
     pair: 'IDR',
     amount: 'USD 75',
     amountColor: ColorPalette.green.DEFAULT,
+    role: USER_ROLE.MERCHANT,
   },
   {
     type: 'SEND',
@@ -44,6 +50,7 @@ const DUMMY_TRANSACTIONS = [
     pair: 'IDR',
     amount: 'USD 500',
     amountColor: ColorPalette.green.DEFAULT,
+    role: USER_ROLE.MERCHANT,
   },
 ];
 
@@ -52,21 +59,7 @@ const MerchantHome = () => {
     <ScrollView>
       <View className="flex gap-6 pb-10">
         <View className="flex gap-6">
-          <TokenBalanceCarousel />
-          <View>
-            <ThemeButton
-              variant="primary"
-              onPress={() => {}}
-              text="Scan to Pay"
-              LeftIcon={QRIcon}
-            />
-            <ThemedText
-              color={Colors.dark.text.secondary}
-              className="text-xs mt-2 text-center"
-            >
-              Scan merchant QR to start swap and pay
-            </ThemedText>
-          </View>
+          <TokenBalanceMerchant token="IDR" amount="2,000" />
         </View>
         <View className="flex gap-3">
           <View className="flex flex-row justify-between">
@@ -92,6 +85,7 @@ const MerchantHome = () => {
               pair={item.pair}
               amount={item.amount}
               amountColor={item.amountColor}
+              role={item.role}
             />
           ))}
         </View>
