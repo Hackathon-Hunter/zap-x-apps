@@ -102,6 +102,7 @@ const UserScanToPay = () => {
           <CameraView
             style={{ flex: 1 }}
             facing="back"
+            barcodeScannerSettings={{ barcodeTypes: ['qr'] }}
             onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
           >
             <ScanningOverlay isScanning={isScanning} />
