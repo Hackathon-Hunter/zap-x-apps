@@ -48,6 +48,12 @@ export default function UserLayout() {
             headerShown: false,
           }}
         />
+        <Stack.Screen
+          name="paymentDetailStaticQR"
+          options={{
+            headerShown: false,
+          }}
+        />
       </Stack>
     </View>
   );
