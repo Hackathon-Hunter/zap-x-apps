@@ -17,6 +17,7 @@ import Modal from './ThemedModal';
 import DownloadFileIcon from '../icons/DownloadIcon';
 import GradientSeparator from '../icons/GradientSeparator';
 import ShareIcon from '../icons/ShareIcon';
+import ZapIcon from '../icons/ZapIcon';
 import ThemeButton from '../ThemedButton';
 import { ThemedText } from '../ThemedText';
 
@@ -38,7 +39,7 @@ const DynamicQRModal: React.FC<PaymentSuccessModalProps> = ({
   visible,
   onClose,
   qrData,
-  onDownloadReceipt = () => {},
+  onDownloadReceipt = () => { },
 }) => {
   const qrRef = useRef<QRCodeRef>(null);
 
@@ -82,11 +83,14 @@ const DynamicQRModal: React.FC<PaymentSuccessModalProps> = ({
             getRef={(c) => (qrRef.current = c)}
             size={200}
           />
-          <View style={styles.logoContainer}>
-            <Image
-              source={require('@/assets/images/zapx-logo.png')}
-              style={styles.logo}
-            />
+          <View style={styles.logoBorder}>
+            <View style={styles.logoContainer}>
+              <ZapIcon
+                width={styles.logo.width}
+                height={styles.logo.height}
+                fillColor={Colors.dark.text.primary}
+              />
+            </View>
           </View>
         </View>
         <View className="flex flex-row items-end gap-2 mt-4">
@@ -144,17 +148,25 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  logoContainer: {
+  logoBorder: {
     position: 'absolute',
-    backgroundColor: 'transparent',
-    borderRadius: 25,
     width: 60,
     height: 60,
-    overflow: 'hidden',
+    borderRadius: 30,
+    borderWidth: 2,
+    borderColor: 'black',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'black', // Background color for the border circle
+  },
+  logoContainer: {
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   logo: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'contain',
+    width: 40,
+    height: 40,
   },
 });
