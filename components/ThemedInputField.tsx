@@ -12,6 +12,7 @@ type ThemeInputFieldProps = {
   textButton: string;
   rightButton?: boolean;
   LeftIcon?: ElementType;
+  readOnly?: boolean;
 };
 
 const ThemeInputField: React.FC<ThemeInputFieldProps> = ({
@@ -21,15 +22,17 @@ const ThemeInputField: React.FC<ThemeInputFieldProps> = ({
   textButton,
   rightButton,
   LeftIcon,
+  readOnly
 }) => {
   return (
     <View className="flex flex-row justify-between items-center w-full rounded-md border border-gray-700">
       <TextInput
-        className="flex-1 px-4 text-base"
+        className="flex-1 px-4 text-base text-white"
         placeholder={placeholder}
         value={inputValue}
         onChangeText={onChangeText}
         placeholderTextColor={Colors.dark.text.muted}
+        readOnly={readOnly}
       />
       {rightButton && (
         <ThemeButton

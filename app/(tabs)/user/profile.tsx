@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 
 import { View, Text, ScrollView } from 'react-native';
 
-import ChangeIcon from '@/components/icons/ChangeIcon';
 import CopyIcon from '@/components/icons/CopyIcon';
 import DisconnectIcon from '@/components/icons/DisconnectIcon';
 import GradientSeparator from '@/components/icons/GradientSeparator';
@@ -10,7 +9,6 @@ import HelpIcon from '@/components/icons/HelpIcon';
 import LanguageIcon from '@/components/icons/LanguageIcon';
 import NetworkIcon from '@/components/icons/NetworkIcon';
 import NotificationIcon from '@/components/icons/NotificationIcon';
-import PenIcon from '@/components/icons/PenIcon';
 import SecurityIcon from '@/components/icons/SecurityIcon';
 import WalletIcon from '@/components/icons/WalletIcon';
 import ZapIcon from '@/components/icons/ZapIcon';
@@ -18,7 +16,7 @@ import ThemeButton from '@/components/ThemedButton';
 import ThemeInputField from '@/components/ThemedInputField';
 import { ThemedText } from '@/components/ThemedText';
 import SettingCardProfile from '@/components/ui/SettingCardProfile';
-import { ColorPalette, Colors } from '@/constants/Colors';
+import { Colors } from '@/constants/Colors';
 
 // Dummy data
 const DUMMY_TRANSACTIONS = [
@@ -55,7 +53,7 @@ const DUMMY_TRANSACTIONS = [
 ];
 
 const UserProfile = () => {
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState('0xA13...8F9c');
 
   return (
     <ScrollView>
@@ -65,12 +63,13 @@ const UserProfile = () => {
             Wallet
           </ThemedText>
           <ThemeInputField
-            placeholder="john@gmail.com"
+            placeholder="wallet"
             inputValue={inputValue}
             onChangeText={setInputValue}
             LeftIcon={CopyIcon}
             textButton="Edit"
             rightButton={true}
+            readOnly
           />
         </View>
         <ThemeButton
@@ -79,8 +78,10 @@ const UserProfile = () => {
           variant="secondary"
           LeftIcon={DisconnectIcon}
         />
+
         <GradientSeparator />
-        <View className="flex gap-3">
+
+        <View className="flex gap-3 mt-4">
           {DUMMY_TRANSACTIONS.map((item, i) => (
             <SettingCardProfile
               key={i}
