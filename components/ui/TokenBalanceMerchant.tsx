@@ -1,11 +1,7 @@
-import React from 'react';
-
-import { View, StyleSheet } from 'react-native';
-
+import React, { useState } from 'react';
+import { View, StyleSheet, Pressable, ScrollView } from 'react-native';
 import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
-
 import { Colors } from '@/constants/Colors';
-
 import ArrowDownIcon from '../icons/ArrowDownIcon';
 import QRIcon from '../icons/QRIcon';
 import WithdawIcon from '../icons/WithdrawIcon';
@@ -27,7 +23,34 @@ function GradientBorderBox() {
   );
 }
 
-const TokenBalanceMerchant = ({ token = 'BOME', amount = '2,000' }) => {
+const TokenBalanceMerchant = ({
+  token = 'BOME',
+  amount = '2,000',
+  onTokenChange // Optional callback to parent component
+}: {
+  token?: string;
+  amount?: string;
+  onTokenChange?: (newToken: string) => void;
+}) => {
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const [selectedToken, setSelectedToken] = useState(token); // Use token as initial value
+
+  const options = ['USD', 'IDR']; // Added more options including the original token
+
+  const handleToggleDropdown = () => {
+    setIsDropdownVisible(!isDropdownVisible);
+  };
+
+  const handleSelectOption = (option: string) => {
+    setSelectedToken(option); // Update the selected token
+    setIsDropdownVisible(false); // Close dropdown after selection
+
+    // Call the optional callback to notify parent component
+    if (onTokenChange) {
+      onTokenChange(option);
+    }
+  };
+
   return (
     <View
       className="w-full"
@@ -35,23 +58,26 @@ const TokenBalanceMerchant = ({ token = 'BOME', amount = '2,000' }) => {
     >
       <GradientBorderBox />
       <View className="bg-black py-4 justify-center items-center mx-[0.5px] my-[0.5px]">
-        <View className="flex-row items-center">
+        <Pressable
+          className="flex-row items-center"
+          onPress={handleToggleDropdown}
+        >
           <ThemedText
             color={Colors.dark.text.secondary}
             numbersOnly
             className="text-base font-medium mr-2"
           >
-            {token} Balance
+            {selectedToken} Balance
           </ThemedText>
           <ArrowDownIcon />
-        </View>
+        </Pressable>
         <View className="flex flex-row items-end gap-2">
           <ThemedText
             color={Colors.dark.text.secondary}
             numbersOnly
             className="text-base font-medium"
           >
-            {token}
+            {selectedToken}
           </ThemedText>
           <ThemedText
             color={Colors.dark.text.primary}
@@ -66,17 +92,43 @@ const TokenBalanceMerchant = ({ token = 'BOME', amount = '2,000' }) => {
       <View className="flex flex-row justify-around">
         <ThemeButton
           variant="primary"
-          onPress={() => {}}
+          onPress={() => { }}
           text="Generate QR"
           LeftIcon={QRIcon}
         />
         <ThemeButton
           variant="primary"
-          onPress={() => {}}
+          onPress={() => { }}
           text="Withdraw"
           LeftIcon={WithdawIcon}
         />
       </View>
+
+      {/* Dropdown - only show when isDropdownVisible is true */}
+      {isDropdownVisible && (
+        <View className="absolute top-12 left-1/4 right-1/4 bg-black border border-gray-700 rounded-md z-10 max-h-40">
+          <ScrollView nestedScrollEnabled={true}>
+            {options.map((option) => (
+              <Pressable
+                key={option}
+                onPress={() => handleSelectOption(option)}
+                className="p-3 border-b border-gray-800 last:border-b-0 items-center"
+              >
+                <ThemedText
+                  color={
+                    selectedToken === option
+                      ? Colors.dark.text.primary
+                      : Colors.dark.text.secondary
+                  }
+                  className="text-sm text-center"
+                >
+                  {option}
+                </ThemedText>
+              </Pressable>
+            ))}
+          </ScrollView>
+        </View>
+      )}
     </View>
   );
 };
