@@ -15,6 +15,7 @@ import { CameraRoll } from '@react-native-camera-roll/camera-roll';
 import * as RNFS from 'react-native-fs';
 import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
 
+import GradientSeparator from '@/components/icons/GradientSeparator';
 import QRIcon from '@/components/icons/QRIcon';
 import WalletIcon from '@/components/icons/WalletIcon';
 import ThemeButton from '@/components/ThemedButton';
@@ -22,7 +23,6 @@ import { ThemedText } from '@/components/ThemedText';
 import DynamicQRModal from '@/components/ui/DynamicQRModal';
 import FilterDropdown from '@/components/ui/FilterDropdown';
 import { Colors } from '@/constants/Colors';
-import GradientSeparator from '@/components/icons/GradientSeparator';
 
 const DEFAULT_CURRENCY_OPTIONS = ['IDR', 'USD'];
 
@@ -158,9 +158,9 @@ const GenerateQRForm = () => {
               <FilterDropdown
                 selectedValue={DEFAULT_CURRENCY_OPTIONS[0]}
                 options={DEFAULT_CURRENCY_OPTIONS}
-                onSelect={() => { }}
+                onSelect={() => {}}
                 isOpen={false}
-                onToggle={() => { }}
+                onToggle={() => {}}
                 LeftIcon={WalletIcon}
               />
             </View>
@@ -240,7 +240,7 @@ const GenerateQRForm = () => {
       <View className="bg-black">
         <ThemeButton
           variant="primary"
-          onPress={() => { }}
+          onPress={() => {}}
           text="Generate Static QR"
           LeftIcon={QRIcon}
         />

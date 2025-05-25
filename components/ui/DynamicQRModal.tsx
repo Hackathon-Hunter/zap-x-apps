@@ -15,10 +15,10 @@ import { Colors } from '@/constants/Colors';
 
 import Modal from './ThemedModal';
 import DownloadFileIcon from '../icons/DownloadIcon';
+import GradientSeparator from '../icons/GradientSeparator';
 import ShareIcon from '../icons/ShareIcon';
 import ThemeButton from '../ThemedButton';
 import { ThemedText } from '../ThemedText';
-import GradientSeparator from '../icons/GradientSeparator';
 
 interface PaymentSuccessModalProps {
   visible: boolean;
@@ -38,7 +38,7 @@ const DynamicQRModal: React.FC<PaymentSuccessModalProps> = ({
   visible,
   onClose,
   qrData,
-  onDownloadReceipt = () => { },
+  onDownloadReceipt = () => {},
 }) => {
   const qrRef = useRef<QRCodeRef>(null);
 
