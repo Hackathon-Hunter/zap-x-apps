@@ -131,7 +131,7 @@ const ThemeButton: React.FC<ButtonProps> = ({
     );
   }
   return (
-    <TouchableOpacity onPress={onPress} disabled={disabled}>
+    <TouchableOpacity onPress={onPress} disabled={disabled} className="flex-1">
       {variant === 'primary' ? renderPrimary() : renderSecondary()}
     </TouchableOpacity>
   );
