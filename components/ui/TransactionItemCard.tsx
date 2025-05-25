@@ -3,6 +3,7 @@ import React from 'react';
 import { View } from 'react-native';
 
 import { ColorPalette, Colors } from '@/constants/Colors';
+import { USER_ROLE } from '@/constants/User';
 
 import { ThemedText } from '../ThemedText';
 
@@ -12,6 +13,7 @@ type TransactionItemCardProps = {
   pair?: string;
   amount?: string;
   amountColor?: string;
+  role?: string;
 };
 
 const TransactionItemCard = ({
@@ -20,17 +22,28 @@ const TransactionItemCard = ({
   pair = 'BOME → USD',
   amount = 'USDT 50',
   amountColor = ColorPalette.green.DEFAULT,
+  role = USER_ROLE.USER,
 }: TransactionItemCardProps) => {
   return (
     <View className="border-gray-700 border-[1px] bg-gray-900 p-3 gap-3 rounded-md">
       <View className="flex flex-row justify-between">
-        <ThemedText
-          color={Colors.dark.text.secondary}
-          numbersOnly
-          className="text-xs"
-        >
-          {type}
-        </ThemedText>
+        {role === USER_ROLE.MERCHANT ? (
+          <ThemedText
+            color={Colors.dark.text.primary}
+            numbersOnly
+            className="text-xs"
+          >
+            {type}
+          </ThemedText>
+        ) : (
+          <ThemedText
+            color={Colors.dark.text.secondary}
+            numbersOnly
+            className="text-xs"
+          >
+            {type}
+          </ThemedText>
+        )}
         <ThemedText
           color={Colors.dark.text.secondary}
           numbersOnly
@@ -42,7 +55,7 @@ const TransactionItemCard = ({
 
       <View className="flex flex-row justify-between">
         <ThemedText
-          color={Colors.dark.text.primary}
+          color={Colors.dark.text.secondary}
           numbersOnly
           className="text-xs"
         >
