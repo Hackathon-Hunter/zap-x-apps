@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { View, Text } from 'react-native';
+import { View, Text, ScrollView } from 'react-native';
 
 import ChangeIcon from '@/components/icons/ChangeIcon';
 import CopyIcon from '@/components/icons/CopyIcon';
@@ -9,11 +9,11 @@ import GradientSeparator from '@/components/icons/GradientSeparator';
 import HelpIcon from '@/components/icons/HelpIcon';
 import LanguageIcon from '@/components/icons/LanguageIcon';
 import NetworkIcon from '@/components/icons/NetworkIcon';
+import NotificationIcon from '@/components/icons/NotificationIcon';
+import PenIcon from '@/components/icons/PenIcon';
 import SecurityIcon from '@/components/icons/SecurityIcon';
 import WalletIcon from '@/components/icons/WalletIcon';
-import NotificationIcon from '@/components/icons/NotificationIcon';
 import ZapIcon from '@/components/icons/ZapIcon';
-import PenIcon from '@/components/icons/PenIcon';
 import ThemeButton from '@/components/ThemedButton';
 import ThemeInputField from '@/components/ThemedInputField';
 import { ThemedText } from '@/components/ThemedText';
@@ -58,34 +58,8 @@ const UserProfile = () => {
   const [inputValue, setInputValue] = useState('');
 
   return (
-    <View>
+    <ScrollView>
       <View className="flex flex-col gap-2">
-        <View className="flex flex-col gap-2">
-          <ThemedText color={Colors.dark.text.muted} type="subtitle">
-            Profile Name
-          </ThemedText>
-          <ThemeInputField
-            placeholder="john@gmail.com"
-            inputValue={inputValue}
-            onChangeText={setInputValue}
-            LeftIcon={PenIcon}
-            textButton="Edit"
-            disabledButton={true}
-          />
-        </View>
-        <View className="flex flex-col gap-2">
-          <ThemedText color={Colors.dark.text.muted} type="subtitle">
-            Network
-          </ThemedText>
-          <ThemeInputField
-            placeholder="john@gmail.com"
-            inputValue={inputValue}
-            onChangeText={setInputValue}
-            LeftIcon={ChangeIcon}
-            textButton="Edit"
-            disabledButton={true}
-          />
-        </View>
         <View className="flex flex-col gap-2">
           <ThemedText color={Colors.dark.text.muted} type="subtitle">
             Wallet
@@ -96,38 +70,35 @@ const UserProfile = () => {
             onChangeText={setInputValue}
             LeftIcon={CopyIcon}
             textButton="Edit"
-            disabledButton={true}
+            rightButton={true}
           />
         </View>
+        <ThemeButton
+          text="Custom Secondary Button"
+          onPress={() => {}}
+          variant="secondary"
+          LeftIcon={DisconnectIcon}
+        />
+        <GradientSeparator />
+        <View className="flex gap-3">
+          {DUMMY_TRANSACTIONS.map((item, i) => (
+            <SettingCardProfile
+              key={i}
+              type={item.type}
+              date={item.date}
+              LeftIcon={item.icon}
+            />
+          ))}
+        </View>
+
+        <View className="flex flex-col gap-2 justify-center items-center mt-4">
+          <ZapIcon />
+          <ThemedText color={Colors.dark.text.muted} type="subtitle">
+            ZapX v1.0.0
+          </ThemedText>
+        </View>
       </View>
-
-      <ThemeButton
-        text="Custom Secondary Button"
-        onPress={() => {}}
-        variant="secondary"
-        LeftIcon={DisconnectIcon}
-      />
-
-      <GradientSeparator />
-
-      <View className="flex gap-3">
-        {DUMMY_TRANSACTIONS.map((item, i) => (
-          <SettingCardProfile
-            key={i}
-            type={item.type}
-            date={item.date}
-            LeftIcon={item.icon}
-          />
-        ))}
-      </View>
-
-      <View className="flex flex-col gap-2 justify-center items-center mt-4">
-        <ZapIcon />
-        <ThemedText color={Colors.dark.text.muted} type="subtitle">
-          ZapX v1.0.0
-        </ThemedText>
-      </View>
-    </View>
+    </ScrollView>
   );
 };
 

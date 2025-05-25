@@ -3,13 +3,14 @@ import React, { ElementType } from 'react';
 import { TextInput, View } from 'react-native';
 
 import ThemeButton from '@/components/ThemedButton';
+import { Colors } from '@/constants/Colors';
 
 type ThemeInputFieldProps = {
   placeholder?: string;
   inputValue?: string;
   onChangeText?: (text: string) => void;
-  textButton?: string;
-  disabledButton?: boolean;
+  textButton: string;
+  rightButton?: boolean;
   LeftIcon?: ElementType;
 };
 
@@ -18,19 +19,19 @@ const ThemeInputField: React.FC<ThemeInputFieldProps> = ({
   inputValue,
   onChangeText,
   textButton,
-  disabledButton,
+  rightButton,
   LeftIcon,
 }) => {
   return (
-    <View className="flex flex-row justify-between items-center w-full rounded-md">
+    <View className="flex flex-row justify-between items-center w-full rounded-md border border-gray-700">
       <TextInput
-        className="flex-1 px-4 border border-gray-300 text-base"
+        className="flex-1 px-4 text-base"
         placeholder={placeholder}
         value={inputValue}
         onChangeText={onChangeText}
-        placeholderTextColor="#aaa"
+        placeholderTextColor={Colors.dark.text.muted}
       />
-      {disabledButton && (
+      {rightButton && (
         <ThemeButton
           variant="primary"
           onPress={() => {}}
