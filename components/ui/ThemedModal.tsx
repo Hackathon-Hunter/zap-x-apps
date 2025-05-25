@@ -9,6 +9,8 @@ import {
   StatusBar,
 } from 'react-native';
 
+import { ColorPalette } from '@/constants/Colors';
+
 import CloseIcon from '../icons/CloseIcon';
 
 const { height: screenHeight } = Dimensions.get('window');
@@ -85,6 +87,7 @@ const Modal: React.FC<ModalProps> = ({
     <RNModal
       visible={visible}
       transparent
+      backdropColor={ColorPalette.gray[700]}
       animationType="none"
       statusBarTranslucent
       onRequestClose={onClose}
@@ -107,7 +110,7 @@ const Modal: React.FC<ModalProps> = ({
         />
 
         <Animated.View
-          className="w-full bg-gray-950 rounded-2xl"
+          className="w-full bg-black border-gray-700 border rounded-2xl"
           style={{
             maxHeight,
             elevation: 20,
@@ -124,7 +127,7 @@ const Modal: React.FC<ModalProps> = ({
           <View className="relative p-6">
             {showCloseButton && (
               <Pressable
-                className="absolute top-4 right-4 w-8 h-8 bg-gray-900 rounded-2xl justify-center items-center z-10"
+                className="absolute top-4 right-4 w-8 h-8 bg-black rounded-2xl justify-center items-center z-10"
                 onPress={onClose}
               >
                 <CloseIcon />
