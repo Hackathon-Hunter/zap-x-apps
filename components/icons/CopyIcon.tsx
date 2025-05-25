@@ -1,4 +1,5 @@
 import React from 'react';
+
 import Svg, { Path, SvgProps, G, Defs, ClipPath, Rect } from 'react-native-svg';
 
 function CopyIcon(props: SvgProps) {
