@@ -4,6 +4,7 @@ import { View, Alert } from 'react-native';
 
 import { Camera, CameraView } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
+import { useRouter } from 'expo-router';
 
 import CameraPlaceholder from '@/components/ui/CameraPlaceholder';
 import PermissionScreen from '@/components/ui/PermissionScreen';
@@ -15,6 +16,8 @@ const UserScanToPay = () => {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [scanned, setScanned] = useState(false);
   const [isScanning, setIsScanning] = useState(false);
+
+  const router = useRouter();
 
   useEffect(() => {
     getCameraPermissions();
@@ -53,6 +56,19 @@ const UserScanToPay = () => {
 
   const stopScanning = () => {
     setIsScanning(false);
+    try {
+      router.push({
+        pathname: '/(user)/paymentDetailStaticQR',
+        params: {
+          merchant: 'IDRX Money Changer',
+          amount: '100,000',
+          adminFee: '1,000',
+          total: '101,000',
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const pickImageFromGallery = async () => {

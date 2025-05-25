@@ -1,27 +1,60 @@
 import { useEffect, useState } from 'react';
 
-import { Stack, Redirect } from 'expo-router';
+import { View } from 'react-native';
+
+import { useNavigationState } from '@react-navigation/native';
+import { Stack, Redirect, useRouter, useSegments } from 'expo-router';
+
+import ThemedHeader from '@/components/ThemedHeader';
 
 import { getCurrentUser, Role } from '../../constants/auth';
 
 export default function UserLayout() {
-  const [user, setUser] = useState<{ role: Role; name: string } | null>(null);
-  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+  const segments = useSegments();
+  const canGoBack = useNavigationState((state) => state.index > 0);
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      const data = await getCurrentUser();
-      setUser(data);
-      setLoading(false);
-    };
-    fetchUser();
-  }, []);
+  const currentRoute = segments[segments.length - 1];
 
-  if (loading) return null;
+  // const [user, setUser] = useState<{ role: Role; name: string } | null>(null);
+  // const [loading, setLoading] = useState(true);
 
-  if (!user || user.role !== 'user') {
-    return <Redirect href="/(auth)/login" />;
-  }
+  // useEffect(() => {
+  //   const fetchUser = async () => {
+  //     const data = await getCurrentUser();
+  //     setUser(data);
+  //     setLoading(false);
+  //   };
+  //   fetchUser();
+  // }, []);
 
-  return <Stack />;
+  // if (loading) return null;
+
+  // if (!user || user.role !== 'user') {
+  //   return <Redirect href="/(auth)/login" />;
+  // }
+
+  return (
+    <View className="flex-1 px-4">
+      <ThemedHeader
+        currentRoute={currentRoute}
+        router={router}
+        canGoBack={canGoBack}
+      />
+      <Stack>
+        <Stack.Screen
+          name="paymentDetailDynamicQR"
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="paymentDetailStaticQR"
+          options={{
+            headerShown: false,
+          }}
+        />
+      </Stack>
+    </View>
+  );
 }
