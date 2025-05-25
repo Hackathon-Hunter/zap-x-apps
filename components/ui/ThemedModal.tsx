@@ -33,7 +33,7 @@ const Modal: React.FC<ModalProps> = ({
   closeOnBackdropPress = true,
   showCloseButton = true,
   maxHeight = screenHeight * 0.9,
-  title = ''
+  title = '',
 }) => {
   const scaleAnim = useRef(new Animated.Value(0)).current;
   const opacityAnim = useRef(new Animated.Value(0)).current;
@@ -144,9 +144,7 @@ const Modal: React.FC<ModalProps> = ({
                 <CloseIcon />
               </Pressable>
             )}
-            <View className='mt-8'>
-              {children}
-            </View>
+            <View className="mt-8">{children}</View>
           </View>
         </Animated.View>
       </Animated.View>
