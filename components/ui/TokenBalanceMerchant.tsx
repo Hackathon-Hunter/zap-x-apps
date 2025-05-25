@@ -62,13 +62,13 @@ const TokenBalanceMerchant = ({ token = 'BOME', amount = '2,000' }) => {
       <View className="flex flex-row justify-around">
         <ThemeButton
           variant="primary"
-          onPress={() => { }}
+          onPress={() => {}}
           text="Generate QR"
           LeftIcon={QRIcon}
         />
         <ThemeButton
           variant="primary"
-          onPress={() => { }}
+          onPress={() => {}}
           text="Withdraw"
           LeftIcon={WithdawIcon}
         />
