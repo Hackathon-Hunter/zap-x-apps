@@ -39,7 +39,7 @@ const DynamicQRModal: React.FC<PaymentSuccessModalProps> = ({
   visible,
   onClose,
   qrData,
-  onDownloadReceipt = () => { },
+  onDownloadReceipt = () => {},
 }) => {
   const qrRef = useRef<QRCodeRef>(null);
 
