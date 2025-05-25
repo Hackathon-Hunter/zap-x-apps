@@ -58,7 +58,7 @@ const UserScanToPay = () => {
     setIsScanning(false);
     try {
       router.push({
-        pathname: '/(user)/paymentDetailDynamicQR',
+        pathname: '/(user)/paymentDetailStaticQR',
         params: {
           merchant: 'IDRX Money Changer',
           amount: '100,000',
