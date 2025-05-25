@@ -10,6 +10,7 @@ import QRIcon from '../icons/QRIcon';
 import WithdawIcon from '../icons/WithdrawIcon';
 import ThemeButton from '../ThemedButton';
 import { ThemedText } from '../ThemedText';
+import ArrowDownIcon from '../icons/ArrowDownIcon';
 
 function GradientBorderBox() {
   return (
@@ -34,13 +35,16 @@ const TokenBalanceMerchant = ({ token = 'BOME', amount = '2,000' }) => {
     >
       <GradientBorderBox />
       <View className="bg-black py-4 justify-center items-center mx-[0.5px] my-[0.5px]">
-        <ThemedText
-          color={Colors.dark.text.primary}
-          numbersOnly
-          className="text-base font-medium"
-        >
-          {token}
-        </ThemedText>
+        <View className="flex-row items-center">
+          <ThemedText
+            color={Colors.dark.text.secondary}
+            numbersOnly
+            className="text-base font-medium mr-2"
+          >
+            {token} Balance
+          </ThemedText>
+          <ArrowDownIcon />
+        </View>
         <View className="flex flex-row items-end gap-2">
           <ThemedText
             color={Colors.dark.text.secondary}
@@ -62,13 +66,13 @@ const TokenBalanceMerchant = ({ token = 'BOME', amount = '2,000' }) => {
       <View className="flex flex-row justify-around">
         <ThemeButton
           variant="primary"
-          onPress={() => {}}
+          onPress={() => { }}
           text="Generate QR"
           LeftIcon={QRIcon}
         />
         <ThemeButton
           variant="primary"
-          onPress={() => {}}
+          onPress={() => { }}
           text="Withdraw"
           LeftIcon={WithdawIcon}
         />
