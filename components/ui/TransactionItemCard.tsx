@@ -1,8 +1,12 @@
 import React from 'react';
+
 import { View, TouchableOpacity } from 'react-native';
-import { useRouter } from 'expo-router'; 
+
+import { useRouter } from 'expo-router';
+
 import { ColorPalette, Colors } from '@/constants/Colors';
 import { USER_ROLE } from '@/constants/User';
+
 import { ThemedText } from '../ThemedText';
 
 type TransactionItemCardProps = {
@@ -25,7 +29,7 @@ const TransactionItemCard = ({
   const router = useRouter();
 
   const handlePress = () => {
-    router.push('/(user)/transactionDetail'); 
+    router.push('/(user)/transactionDetail');
   };
 
   return (

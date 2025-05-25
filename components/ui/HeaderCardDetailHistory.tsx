@@ -1,5 +1,7 @@
 import React from 'react';
+
 import { View } from 'react-native';
+
 import Svg, { Defs, RadialGradient, Stop, Rect } from 'react-native-svg';
 
 import { ThemedText } from '@/components/ThemedText';
@@ -22,7 +24,6 @@ export default function HeaderCardDetailHistory({
   currencyColor = Colors.dark.text.muted,
   gradientColors = ['#fff', '#fff'],
 }: HeaderCardDetailHistoryProps) {
-
   function GradientBackground() {
     return (
       <Svg
@@ -41,12 +42,36 @@ export default function HeaderCardDetailHistory({
             gradientUnits="userSpaceOnUse"
           >
             <Stop offset="0%" stopColor={gradientColors[0]} stopOpacity={0.2} />
-            <Stop offset="30%" stopColor={gradientColors[0]} stopOpacity={0.15} />
-            <Stop offset="50%" stopColor={gradientColors[0]} stopOpacity={0.12} />
-            <Stop offset="80%" stopColor={gradientColors[0]} stopOpacity={0.06} />
-            <Stop offset="85%" stopColor={gradientColors[0]} stopOpacity={0.02} />
-            <Stop offset="90%" stopColor={gradientColors[0]} stopOpacity={0.01} />
-            <Stop offset="95%" stopColor={gradientColors[0]} stopOpacity={0.005} />
+            <Stop
+              offset="30%"
+              stopColor={gradientColors[0]}
+              stopOpacity={0.15}
+            />
+            <Stop
+              offset="50%"
+              stopColor={gradientColors[0]}
+              stopOpacity={0.12}
+            />
+            <Stop
+              offset="80%"
+              stopColor={gradientColors[0]}
+              stopOpacity={0.06}
+            />
+            <Stop
+              offset="85%"
+              stopColor={gradientColors[0]}
+              stopOpacity={0.02}
+            />
+            <Stop
+              offset="90%"
+              stopColor={gradientColors[0]}
+              stopOpacity={0.01}
+            />
+            <Stop
+              offset="95%"
+              stopColor={gradientColors[0]}
+              stopOpacity={0.005}
+            />
             <Stop offset="100%" stopColor={gradientColors[1]} stopOpacity={0} />
           </RadialGradient>
         </Defs>
@@ -73,7 +98,7 @@ export default function HeaderCardDetailHistory({
           className="text-4xl font-medium"
           style={{
             textShadowColor: Colors.dark.text.accent,
-            textShadowRadius: 10
+            textShadowRadius: 10,
           }}
         >
           {amount}
@@ -91,4 +116,3 @@ export default function HeaderCardDetailHistory({
     </View>
   );
 }
-
