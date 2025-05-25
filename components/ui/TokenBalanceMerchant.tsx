@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
+
 import { View, StyleSheet, Pressable, ScrollView } from 'react-native';
+
 import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
+
 import { Colors } from '@/constants/Colors';
+
 import ArrowDownIcon from '../icons/ArrowDownIcon';
 import QRIcon from '../icons/QRIcon';
 import WithdawIcon from '../icons/WithdrawIcon';
@@ -26,7 +30,7 @@ function GradientBorderBox() {
 const TokenBalanceMerchant = ({
   token = 'BOME',
   amount = '2,000',
-  onTokenChange // Optional callback to parent component
+  onTokenChange, // Optional callback to parent component
 }: {
   token?: string;
   amount?: string;
@@ -92,13 +96,13 @@ const TokenBalanceMerchant = ({
       <View className="flex flex-row justify-around">
         <ThemeButton
           variant="primary"
-          onPress={() => { }}
+          onPress={() => {}}
           text="Generate QR"
           LeftIcon={QRIcon}
         />
         <ThemeButton
           variant="primary"
-          onPress={() => { }}
+          onPress={() => {}}
           text="Withdraw"
           LeftIcon={WithdawIcon}
         />
