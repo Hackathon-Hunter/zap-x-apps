@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import {
   View,
@@ -6,14 +6,20 @@ import {
   Pressable,
   TextInput,
   ScrollView,
+  Platform,
+  PermissionsAndroid,
+  ToastAndroid,
 } from 'react-native';
 
+import { CameraRoll } from '@react-native-camera-roll/camera-roll';
+import * as RNFS from 'react-native-fs';
 import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
 
 import QRIcon from '@/components/icons/QRIcon';
 import WalletIcon from '@/components/icons/WalletIcon';
 import ThemeButton from '@/components/ThemedButton';
 import { ThemedText } from '@/components/ThemedText';
+import DynamicQRModal from '@/components/ui/DynamicQRModal';
 import FilterDropdown from '@/components/ui/FilterDropdown';
 import { Colors } from '@/constants/Colors';
 
@@ -36,8 +42,11 @@ function GradientBorderBox() {
 
 const GenerateQRForm = () => {
   const [amount, setAmount] = useState('');
+  const svgRef = useRef<any>(null);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [selectedCurrency, setSelectedCurrency] = useState('IDR');
+  const [isQRModalVisible, setQRModalVisible] = useState(false);
+  const [hasStoragePermission, setHasStoragePermission] = useState(false);
 
   const options = ['IDR', 'USD'];
 
@@ -46,6 +55,83 @@ const GenerateQRForm = () => {
   const handleSelectOption = (option: string) => {
     setSelectedCurrency(option);
     setIsDropdownVisible(false);
+  };
+
+  useEffect(() => {
+    const requestPermissions = async () => {
+      if (Platform.OS === 'android') {
+        try {
+          await requestAndroidPermission();
+        } catch (error) {
+          console.log('Permission request error:', error);
+        }
+      }
+    };
+
+    requestPermissions();
+  }, []);
+
+  const requestAndroidPermission = async () => {
+    if (Platform.OS !== 'android') return true;
+
+    try {
+      // For Android 13+ (API 33+)
+      if (Platform.Version >= 33) {
+        const readMediaImages = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES
+        );
+        const readMediaVideo = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.READ_MEDIA_VIDEO
+        );
+        return (
+          readMediaImages === PermissionsAndroid.RESULTS.GRANTED &&
+          readMediaVideo === PermissionsAndroid.RESULTS.GRANTED
+        );
+      }
+      // For Android <13 (legacy)
+      else {
+        const writePermission = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE
+        );
+        const readPermission = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE
+        );
+        return (
+          writePermission === PermissionsAndroid.RESULTS.GRANTED &&
+          readPermission === PermissionsAndroid.RESULTS.GRANTED
+        );
+      }
+    } catch (err) {
+      console.error('Permission error:', err);
+      return false;
+    }
+  };
+
+  const saveQrToDisk = async () => {
+    try {
+      const hasPermission = await requestAndroidPermission();
+      if (!hasPermission) {
+        ToastAndroid.show('Permission denied!', ToastAndroid.SHORT);
+        return;
+      }
+
+      if (svgRef.current) {
+        svgRef.current.toDataURL(async (data: string) => {
+          try {
+            const filePath = `${RNFS.CachesDirectoryPath}/my-qr-code.png`;
+            await RNFS.writeFile(filePath, data, 'base64');
+            await CameraRoll.save(filePath, { type: 'photo' });
+            ToastAndroid.show('Saved to gallery!', ToastAndroid.SHORT);
+          } catch (error) {
+            console.log('Save failed', error);
+          }
+        });
+      } else {
+        console.warn('QR Code ref is not available yet.');
+      }
+    } catch (error) {
+      console.log('Save error:', error);
+    }
   };
 
   return (
@@ -131,7 +217,7 @@ const GenerateQRForm = () => {
         {/* Generate QR Button */}
         <ThemeButton
           variant="primary"
-          onPress={() => {}}
+          onPress={() => setQRModalVisible(true)}
           text="Generate QR"
           RightIcon={QRIcon}
         />
@@ -180,6 +266,19 @@ const GenerateQRForm = () => {
           </ScrollView>
         </View>
       )}
+      <DynamicQRModal
+        visible={isQRModalVisible}
+        onClose={() => setQRModalVisible(false)}
+        qrData={{
+          url: 'https://www.npmjs.com/package/react-native-qrcode-svg',
+          ammount: '5,000',
+        }}
+        onViewTransactionHistory={() => {}}
+        onShareReceipt={() => {}}
+        onDownloadReceipt={() => {
+          saveQrToDisk();
+        }}
+      />
     </ScrollView>
   );
 };
