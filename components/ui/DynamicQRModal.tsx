@@ -18,6 +18,7 @@ import DownloadFileIcon from '../icons/DownloadIcon';
 import ShareIcon from '../icons/ShareIcon';
 import ThemeButton from '../ThemedButton';
 import { ThemedText } from '../ThemedText';
+import GradientSeparator from '../icons/GradientSeparator';
 
 interface PaymentSuccessModalProps {
   visible: boolean;
@@ -26,7 +27,6 @@ interface PaymentSuccessModalProps {
     url: string;
     ammount: string;
   };
-  onShareReceipt?: () => void;
   onDownloadReceipt?: () => void;
 }
 
@@ -38,21 +38,11 @@ const DynamicQRModal: React.FC<PaymentSuccessModalProps> = ({
   visible,
   onClose,
   qrData,
-  onShareReceipt,
-  onDownloadReceipt,
-}: {
-  visible: boolean;
-  onClose: () => void;
-  qrData: {
-    url: string;
-    ammount: string;
-  };
-  onShareReceipt: () => void;
-  onDownloadReceipt: () => void;
+  onDownloadReceipt = () => { },
 }) => {
   const qrRef = useRef<QRCodeRef>(null);
 
-  const onShareReceiptt = async () => {
+  const shareReceipt = async () => {
     if (!qrRef.current) {
       ToastAndroid.show('QR Code not generated yet!', ToastAndroid.SHORT);
       return;
@@ -119,15 +109,19 @@ const DynamicQRModal: React.FC<PaymentSuccessModalProps> = ({
         <View className="flex flex-row items-end gap-2 mt-4">
           <ThemeButton
             variant="primary"
-            onPress={onShareReceiptt}
+            onPress={shareReceipt}
             text="Share"
             LeftIcon={ShareIcon}
           />
         </View>
         <View className="flex-row justify-center items-center py-4 bg-black">
-          <ThemedText color={Colors.dark.text.primary}>─────────</ThemedText>
+          <View className="flex-1 max-w-[100px] mx-2">
+            <GradientSeparator />
+          </View>
           <ThemedText color={Colors.dark.text.primary}> OR </ThemedText>
-          <ThemedText color={Colors.dark.text.primary}>─────────</ThemedText>
+          <View className="flex-1 max-w-[100px] mx-2">
+            <GradientSeparator />
+          </View>
         </View>
         <TouchableOpacity
           onPress={onDownloadReceipt}

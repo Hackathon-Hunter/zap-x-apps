@@ -22,6 +22,7 @@ import { ThemedText } from '@/components/ThemedText';
 import DynamicQRModal from '@/components/ui/DynamicQRModal';
 import FilterDropdown from '@/components/ui/FilterDropdown';
 import { Colors } from '@/constants/Colors';
+import GradientSeparator from '@/components/icons/GradientSeparator';
 
 const DEFAULT_CURRENCY_OPTIONS = ['IDR', 'USD'];
 
@@ -157,9 +158,9 @@ const GenerateQRForm = () => {
               <FilterDropdown
                 selectedValue={DEFAULT_CURRENCY_OPTIONS[0]}
                 options={DEFAULT_CURRENCY_OPTIONS}
-                onSelect={() => {}}
+                onSelect={() => { }}
                 isOpen={false}
-                onToggle={() => {}}
+                onToggle={() => { }}
                 LeftIcon={WalletIcon}
               />
             </View>
@@ -225,9 +226,13 @@ const GenerateQRForm = () => {
 
       {/* OR Separator */}
       <View className="flex-row justify-center items-center py-4 bg-black">
-        <ThemedText color={Colors.dark.text.primary}>─────────</ThemedText>
+        <View className="flex-1 max-w-[100px] mx-2">
+          <GradientSeparator />
+        </View>
         <ThemedText color={Colors.dark.text.primary}> OR </ThemedText>
-        <ThemedText color={Colors.dark.text.primary}>─────────</ThemedText>
+        <View className="flex-1 max-w-[100px] mx-2">
+          <GradientSeparator />
+        </View>
       </View>
 
       {/* Generate Static QR */}
@@ -235,7 +240,7 @@ const GenerateQRForm = () => {
       <View className="bg-black">
         <ThemeButton
           variant="primary"
-          onPress={() => {}}
+          onPress={() => { }}
           text="Generate Static QR"
           LeftIcon={QRIcon}
         />
@@ -273,8 +278,6 @@ const GenerateQRForm = () => {
           url: 'https://www.npmjs.com/package/react-native-qrcode-svg',
           ammount: '5,000',
         }}
-        onViewTransactionHistory={() => {}}
-        onShareReceipt={() => {}}
         onDownloadReceipt={() => {
           saveQrToDisk();
         }}
