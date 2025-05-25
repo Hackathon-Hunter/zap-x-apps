@@ -22,7 +22,7 @@ const ThemeInputField: React.FC<ThemeInputFieldProps> = ({
   textButton,
   rightButton,
   LeftIcon,
-  readOnly
+  readOnly,
 }) => {
   return (
     <View className="flex flex-row justify-between items-center w-full rounded-md border border-gray-700">
