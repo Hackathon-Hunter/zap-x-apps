@@ -6,11 +6,11 @@ import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
 
 import { Colors } from '@/constants/Colors';
 
+import ArrowDownIcon from '../icons/ArrowDownIcon';
 import QRIcon from '../icons/QRIcon';
 import WithdawIcon from '../icons/WithdrawIcon';
 import ThemeButton from '../ThemedButton';
 import { ThemedText } from '../ThemedText';
-import ArrowDownIcon from '../icons/ArrowDownIcon';
 
 function GradientBorderBox() {
   return (
@@ -66,13 +66,13 @@ const TokenBalanceMerchant = ({ token = 'BOME', amount = '2,000' }) => {
       <View className="flex flex-row justify-around">
         <ThemeButton
           variant="primary"
-          onPress={() => { }}
+          onPress={() => {}}
           text="Generate QR"
           LeftIcon={QRIcon}
         />
         <ThemeButton
           variant="primary"
-          onPress={() => { }}
+          onPress={() => {}}
           text="Withdraw"
           LeftIcon={WithdawIcon}
         />
