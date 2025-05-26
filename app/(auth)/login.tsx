@@ -31,12 +31,6 @@ export default function LoginScreen() {
   } = useWalletConnectModal();
   const address = wcAddress as Address | undefined;
 
-  useEffect(() => {
-    if (isConnected) {
-      router.push('/(auth)/successUser');
-    }
-  }, [isConnected]);
-
   const handleLoginUser = () => {
     if (isConnected) {
       provider?.disconnect();
@@ -64,7 +58,7 @@ export default function LoginScreen() {
         </ThemedText>
         <ThemedText
           color={Colors.dark.text.primary}
-          className="text-base font-medium mt-1"
+          className="text-base font-medium mt-1 text-center"
         >
           Lorem ipsum sit dolor amet. {address}
         </ThemedText>
