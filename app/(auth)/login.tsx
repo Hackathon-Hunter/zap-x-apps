@@ -27,9 +27,7 @@ export default function LoginScreen() {
     open,
     isConnected,
     provider,
-    address: wcAddress,
   } = useWalletConnectModal();
-  const address = wcAddress as Address | undefined;
 
   useEffect(() => {
     if (isConnected) {
@@ -66,7 +64,7 @@ export default function LoginScreen() {
           color={Colors.dark.text.primary}
           className="text-base font-medium mt-1 text-center"
         >
-          Lorem ipsum sit dolor amet. {address}
+          Lorem ipsum sit dolor amet.
         </ThemedText>
       </View>
 
