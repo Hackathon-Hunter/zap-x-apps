@@ -54,6 +54,12 @@ export default function UserLayout() {
             headerShown: false,
           }}
         />
+        <Stack.Screen
+          name="transactionDetail"
+          options={{
+            headerShown: false,
+          }}
+        />
       </Stack>
     </View>
   );

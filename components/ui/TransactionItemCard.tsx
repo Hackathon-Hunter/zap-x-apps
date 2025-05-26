@@ -1,6 +1,8 @@
 import React from 'react';
 
-import { View } from 'react-native';
+import { View, TouchableOpacity } from 'react-native';
+
+import { useRouter } from 'expo-router';
 
 import { ColorPalette, Colors } from '@/constants/Colors';
 import { USER_ROLE } from '@/constants/User';
@@ -24,49 +26,57 @@ const TransactionItemCard = ({
   amountColor = ColorPalette.green.DEFAULT,
   role = USER_ROLE.USER,
 }: TransactionItemCardProps) => {
+  const router = useRouter();
+
+  const handlePress = () => {
+    router.push('/(user)/transactionDetail');
+  };
+
   return (
-    <View className="border-gray-700 border-[1px] bg-gray-900 p-3 gap-3 rounded-md">
-      <View className="flex flex-row justify-between">
-        {role === USER_ROLE.MERCHANT ? (
-          <ThemedText
-            color={Colors.dark.text.primary}
-            numbersOnly
-            className="text-xs"
-          >
-            {type}
-          </ThemedText>
-        ) : (
+    <TouchableOpacity onPress={handlePress}>
+      <View className="border-gray-700 border-[1px] bg-gray-900 p-3 gap-3 rounded-md">
+        <View className="flex flex-row justify-between">
+          {role === USER_ROLE.MERCHANT ? (
+            <ThemedText
+              color={Colors.dark.text.primary}
+              numbersOnly
+              className="text-xs"
+            >
+              {type}
+            </ThemedText>
+          ) : (
+            <ThemedText
+              color={Colors.dark.text.secondary}
+              numbersOnly
+              className="text-xs"
+            >
+              {type}
+            </ThemedText>
+          )}
           <ThemedText
             color={Colors.dark.text.secondary}
             numbersOnly
             className="text-xs"
           >
-            {type}
+            {date}
           </ThemedText>
-        )}
-        <ThemedText
-          color={Colors.dark.text.secondary}
-          numbersOnly
-          className="text-xs"
-        >
-          {date}
-        </ThemedText>
-      </View>
+        </View>
 
-      <View className="flex flex-row justify-between">
-        <ThemedText
-          color={Colors.dark.text.secondary}
-          numbersOnly
-          className="text-xs"
-        >
-          {pair}
-        </ThemedText>
+        <View className="flex flex-row justify-between">
+          <ThemedText
+            color={Colors.dark.text.secondary}
+            numbersOnly
+            className="text-xs"
+          >
+            {pair}
+          </ThemedText>
 
-        <ThemedText color={amountColor} numbersOnly className="text-sm">
-          {amount}
-        </ThemedText>
+          <ThemedText color={amountColor} numbersOnly className="text-sm">
+            {amount}
+          </ThemedText>
+        </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
