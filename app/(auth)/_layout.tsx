@@ -4,7 +4,7 @@ import { Stack } from 'expo-router';
 
 export default function AuthLayout() {
   return (
-    <View className="flex-1 px-4">
+    <View className="h-screen">
       <Stack>
         <Stack.Screen
           name="login"

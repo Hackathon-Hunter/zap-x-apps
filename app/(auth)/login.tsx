@@ -1,13 +1,16 @@
 // Import polyfills FIRST, before any other imports
 import './../../polyfills';
 
+import { useEffect, useCallback, useRef, useState } from 'react';
+
 import { Image, View, Alert } from 'react-native';
+
 import {
   useWalletConnectModal,
   WalletConnectModal,
 } from '@walletconnect/modal-react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter, useFocusEffect } from 'expo-router';
-import { useEffect, useCallback, useRef, useState } from 'react';
 
 import GradientSeparator from '@/components/icons/GradientSeparator';
 import MerchantIcon from '@/components/icons/MerchantIcon';
@@ -17,15 +20,12 @@ import ThemeButton from '@/components/ThemedButton';
 import { ThemedText } from '@/components/ThemedText';
 import { Colors } from '@/constants/Colors';
 import { projectId, providerMetadata } from '@/constants/ConnectWallet';
-import { styles } from './style';
+
+import './../../polyfills';
 
 export default function LoginScreen() {
   const router = useRouter();
-  const {
-    open,
-    isConnected,
-    provider,
-  } = useWalletConnectModal();
+  const { open, isConnected, provider } = useWalletConnectModal();
 
   // Simple state management
   const [isConnecting, setIsConnecting] = useState(false);
@@ -54,7 +54,11 @@ export default function LoginScreen() {
 
   // Direct navigation effect - this is the key fix
   useEffect(() => {
-    console.log('Connection state:', { isConnected, hasNavigated, isConnecting });
+    console.log('Connection state:', {
+      isConnected,
+      hasNavigated,
+      isConnecting,
+    });
 
     if (isConnected && !hasNavigated && !isConnecting) {
       console.log('Wallet connected, navigating to success page');
@@ -105,7 +109,6 @@ export default function LoginScreen() {
           setIsConnecting(false);
           setHasNavigated(false);
         }, 1000);
-
       } else {
         // Connect wallet
         console.log('Opening wallet modal...');
@@ -130,10 +133,10 @@ export default function LoginScreen() {
 
   // Get button text
   const getButtonText = () => {
-    if (isConnecting && isConnected) return "Disconnecting...";
-    if (isConnecting && !isConnected) return "Connecting...";
-    if (isConnected) return "Disconnect Wallet";
-    return "Continue as User";
+    if (isConnecting && isConnected) return 'Disconnecting...';
+    if (isConnecting && !isConnected) return 'Connecting...';
+    if (isConnected) return 'Disconnect Wallet';
+    return 'Continue as User';
   };
 
   // Manual reset for debugging
@@ -151,12 +154,14 @@ export default function LoginScreen() {
     <View className="flex-1 justify-center bg-black">
       <Image
         source={require('@/assets/images/bg-image.png')}
-        style={styles.imageBackground}
         resizeMode="cover"
+        className="absolute top-0 right-0 left-0 h-1/2"
       />
-      <View style={styles.overlayBackground} />
-
-      {/* Logo Section */}
+      <LinearGradient
+        colors={['rgba(0,0,0,0.3)', 'rgba(0,0,0,1)', 'rgba(0,0,0,1)']}
+        locations={[0, 0.5, 1]}
+        className="absolute top-0 right-0 left-0 bottom-0"
+      />
       <View className="items-center mb-6 px-4">
         <ZapIcon width={40} height={40} fillColor={Colors.dark.text.primary} />
         <ThemedText
@@ -199,7 +204,9 @@ export default function LoginScreen() {
         <View className="flex flex-row items-end gap-2 mt-4">
           <ThemeButton
             variant="primary"
-            onPress={() => { /* Handle merchant login */ }}
+            onPress={() => {
+              /* Handle merchant login */
+            }}
             text="Continue as Merchant"
             LeftIcon={MerchantIcon}
           />
