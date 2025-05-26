@@ -9,9 +9,10 @@ import {
   StatusBar,
 } from 'react-native';
 
-import { ColorPalette } from '@/constants/Colors';
+import { ColorPalette, Colors } from '@/constants/Colors';
 
 import CloseIcon from '../icons/CloseIcon';
+import { ThemedText } from '../ThemedText';
 
 const { height: screenHeight } = Dimensions.get('window');
 
@@ -22,6 +23,7 @@ interface ModalProps {
   closeOnBackdropPress?: boolean;
   showCloseButton?: boolean;
   maxHeight?: number;
+  title?: string;
 }
 
 const Modal: React.FC<ModalProps> = ({
@@ -31,6 +33,7 @@ const Modal: React.FC<ModalProps> = ({
   closeOnBackdropPress = true,
   showCloseButton = true,
   maxHeight = screenHeight * 0.9,
+  title = '',
 }) => {
   const scaleAnim = useRef(new Animated.Value(0)).current;
   const opacityAnim = useRef(new Animated.Value(0)).current;
@@ -125,6 +128,14 @@ const Modal: React.FC<ModalProps> = ({
           }}
         >
           <View className="relative p-6">
+            {title && (
+              <ThemedText
+                color={Colors.dark.text.primary}
+                className="text-xl font-medium text-center mb-6 absolute top-4 left-4"
+              >
+                {title}
+              </ThemedText>
+            )}
             {showCloseButton && (
               <Pressable
                 className="absolute top-4 right-4 w-8 h-8 bg-black rounded-2xl justify-center items-center z-10"
@@ -133,7 +144,7 @@ const Modal: React.FC<ModalProps> = ({
                 <CloseIcon />
               </Pressable>
             )}
-            {children}
+            <View className="mt-8">{children}</View>
           </View>
         </Animated.View>
       </Animated.View>

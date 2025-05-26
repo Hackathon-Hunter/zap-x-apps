@@ -22,6 +22,7 @@ type ButtonProps = {
   variant?: ButtonVariant;
   disabled?: boolean;
   LeftIcon?: ElementType;
+  RightIcon?: ElementType;
 };
 
 const ThemeButton: React.FC<ButtonProps> = ({
@@ -30,6 +31,7 @@ const ThemeButton: React.FC<ButtonProps> = ({
   variant = 'primary',
   disabled = false,
   LeftIcon,
+  RightIcon,
 }) => {
   function GradientBackground() {
     return (
@@ -98,6 +100,13 @@ const ThemeButton: React.FC<ButtonProps> = ({
             >
               {text}
             </ThemedText>
+            {RightIcon && (
+              <RightIcon
+                color={Colors.dark.text.primary}
+                height={24}
+                width={24}
+              />
+            )}
           </View>
         </View>
       </View>
