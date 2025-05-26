@@ -1,13 +1,16 @@
-import { useEffect, useState } from 'react';
+// Import polyfills FIRST, before any other imports
+import './../../polyfills';
 
-import { Image, View } from 'react-native';
+import { useEffect, useCallback, useRef, useState } from 'react';
+
+import { Image, View, Alert } from 'react-native';
 
 import {
   useWalletConnectModal,
   WalletConnectModal,
 } from '@walletconnect/modal-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useRouter } from 'expo-router';
+import { useRouter, useFocusEffect } from 'expo-router';
 
 import GradientSeparator from '@/components/icons/GradientSeparator';
 import MerchantIcon from '@/components/icons/MerchantIcon';
@@ -26,19 +29,128 @@ export default function LoginScreen() {
   const { open, isConnected, provider } = useWalletConnectModal();
   const [isRegisterModalVisible, setRegisterModalVisible] = useState(false);
 
-  useEffect(() => {
-    if (isConnected) {
-      router.push('/(auth)/successUser');
-    }
-  }, [isConnected, router]);
+  // Simple state management
+  const [isConnecting, setIsConnecting] = useState(false);
+  const [hasNavigated, setHasNavigated] = useState(false);
+  const timeoutRef = useRef<any>(null);
 
-  const handleLoginUser = () => {
-    if (isConnected) {
-      provider?.disconnect();
-    } else {
-      open();
+  // Reset state when screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      console.log('Login screen focused');
+      setIsConnecting(false);
+      setHasNavigated(false);
+
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+
+      return () => {
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current);
+        }
+      };
+    }, [])
+  );
+
+  // Direct navigation effect - this is the key fix
+  useEffect(() => {
+    console.log('Connection state:', {
+      isConnected,
+      hasNavigated,
+      isConnecting,
+    });
+
+    if (isConnected && !hasNavigated && !isConnecting) {
+      console.log('Wallet connected, navigating to success page');
+      setHasNavigated(true);
+
+      // Navigate immediately
+      setTimeout(() => {
+        console.log('Executing navigation');
+        router.replace('/(auth)/successUser');
+      }, 100); // Very short delay just to ensure UI is ready
     }
+  }, [isConnected, hasNavigated, isConnecting, router]);
+
+  // Reset connecting state if it gets stuck
+  useEffect(() => {
+    if (isConnecting) {
+      timeoutRef.current = setTimeout(() => {
+        setIsConnecting(false);
+      }, 5000); // 10 second timeout
+
+      return () => {
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current);
+        }
+      };
+    }
+  }, [isConnecting]);
+
+  // Handle wallet connection/disconnection
+  const handleLoginUser = useCallback(async () => {
+    console.log('Button pressed:', { isConnected, isConnecting });
+
+    if (isConnecting) {
+      console.log('Already connecting, ignoring');
+      return;
+    }
+
+    try {
+      if (isConnected && provider) {
+        // Disconnect wallet
+        console.log('Disconnecting wallet...');
+        setIsConnecting(true);
+
+        await provider.disconnect();
+
+        // Reset states after disconnect
+        setTimeout(() => {
+          setIsConnecting(false);
+          setHasNavigated(false);
+        }, 1000);
+      } else {
+        // Connect wallet
+        console.log('Opening wallet modal...');
+        setIsConnecting(true);
+        setHasNavigated(false);
+
+        try {
+          await open();
+          console.log('Modal opened successfully');
+          // Don't reset isConnecting here - let the connection effect handle it
+        } catch (error) {
+          console.error('Error opening modal:', error);
+          setIsConnecting(false);
+          Alert.alert('Error', 'Failed to open wallet connection');
+        }
+      }
+    } catch (error) {
+      console.error('Error in handleLoginUser:', error);
+      setIsConnecting(false);
+    }
+  }, [isConnected, provider, open, isConnecting]);
+
+  // Get button text
+  const getButtonText = () => {
+    if (isConnecting && isConnected) return 'Disconnecting...';
+    if (isConnecting && !isConnected) return 'Connecting...';
+    if (isConnected) return 'Disconnect Wallet';
+    return 'Continue as User';
   };
+
+  // Manual reset for debugging
+  const resetState = useCallback(() => {
+    console.log('Manual reset triggered');
+    setIsConnecting(false);
+    setHasNavigated(false);
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+  }, []);
 
   return (
     <View className="flex-1 justify-center bg-black">
@@ -68,16 +180,19 @@ export default function LoginScreen() {
         </ThemedText>
       </View>
 
+      {/* Login Buttons */}
       <View className="w-full px-4">
         <View className="flex flex-row items-end gap-2 mt-4">
           <ThemeButton
             variant="primary"
-            onPress={() => handleLoginUser()}
-            text="Continue as User"
+            onPress={handleLoginUser}
+            text={getButtonText()}
             LeftIcon={UserIcon}
+            disabled={isConnecting}
           />
         </View>
 
+        {/* OR Separator */}
         <View className="flex-row justify-center items-center py-4 bg-black">
           <View className="flex-1 max-w-[100px] mx-2">
             <GradientSeparator />
