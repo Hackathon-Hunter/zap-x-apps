@@ -4,7 +4,6 @@ import {
   useWalletConnectModal,
   WalletConnectModal,
 } from '@walletconnect/modal-react-native';
-import { useRouter } from 'expo-router';
 import { Address } from 'viem';
 
 import GradientSeparator from '@/components/icons/GradientSeparator';
@@ -19,10 +18,8 @@ import { projectId, providerMetadata } from '@/constants/ConnectWallet';
 import { styles } from './style';
 
 import './../../polyfills';
-import { useEffect } from 'react';
 
 export default function LoginScreen() {
-  const router = useRouter();
   const {
     open,
     isConnected,
@@ -42,7 +39,7 @@ export default function LoginScreen() {
   return (
     <View className="flex-1 justify-center bg-black">
       <Image
-        source={require('@/assets/images/bg-image.png')} // 👈 Replace with your image path
+        source={require('@/assets/images/bg-image.png')}
         style={styles.imageBackground}
         resizeMode="cover"
       />
@@ -89,7 +86,7 @@ export default function LoginScreen() {
         <View className="flex flex-row items-end gap-2 mt-4">
           <ThemeButton
             variant="primary"
-            onPress={() => {}}
+            onPress={() => { }}
             text="Continue as Merchant"
             LeftIcon={MerchantIcon}
           />
