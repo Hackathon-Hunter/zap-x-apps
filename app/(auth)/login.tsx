@@ -86,7 +86,7 @@ export default function LoginScreen() {
         <View className="flex flex-row items-end gap-2 mt-4">
           <ThemeButton
             variant="primary"
-            onPress={() => { }}
+            onPress={() => {}}
             text="Continue as Merchant"
             LeftIcon={MerchantIcon}
           />
