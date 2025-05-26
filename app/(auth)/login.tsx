@@ -1,11 +1,13 @@
+import { useEffect } from 'react';
+
 import { Image, View } from 'react-native';
 
 import {
   useWalletConnectModal,
   WalletConnectModal,
 } from '@walletconnect/modal-react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import { Address } from 'viem';
 
 import GradientSeparator from '@/components/icons/GradientSeparator';
 import MerchantIcon from '@/components/icons/MerchantIcon';
@@ -16,18 +18,11 @@ import { ThemedText } from '@/components/ThemedText';
 import { Colors } from '@/constants/Colors';
 import { projectId, providerMetadata } from '@/constants/ConnectWallet';
 
-import { styles } from './style';
-
 import './../../polyfills';
-import { useEffect } from 'react';
 
 export default function LoginScreen() {
   const router = useRouter();
-  const {
-    open,
-    isConnected,
-    provider,
-  } = useWalletConnectModal();
+  const { open, isConnected, provider } = useWalletConnectModal();
 
   useEffect(() => {
     if (isConnected) {
@@ -47,11 +42,14 @@ export default function LoginScreen() {
     <View className="flex-1 justify-center bg-black">
       <Image
         source={require('@/assets/images/bg-image.png')}
-        style={styles.imageBackground}
         resizeMode="cover"
+        className="absolute top-0 right-0 left-0 h-1/2"
       />
-      <View style={styles.overlayBackground} />
-      {/* Logo Section - Tightly Spaced */}
+      <LinearGradient
+        colors={['rgba(0,0,0,0.3)', 'rgba(0,0,0,1)', 'rgba(0,0,0,1)']}
+        locations={[0, 0.5, 1]}
+        className="absolute top-0 right-0 left-0 bottom-0"
+      />
       <View className="items-center mb-6 px-4">
         <ZapIcon width={40} height={40} fillColor={Colors.dark.text.primary} />
         <ThemedText
@@ -68,7 +66,6 @@ export default function LoginScreen() {
         </ThemedText>
       </View>
 
-      {/* Login Buttons - Compact */}
       <View className="w-full px-4">
         <View className="flex flex-row items-end gap-2 mt-4">
           <ThemeButton
@@ -79,7 +76,6 @@ export default function LoginScreen() {
           />
         </View>
 
-        {/* OR Separator - Compact */}
         <View className="flex-row justify-center items-center py-4 bg-black">
           <View className="flex-1 max-w-[100px] mx-2">
             <GradientSeparator />
@@ -93,7 +89,7 @@ export default function LoginScreen() {
         <View className="flex flex-row items-end gap-2 mt-4">
           <ThemeButton
             variant="primary"
-            onPress={() => { }}
+            onPress={() => {}}
             text="Continue as Merchant"
             LeftIcon={MerchantIcon}
           />
