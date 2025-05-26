@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Image, View } from 'react-native';
 
@@ -15,6 +15,7 @@ import UserIcon from '@/components/icons/UserIcon';
 import ZapIcon from '@/components/icons/ZapIcon';
 import ThemeButton from '@/components/ThemedButton';
 import { ThemedText } from '@/components/ThemedText';
+import RegisterModal from '@/components/ui/RegisterModal';
 import { Colors } from '@/constants/Colors';
 import { projectId, providerMetadata } from '@/constants/ConnectWallet';
 
@@ -23,6 +24,7 @@ import './../../polyfills';
 export default function LoginScreen() {
   const router = useRouter();
   const { open, isConnected, provider } = useWalletConnectModal();
+  const [isRegisterModalVisible, setRegisterModalVisible] = useState(false);
 
   useEffect(() => {
     if (isConnected) {
@@ -89,7 +91,7 @@ export default function LoginScreen() {
         <View className="flex flex-row items-end gap-2 mt-4">
           <ThemeButton
             variant="primary"
-            onPress={() => {}}
+            onPress={() => setRegisterModalVisible(true)}
             text="Continue as Merchant"
             LeftIcon={MerchantIcon}
           />
@@ -97,6 +99,10 @@ export default function LoginScreen() {
         <WalletConnectModal
           projectId={projectId ?? 'defaultProjectId'}
           providerMetadata={providerMetadata}
+        />
+        <RegisterModal
+          visible={isRegisterModalVisible}
+          onClose={() => setRegisterModalVisible(false)}
         />
       </View>
     </View>
