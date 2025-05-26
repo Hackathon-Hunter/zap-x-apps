@@ -18,6 +18,7 @@ import UserIcon from '@/components/icons/UserIcon';
 import ZapIcon from '@/components/icons/ZapIcon';
 import ThemeButton from '@/components/ThemedButton';
 import { ThemedText } from '@/components/ThemedText';
+import RegisterModal from '@/components/ui/RegisterModal';
 import { Colors } from '@/constants/Colors';
 import { projectId, providerMetadata } from '@/constants/ConnectWallet';
 
@@ -26,6 +27,7 @@ import './../../polyfills';
 export default function LoginScreen() {
   const router = useRouter();
   const { open, isConnected, provider } = useWalletConnectModal();
+  const [isRegisterModalVisible, setRegisterModalVisible] = useState(false);
 
   // Simple state management
   const [isConnecting, setIsConnecting] = useState(false);
@@ -204,20 +206,20 @@ export default function LoginScreen() {
         <View className="flex flex-row items-end gap-2 mt-4">
           <ThemeButton
             variant="primary"
-            onPress={() => {
-              /* Handle merchant login */
-            }}
+            onPress={() => setRegisterModalVisible(true)}
             text="Continue as Merchant"
             LeftIcon={MerchantIcon}
           />
         </View>
+        <WalletConnectModal
+          projectId={projectId ?? 'defaultProjectId'}
+          providerMetadata={providerMetadata}
+        />
+        <RegisterModal
+          visible={isRegisterModalVisible}
+          onClose={() => setRegisterModalVisible(false)}
+        />
       </View>
-
-      {/* WalletConnect Modal */}
-      <WalletConnectModal
-        projectId={projectId ?? 'defaultProjectId'}
-        providerMetadata={providerMetadata}
-      />
     </View>
   );
 }
