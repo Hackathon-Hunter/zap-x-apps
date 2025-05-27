@@ -24,12 +24,16 @@ const TransactionItemCard = ({
   pair = 'BOME → USD',
   amount = 'USDT 50',
   amountColor = ColorPalette.green.DEFAULT,
-  role = USER_ROLE.USER,
+  role,
 }: TransactionItemCardProps) => {
   const router = useRouter();
 
   const handlePress = () => {
-    router.push('/(user)/transactionDetail');
+    const path = role === USER_ROLE.MERCHANT
+      ? '/(merchant)/transactionDetails'
+      : '/(user)/transactionDetail';
+
+    router.push(path);
   };
 
   return (
