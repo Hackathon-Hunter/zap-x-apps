@@ -166,7 +166,11 @@ const UserTransactionHistory: React.FC = () => {
         className="flex-1 gap-5 flex flex-col"
         showsVerticalScrollIndicator={false}
       >
-        <TransactionFilters filters={filters} onFiltersChange={setFilters} showStatus={true} />
+        <TransactionFilters
+          filters={filters}
+          onFiltersChange={setFilters}
+          showStatus={true}
+        />
 
         <View className="pb-6">
           {filteredTransactions.length > 0 ? (

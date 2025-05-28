@@ -56,6 +56,10 @@ export default function SuccessUser() {
     }, [])
   );
 
+  const navigateToHomePage = () => {
+    router.replace('/(tabs)');
+  };
+
   // Handle disconnect with proper cleanup
   const disconnectWallet = useCallback(async () => {
     if (isDisconnectingRef.current || isNavigatingRef.current) {
@@ -317,6 +321,13 @@ export default function SuccessUser() {
                 ? 'Disconnecting...'
                 : 'Go to Dashboard'
             }
+            LeftIcon={HomeIcon}
+            disabled={isDisconnectingRef.current}
+          />
+          <ThemeButton
+            variant="primary"
+            onPress={navigateToHomePage}
+            text={'Go to Dashboard Asli Iki'}
             LeftIcon={HomeIcon}
             disabled={isDisconnectingRef.current}
           />

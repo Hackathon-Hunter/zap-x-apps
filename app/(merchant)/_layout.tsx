@@ -6,6 +6,7 @@ import { useNavigationState } from '@react-navigation/native';
 import { Stack, Redirect, useRouter, useSegments } from 'expo-router';
 
 import ThemedHeader from '@/components/ThemedHeader';
+
 import { getCurrentUser, Role } from '../../constants/auth';
 
 export default function MerchantLayout() {

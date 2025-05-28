@@ -20,9 +20,13 @@ const ThemedHeader = ({
   currentRoute,
   router,
 }: ThemedHeaderProps) => {
+  const checkRouter =
+    currentRoute?.toLowerCase().includes('home') ||
+    currentRoute?.toLowerCase().includes('tabs');
+
   const renderNormal = () => (
     <View className="justify-center items-center">
-      {currentRoute?.toLowerCase().includes('home') ? (
+      {checkRouter ? (
         <Logo />
       ) : (
         <Text className="color-white text-xl font-medium">

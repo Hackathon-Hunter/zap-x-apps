@@ -79,18 +79,20 @@ export default function TabLayout() {
   );
 
   return (
-    <View className="flex-1 px-4">
-      <ThemedHeader
-        currentRoute={currentRoute}
-        router={router}
-        canGoBack={canGoBack}
-      />
+    <View className="flex-1 bg-black">
+      <View className="px-4 flex-1">
+        <ThemedHeader
+          currentRoute={currentRoute}
+          router={router}
+          canGoBack={canGoBack}
+        />
 
-      {/* Merchant Tabs */}
-      {role === USER_ROLE.MERCHANT && renderMerchantTabs()}
+        {/* Merchant Tabs */}
+        {role === USER_ROLE.MERCHANT && renderMerchantTabs()}
 
-      {/* User */}
-      {role === USER_ROLE.USER && renderUserTabs()}
+        {/* User */}
+        {role === USER_ROLE.USER && renderUserTabs()}
+      </View>
     </View>
   );
 }
