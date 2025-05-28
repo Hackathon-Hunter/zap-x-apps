@@ -1,16 +1,16 @@
-interface StaticQRData {
+export interface StaticQRData {
   type: 'static';
   merchant: string;
-  stableCoin: string;
+  currency: string;
   amount?: string;
   adminFee?: string;
   total?: string;
 }
 
-interface DynamicQRData {
+export interface DynamicQRData {
   type: 'dynamic';
   merchant: string;
-  stableCoin: string;
+  currency: string;
   amount: string;
   adminFee: string;
   total: string;
@@ -22,7 +22,7 @@ export const parseQRData = (qrString: string): QRData | null => {
   try {
     const parsedData = JSON.parse(qrString);
 
-    if (parsedData.merchant && parsedData.stableCoin) {
+    if (parsedData.merchant && parsedData.currency) {
       return parsedData as QRData;
     }
 
@@ -34,18 +34,18 @@ export const parseQRData = (qrString: string): QRData | null => {
         const params = url.searchParams;
 
         const merchant = params.get('merchant');
-        const stableCoin = params.get('stableCoin');
+        const currency = params.get('currency');
         const amount = params.get('amount');
         const adminFee = params.get('adminFee');
         const total = params.get('total');
         const type = params.get('type') as 'static' | 'dynamic';
 
-        if (merchant && stableCoin) {
+        if (merchant && currency) {
           if (type === 'dynamic' && amount && adminFee && total) {
             return {
               type: 'dynamic',
               merchant,
-              stableCoin,
+              currency,
               amount,
               adminFee,
               total,
@@ -54,7 +54,7 @@ export const parseQRData = (qrString: string): QRData | null => {
             return {
               type: 'static',
               merchant,
-              stableCoin,
+              currency,
             };
           }
         }
@@ -65,7 +65,7 @@ export const parseQRData = (qrString: string): QRData | null => {
         return {
           type: 'static',
           merchant: parts[0],
-          stableCoin: parts[1],
+          currency: parts[1],
         };
       }
 

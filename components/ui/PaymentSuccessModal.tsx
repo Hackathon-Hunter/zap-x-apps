@@ -1,14 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
-import { View, Pressable, ScrollView } from 'react-native';
-
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withSpring,
-  withSequence,
-  withTiming,
-} from 'react-native-reanimated';
+import { View, ScrollView } from 'react-native';
 
 import DownloadIcon from '@/components/icons/DownloadIcon';
 import GradientSeparator from '@/components/icons/GradientSeparator';
@@ -16,7 +8,9 @@ import ListIcon from '@/components/icons/ListIcon';
 import ShareIcon from '@/components/icons/ShareIcon';
 import ThemeButton from '@/components/ThemedButton';
 import { ThemedText } from '@/components/ThemedText';
-import { Colors, ColorPalette } from '@/constants/Colors';
+import { Colors } from '@/constants/Colors';
+import { Currency } from '@/constants/SupportedTokens';
+import { currencyFormatter } from '@/utils/numberUtils';
 
 import Modal from './ThemedModal';
 import SuccessIcon from '../icons/SuccessIcon';
@@ -28,7 +22,8 @@ interface PaymentSuccessModalProps {
     date: string;
     time: string;
     merchant: string;
-    coin: string;
+    coin?: string;
+    currency: Currency;
     amount: string;
     adminFee: string;
     total: string;
@@ -37,11 +32,81 @@ interface PaymentSuccessModalProps {
     swappedAmount: string;
     coinBalance: string;
     previousBalance: string;
+    transactionHash?: string;
   };
   onViewTransactionHistory?: () => void;
   onShareReceipt?: () => void;
   onDownloadReceipt?: () => void;
 }
+
+const DetailRow = ({
+  label,
+  value,
+  isTotal = false,
+  prefix,
+  subLabel,
+  subValue,
+}: {
+  label: string;
+  value?: string;
+  valueColor?: string;
+  isTotal?: boolean;
+  prefix?: string;
+  subLabel?: string;
+  subValue?: string;
+}) => (
+  <View>
+    {isTotal && (
+      <View className="py-2">
+        <GradientSeparator />
+      </View>
+    )}
+    <View className="flex-row justify-between py-2">
+      <ThemedText
+        color={Colors.dark.text.secondary}
+        className="text-sm font-medium"
+      >
+        {label}
+      </ThemedText>
+      <View className="flex items-end">
+        <View className="flex flex-row gap-2">
+          <ThemedText
+            color={Colors.dark.text.secondary}
+            className="text-sm font-medium"
+            numbersOnly
+          >
+            {prefix}
+          </ThemedText>
+          <ThemedText
+            color={Colors.dark.text.primary}
+            className="text-sm font-medium"
+            numbersOnly
+          >
+            {value}
+          </ThemedText>
+        </View>
+
+        {subLabel && (
+          <View className="flex flex-row gap-2 mt-2">
+            <ThemedText
+              color={Colors.dark.text.secondary}
+              className="text-xs font-medium"
+            >
+              {subLabel}
+            </ThemedText>
+            <ThemedText
+              color={Colors.dark.text.secondary}
+              className="text-xs font-medium"
+              numbersOnly
+            >
+              {subValue}
+            </ThemedText>
+          </View>
+        )}
+      </View>
+    </View>
+  </View>
+);
 
 const PaymentSuccessModal: React.FC<PaymentSuccessModalProps> = ({
   visible,
@@ -51,6 +116,21 @@ const PaymentSuccessModal: React.FC<PaymentSuccessModalProps> = ({
   onShareReceipt,
   onDownloadReceipt,
 }) => {
+  const {
+    date,
+    adminFee,
+    amount,
+    coinBalance,
+    merchant,
+    network,
+    previousBalance,
+    swappedAmount,
+    swappedCoin,
+    time,
+    total,
+    currency,
+  } = paymentData;
+
   return (
     <Modal visible={visible} onClose={onClose} showCloseButton={true}>
       <ScrollView
@@ -71,207 +151,39 @@ const PaymentSuccessModal: React.FC<PaymentSuccessModalProps> = ({
         </View>
 
         <View className="flex flex-col gap-3">
-          <View className="flex flex-col gap-2 border border-gray-700 p-4">
-            <View className="flex flex-row justify-between items-center">
-              <ThemedText
-                color={Colors.dark.text.muted}
-                className="text-lg font-medium text-center"
-              >
-                Date
-              </ThemedText>
-              <ThemedText
-                color={Colors.dark.text.primary}
-                className="text-lg font-medium text-center"
-              >
-                MAY 16, 2025
-              </ThemedText>
-            </View>
-            <View className="flex flex-row justify-between items-center">
-              <ThemedText
-                color={Colors.dark.text.muted}
-                className="text-lg font-medium text-center"
-              >
-                Time
-              </ThemedText>
-              <ThemedText
-                color={Colors.dark.text.primary}
-                className="text-lg font-medium text-center"
-              >
-                10:50 PM
-              </ThemedText>
-            </View>
-            <View className="flex flex-row justify-between items-center">
-              <ThemedText
-                color={Colors.dark.text.muted}
-                className="text-lg font-medium text-center"
-              >
-                Merchant
-              </ThemedText>
-              <ThemedText
-                color={Colors.dark.text.primary}
-                className="text-lg font-medium text-center"
-              >
-                IDRX Money Changer
-              </ThemedText>
-            </View>
-            <View className="flex flex-row justify-between items-center">
-              <ThemedText
-                color={Colors.dark.text.muted}
-                className="text-lg font-medium text-center"
-              >
-                Coin
-              </ThemedText>
-              <ThemedText
-                color={Colors.dark.text.primary}
-                className="text-lg font-medium text-center"
-              >
-                IDRX
-              </ThemedText>
-            </View>
-            <View className="flex flex-row justify-between items-center">
-              <ThemedText
-                color={Colors.dark.text.muted}
-                className="text-lg font-medium text-center"
-              >
-                Amount
-              </ThemedText>
-              <View className="flex flex-row gap-1">
-                <ThemedText
-                  color={Colors.dark.text.muted}
-                  className="text-lg font-medium text-center"
-                >
-                  IDR
-                </ThemedText>
-                <ThemedText
-                  color={Colors.dark.text.primary}
-                  className="text-lg font-medium text-center"
-                >
-                  100,000
-                </ThemedText>
-              </View>
-            </View>
-            <View className="flex flex-row justify-between items-center">
-              <ThemedText
-                color={Colors.dark.text.muted}
-                className="text-lg font-medium text-center"
-              >
-                Admin Fee
-              </ThemedText>
-              <View className="flex flex-row gap-1">
-                <ThemedText
-                  color={Colors.dark.text.muted}
-                  className="text-lg font-medium text-center"
-                >
-                  IDR
-                </ThemedText>
-                <ThemedText
-                  color={Colors.dark.text.primary}
-                  className="text-lg font-medium text-center"
-                >
-                  1,000
-                </ThemedText>
-              </View>
-            </View>
-
-            <GradientSeparator />
-
-            <View className="flex flex-row justify-between items-center">
-              <ThemedText
-                color={Colors.dark.text.muted}
-                className="text-lg font-medium text-center"
-              >
-                Total
-              </ThemedText>
-              <View className="flex flex-row gap-1">
-                <ThemedText
-                  color={Colors.dark.text.muted}
-                  className="text-lg font-medium text-center"
-                >
-                  IDR
-                </ThemedText>
-                <ThemedText
-                  color={Colors.dark.text.primary}
-                  className="text-lg font-medium text-center"
-                >
-                  101,000
-                </ThemedText>
-              </View>
-            </View>
+          <View className="flex flex-col border-[0.5px] border-gray-700 p-4">
+            <DetailRow label="Date" value={date} />
+            <DetailRow label="Time" value={time} />
+            <DetailRow label="Merchant" value={merchant} />
+            <DetailRow label="Currency" value={currency.name} />
+            <DetailRow
+              label="Amount"
+              prefix={currency.symbol}
+              value={currencyFormatter(Number(amount))}
+            />
+            <DetailRow
+              label="Admin Fee"
+              prefix={currency.symbol}
+              value={currencyFormatter(Number(adminFee))}
+            />
+            <DetailRow
+              label="Total"
+              prefix={currency.symbol}
+              value={currencyFormatter(Number(total))}
+              isTotal
+            />
           </View>
-
-          <View className="flex flex-col gap-2 border border-gray-700 p-4">
-            <View className="flex flex-row justify-between items-center">
-              <ThemedText
-                color={Colors.dark.text.muted}
-                className="text-lg font-medium text-center"
-              >
-                Network
-              </ThemedText>
-              <ThemedText
-                color={Colors.dark.text.primary}
-                className="text-lg font-medium text-center"
-              >
-                ETHEREUM
-              </ThemedText>
-            </View>
-            <View className="flex flex-row justify-between items-center">
-              <ThemedText
-                color={Colors.dark.text.muted}
-                className="text-lg font-medium text-center"
-              >
-                Coin
-              </ThemedText>
-              <ThemedText
-                color={Colors.dark.text.primary}
-                className="text-lg font-medium text-center"
-              >
-                BOME
-              </ThemedText>
-            </View>
-            <View className="flex flex-row justify-between items-center">
-              <ThemedText
-                color={Colors.dark.text.muted}
-                className="text-lg font-medium text-center"
-              >
-                Swapped Coin
-              </ThemedText>
-              <ThemedText
-                color={Colors.dark.text.primary}
-                className="text-lg font-medium text-center"
-              >
-                1,760.08
-              </ThemedText>
-            </View>
-            <GradientSeparator />
-            <View className="flex flex-row justify-between w-full">
-              <ThemedText
-                color={Colors.dark.text.muted}
-                className="text-md font-medium"
-              >
-                Coin Balance
-              </ThemedText>
-              <View
-                className="flex flex-col items-end justify-end"
-                style={{ alignItems: 'flex-end' }}
-              >
-                <ThemedText
-                  color={Colors.dark.text.primary}
-                  className="text-md font-medium"
-                  style={{ textAlign: 'right' }}
-                  numbersOnly
-                >
-                  3,240
-                </ThemedText>
-                <ThemedText
-                  color={Colors.dark.text.muted}
-                  className="text-sm font-medium"
-                  style={{ textAlign: 'right' }}
-                  numbersOnly
-                >
-                  From 5,000
-                </ThemedText>
-              </View>
-            </View>
+          <View className="flex flex-col border-[0.5px] border-gray-700 p-4">
+            <DetailRow label="Network" value={network} />
+            <DetailRow label="Coin" value={swappedCoin} />
+            <DetailRow label="Amount" value={swappedAmount} />
+            <DetailRow
+              label="Coin Balance"
+              value={coinBalance}
+              isTotal
+              subLabel="From"
+              subValue={previousBalance}
+            />
           </View>
 
           <View>

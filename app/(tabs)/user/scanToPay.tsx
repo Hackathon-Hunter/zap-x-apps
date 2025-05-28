@@ -29,7 +29,7 @@ const UserScanToPay = () => {
     setHasPermission(status === 'granted');
   };
 
-  const handleBarCodeScanned = ({ data }: { type: string; data: string }) => {
+  const handleBarCodeScanned = ({ data }: { data: string }) => {
     if (scanned) return;
 
     setScanned(true);
@@ -48,7 +48,6 @@ const UserScanToPay = () => {
       );
       return;
     }
-
     const finalQRType = qrData.type || determineQRType(qrData);
 
     if (finalQRType === 'dynamic') {
@@ -56,7 +55,7 @@ const UserScanToPay = () => {
         pathname: '/(user)/paymentDetailDynamicQR',
         params: {
           merchant: qrData.merchant,
-          stableCoin: qrData.stableCoin,
+          currency: qrData.currency,
           amount: qrData.amount || '0',
           adminFee: qrData.adminFee || '0',
           total: qrData.total || '0',
@@ -67,7 +66,7 @@ const UserScanToPay = () => {
         pathname: '/(user)/paymentDetailStaticQR',
         params: {
           merchant: qrData.merchant,
-          stableCoin: qrData.stableCoin,
+          currency: qrData.currency,
           amount: qrData.amount || '',
           adminFee: qrData.adminFee || '',
           total: qrData.total || '',
@@ -84,6 +83,24 @@ const UserScanToPay = () => {
   const startScanning = () => {
     setIsScanning(true);
     setScanned(false);
+  };
+
+  // Temporary Scan
+  const temporaryScan = () => {
+    setScanned(false);
+
+    const dataString = JSON.stringify({
+      merchant: 'Eiger Indonesia',
+      currency: 'IDR',
+      amount: '500000',
+      adminFee: '500',
+      total: '500500',
+      type: 'dynamic',
+    });
+
+    handleBarCodeScanned({
+      data: dataString,
+    });
   };
 
   const stopScanning = () => {
@@ -150,7 +167,7 @@ const UserScanToPay = () => {
 
       <ScanControls
         isScanning={isScanning}
-        onStartScanning={startScanning}
+        onStartScanning={temporaryScan}
         onStopScanning={stopScanning}
         onPickFromGallery={pickImageFromGallery}
       />
