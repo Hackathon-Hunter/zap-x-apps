@@ -158,9 +158,9 @@ const GenerateQRForm = () => {
               <FilterDropdown
                 selectedValue={DEFAULT_CURRENCY_OPTIONS[0]}
                 options={DEFAULT_CURRENCY_OPTIONS}
-                onSelect={() => {}}
+                onSelect={() => { }}
                 isOpen={false}
-                onToggle={() => {}}
+                onToggle={() => { }}
                 LeftIcon={WalletIcon}
               />
             </View>
@@ -240,7 +240,7 @@ const GenerateQRForm = () => {
       <View className="bg-black">
         <ThemeButton
           variant="primary"
-          onPress={() => {}}
+          onPress={() => { }}
           text="Generate Static QR"
           LeftIcon={QRIcon}
         />
@@ -275,8 +275,12 @@ const GenerateQRForm = () => {
         visible={isQRModalVisible}
         onClose={() => setQRModalVisible(false)}
         qrData={{
-          url: 'https://www.npmjs.com/package/react-native-qrcode-svg',
-          ammount: '5,000',
+          type: 'dynamic',
+          merchant: 'Kos Bu Diarto',
+          stableCoin: 'IDR',
+          amount: '50000',
+          adminFee: '2000',
+          total: '7000',
         }}
         onDownloadReceipt={() => {
           saveQrToDisk();
