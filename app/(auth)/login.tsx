@@ -22,8 +22,6 @@ import RegisterModal from '@/components/ui/RegisterModal';
 import { Colors } from '@/constants/Colors';
 import { projectId, providerMetadata } from '@/constants/ConnectWallet';
 
-import './../../polyfills';
-
 export default function LoginScreen() {
   const router = useRouter();
   const { open, isConnected, provider } = useWalletConnectModal();

@@ -149,7 +149,11 @@ const MerchantTransactionHistory: React.FC = () => {
         className="flex-1 gap-5 flex flex-col"
         showsVerticalScrollIndicator={false}
       >
-        <TransactionFilters filters={filters} onFiltersChange={setFilters} showStatus={false} />
+        <TransactionFilters
+          filters={filters}
+          onFiltersChange={setFilters}
+          showStatus={false}
+        />
 
         <View className="pb-6">
           {filteredTransactions.length > 0 ? (

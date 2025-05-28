@@ -10,16 +10,16 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
-import { ThemedText } from '@/components/ThemedText';
+import DownloadIcon from '@/components/icons/DownloadIcon';
 import GradientSeparator from '@/components/icons/GradientSeparator';
+import ListIcon from '@/components/icons/ListIcon';
+import ShareIcon from '@/components/icons/ShareIcon';
+import ThemeButton from '@/components/ThemedButton';
+import { ThemedText } from '@/components/ThemedText';
 import { Colors, ColorPalette } from '@/constants/Colors';
 
 import Modal from './ThemedModal';
 import SuccessIcon from '../icons/SuccessIcon';
-import ThemeButton from '@/components/ThemedButton';
-import ShareIcon from '@/components/icons/ShareIcon';
-import DownloadIcon from '@/components/icons/DownloadIcon';
-import ListIcon from '@/components/icons/ListIcon';
 
 interface PaymentSuccessModalProps {
   visible: boolean;
@@ -53,7 +53,7 @@ const PaymentSuccessModal: React.FC<PaymentSuccessModalProps> = ({
 }) => {
   return (
     <Modal visible={visible} onClose={onClose} showCloseButton={true}>
-      <ScrollView 
+      <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 20 }}
         style={{ maxHeight: '100%' }}
@@ -278,7 +278,7 @@ const PaymentSuccessModal: React.FC<PaymentSuccessModalProps> = ({
             <View className="flex flex-row items-end gap-2 mt-2">
               <ThemeButton
                 variant="primary"
-                onPress={onViewTransactionHistory || (() => { })}
+                onPress={onViewTransactionHistory || (() => {})}
                 text="View Transaction History"
                 LeftIcon={ListIcon}
               />
@@ -286,7 +286,7 @@ const PaymentSuccessModal: React.FC<PaymentSuccessModalProps> = ({
             <View className="flex flex-row items-end gap-2 mt-2">
               <ThemeButton
                 variant="secondary"
-                onPress={onShareReceipt || (() => { })}
+                onPress={onShareReceipt || (() => {})}
                 text="Share as Receipt"
                 LeftIcon={ShareIcon}
               />
@@ -294,7 +294,7 @@ const PaymentSuccessModal: React.FC<PaymentSuccessModalProps> = ({
             <View className="flex flex-row items-end gap-2 mt-2">
               <ThemeButton
                 variant="secondary"
-                onPress={onDownloadReceipt || (() => { })}
+                onPress={onDownloadReceipt || (() => {})}
                 text="Download Receipt"
                 LeftIcon={DownloadIcon}
               />
@@ -302,7 +302,7 @@ const PaymentSuccessModal: React.FC<PaymentSuccessModalProps> = ({
           </View>
         </View>
       </ScrollView>
-    </Modal >
+    </Modal>
   );
 };
 
