@@ -19,6 +19,7 @@ interface TransactionFiltersProps {
   dateOptions?: string[];
   currencyOptions?: string[];
   statusOptions?: TransactionStatus[];
+  showStatus: boolean;
 }
 
 const DEFAULT_DATE_OPTIONS = [
@@ -58,6 +59,7 @@ const TransactionFilters: React.FC<TransactionFiltersProps> = ({
   dateOptions = DEFAULT_DATE_OPTIONS,
   currencyOptions = DEFAULT_CURRENCY_OPTIONS,
   statusOptions,
+  showStatus,
 }) => {
   const [dateDropdownOpen, setDateDropdownOpen] = useState(false);
   const [currencyDropdownOpen, setCurrencyDropdownOpen] = useState(false);
@@ -107,11 +109,13 @@ const TransactionFilters: React.FC<TransactionFiltersProps> = ({
         />
       </View>
 
-      <StatusFilter
-        selectedStatus={filters.status}
-        onStatusChange={handleStatusChange}
-        statuses={statusOptions}
-      />
+      {showStatus && (
+        <StatusFilter
+          selectedStatus={filters.status}
+          onStatusChange={handleStatusChange}
+          statuses={statusOptions}
+        />
+      )}
 
       {(dateDropdownOpen || currencyDropdownOpen) && (
         <View

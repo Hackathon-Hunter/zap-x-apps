@@ -9,6 +9,7 @@ import TransactionFilters, {
 } from '@/components/ui/TransactionFilters';
 import TransactionItemCard from '@/components/ui/TransactionItemCard';
 import { Colors, ColorPalette } from '@/constants/Colors';
+import { USER_ROLE } from '@/constants/User';
 
 const TRANSACTION_DATA = [
   {
@@ -165,7 +166,7 @@ const UserTransactionHistory: React.FC = () => {
         className="flex-1 gap-5 flex flex-col"
         showsVerticalScrollIndicator={false}
       >
-        <TransactionFilters filters={filters} onFiltersChange={setFilters} />
+        <TransactionFilters filters={filters} onFiltersChange={setFilters} showStatus={true} />
 
         <View className="pb-6">
           {filteredTransactions.length > 0 ? (
@@ -177,6 +178,7 @@ const UserTransactionHistory: React.FC = () => {
                   pair={transaction.pair}
                   amount={transaction.amount}
                   amountColor={transaction.amountColor}
+                  role={USER_ROLE.USER}
                 />
               </View>
             ))

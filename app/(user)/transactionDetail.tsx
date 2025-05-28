@@ -17,6 +17,7 @@ export default function TransactionDetail() {
           amount="101,000"
           currency="IDR"
           date="MAY 16, 2025 - 10:50 PM"
+          headReceived={true}
         />
 
         <View className="flex flex-col gap-3 px-4 py-4 border border-gray-700">

@@ -6,6 +6,7 @@ import Svg, { Defs, RadialGradient, Stop, Rect } from 'react-native-svg';
 
 import { ThemedText } from '@/components/ThemedText';
 import { Colors } from '@/constants/Colors';
+import WalletPlus from '@/components/icons/WalletPlus';
 
 type HeaderCardDetailHistoryProps = {
   amount: string;
@@ -14,6 +15,7 @@ type HeaderCardDetailHistoryProps = {
   amountColor?: string;
   currencyColor?: string;
   gradientColors?: string[];
+  headReceived: boolean;
 };
 
 export default function HeaderCardDetailHistory({
@@ -23,6 +25,7 @@ export default function HeaderCardDetailHistory({
   amountColor = Colors.dark.accent.green,
   currencyColor = Colors.dark.text.muted,
   gradientColors = ['#fff', '#fff'],
+  headReceived,
 }: HeaderCardDetailHistoryProps) {
   function GradientBackground() {
     return (
@@ -80,9 +83,22 @@ export default function HeaderCardDetailHistory({
   }
 
   return (
-    <View className="bg-black border border-gray-700 py-2 justify-center items-center mx-[0.5px] my-[0.5px] relative overflow-hidden">
+    <View className="bg-black border border-gray-700 py-2 justify-center items-center mx-[0.5px] my-[0.5px] relative overflow-hidden flex flex-col gap-2">
       <View className="absolute inset-0" />
       <GradientBackground />
+      {headReceived && (
+        <View className="flex flex-row gap-2 items-center">
+          <WalletPlus />
+          <ThemedText
+            color={Colors.dark.text.primary}
+            numbersOnly
+            className="text-sm"
+            style={{ marginBottom: 6 }}
+          >
+            Received IDR
+          </ThemedText>
+        </View>
+      )}
       <View className="flex flex-row gap-2 items-end relative z-10">
         <ThemedText
           color={currencyColor}
