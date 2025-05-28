@@ -166,46 +166,47 @@ export default function TabLayout() {
   );
 
   return (
-    <View className="flex-1 px-4">
-      <ThemedHeader
-        currentRoute={currentRoute}
-        router={router}
-        canGoBack={canGoBack}
-      />
+    <View className="flex-1 bg-black">
+      <View className="px-4 flex-1">
+        <ThemedHeader
+          currentRoute={currentRoute}
+          router={router}
+          canGoBack={canGoBack}
+        />
 
-      {/* Debug Info - Remove in production */}
-      {__DEV__ && (
-        <View className="mb-2 p-2 bg-gray-800 rounded">
-          <ThemedText color={Colors.dark.text.secondary} className="text-xs">
-            Debug: Role: {role || 'None'} | Connected:{' '}
-            {isConnected ? 'Yes' : 'No'}
-          </ThemedText>
-        </View>
-      )}
+        {/* Debug Info - Remove in production */}
+        {__DEV__ && (
+          <View className="mb-2 p-2 bg-gray-800 rounded">
+            <ThemedText color={Colors.dark.text.secondary} className="text-xs">
+              Debug: Role: {role || 'None'} | Connected:{' '}
+              {isConnected ? 'Yes' : 'No'}
+            </ThemedText>
+          </View>
+        )}
 
-      {/* Merchant Tabs */}
-      {role === 'merchant' && renderMerchantTabs()}
+        {/* Merchant Tabs */}
+        {role === 'merchant' && renderMerchantTabs()}
 
-      {/* User Tabs */}
-      {role === 'user' && renderUserTabs()}
+        {/* User Tabs */}
+        {role === 'user' && renderUserTabs()}
 
-      {/* Fallback - shouldn't reach here if auth checks work properly */}
-      {role !== 'merchant' && role !== 'user' && (
-        <View className="flex-1 justify-center items-center">
-          <ThemedText
-            color={Colors.dark.text.primary}
-            className="text-xl font-medium"
-          >
-            Invalid Role
-          </ThemedText>
-          <ThemedText
-            color={Colors.dark.text.secondary}
-            className="text-base mt-2"
-          >
-            Please login again
-          </ThemedText>
-        </View>
-      )}
+        {/* Fallback - shouldn't reach here if auth checks work properly */}
+        {role !== 'merchant' && role !== 'user' && (
+          <View className="flex-1 justify-center items-center">
+            <ThemedText
+              color={Colors.dark.text.primary}
+              className="text-xl font-medium"
+            >
+              Invalid Role
+            </ThemedText>
+            <ThemedText
+              color={Colors.dark.text.secondary}
+              className="text-base mt-2"
+            >
+              Please login again
+            </ThemedText>
+          </View>
+        )}</View>
     </View>
   );
 }

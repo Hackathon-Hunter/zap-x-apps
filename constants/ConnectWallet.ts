@@ -1,10 +1,10 @@
 import { createPublicClient, http } from 'viem';
-import { mainnet } from 'viem/chains';
+import { sepolia } from 'viem/chains';
 
 export const publicClient = createPublicClient({
-  chain: mainnet,
+  chain: sepolia,
   transport: http(
-    `https://eth-mainnet.g.alchemy.com/v2/${process.env.EXPO_PUBLIC_ALCHEMY_API_KEY}`
+    `https://eth-sepolia.g.alchemy.com/v2/${process.env.EXPO_PUBLIC_ALCHEMY_API_KEY}`
   ),
 });
 
