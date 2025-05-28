@@ -206,7 +206,8 @@ export default function TabLayout() {
               Please login again
             </ThemedText>
           </View>
-        )}</View>
+        )}
+      </View>
     </View>
   );
 }
