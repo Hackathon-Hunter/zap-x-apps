@@ -25,8 +25,12 @@ interface PaymentSuccessModalProps {
   visible: boolean;
   onClose: () => void;
   qrData: {
-    url: string;
-    ammount: string;
+    type: 'dynamic';
+    merchant: string;
+    stableCoin: string;
+    amount: string;
+    adminFee: string;
+    total: string;
   };
   onDownloadReceipt?: () => void;
 }
@@ -68,6 +72,9 @@ const DynamicQRModal: React.FC<PaymentSuccessModalProps> = ({
       // Handle error if needed
     }
   };
+  const qrValue = JSON.stringify(qrData);
+  const size = '200x200';
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(qrValue)}&size=${size}`;
 
   return (
     <Modal
@@ -78,20 +85,11 @@ const DynamicQRModal: React.FC<PaymentSuccessModalProps> = ({
     >
       <View className="items-center">
         <View style={styles.qrContainer}>
-          <QRCode
-            value={qrData.url}
-            getRef={(c) => (qrRef.current = c)}
-            size={200}
+          <Image
+            source={{ uri: qrUrl }}
+            style={{ width: 200, height: 200 }}
+            resizeMode="contain"
           />
-          <View style={styles.logoBorder}>
-            <View style={styles.logoContainer}>
-              <ZapIcon
-                width={styles.logo.width}
-                height={styles.logo.height}
-                fillColor={Colors.dark.text.primary}
-              />
-            </View>
-          </View>
         </View>
         <View className="flex flex-row items-end gap-2 mt-4">
           <ThemedText
@@ -107,7 +105,7 @@ const DynamicQRModal: React.FC<PaymentSuccessModalProps> = ({
             className="text-4xl font-medium mt-1"
             style={{ textShadowColor: 'white', textShadowRadius: 10 }}
           >
-            {qrData.ammount}
+            {qrData.amount}
           </ThemedText>
         </View>
         <View className="flex flex-row items-end gap-2 mt-4">
