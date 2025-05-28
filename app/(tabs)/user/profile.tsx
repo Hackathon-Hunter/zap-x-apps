@@ -1,7 +1,9 @@
 import React, { useState, useCallback } from 'react';
+
 import { View, Text, ScrollView, Alert } from 'react-native';
-import { useRouter } from 'expo-router';
+
 import { useWalletConnectModal } from '@walletconnect/modal-react-native';
+import { useRouter } from 'expo-router';
 
 import CopyIcon from '@/components/icons/CopyIcon';
 import DisconnectIcon from '@/components/icons/DisconnectIcon';
@@ -18,8 +20,8 @@ import ThemeInputField from '@/components/ThemedInputField';
 import { ThemedText } from '@/components/ThemedText';
 import SettingCardProfile from '@/components/ui/SettingCardProfile';
 import { Colors } from '@/constants/Colors';
-import useWalletStore from '@/store/walletStore';
 import useAuthStore from '@/store/authStore';
+import useWalletStore from '@/store/walletStore';
 
 // Dummy data
 const DUMMY_TRANSACTIONS = [
@@ -60,14 +62,20 @@ const UserProfile = () => {
   const { provider, isConnected } = useWalletConnectModal();
 
   // Zustand stores
-  const { disconnect: disconnectWallet, truncatedAddress, provider: walletProvider } = useWalletStore();
+  const {
+    disconnect: disconnectWallet,
+    truncatedAddress,
+    provider: walletProvider,
+  } = useWalletStore();
   const { clearRole } = useAuthStore();
 
   // State for disconnect process
   const [isDisconnecting, setIsDisconnecting] = useState(false);
 
   // Use truncated address from wallet store, fallback to dummy data
-  const [inputValue, setInputValue] = useState(truncatedAddress || '0xA13...8F9c');
+  const [inputValue, setInputValue] = useState(
+    truncatedAddress || '0xA13...8F9c'
+  );
 
   // Update input value when truncated address changes
   React.useEffect(() => {
@@ -178,7 +186,7 @@ const UserProfile = () => {
         </View>
 
         <ThemeButton
-          text={isDisconnecting ? "Disconnecting..." : "Disconnect Wallet"}
+          text={isDisconnecting ? 'Disconnecting...' : 'Disconnect Wallet'}
           onPress={handleDisconnectWallet}
           variant="secondary"
           LeftIcon={DisconnectIcon}

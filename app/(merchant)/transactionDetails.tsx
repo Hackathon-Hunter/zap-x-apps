@@ -1,7 +1,7 @@
 import React, { View, TouchableOpacity, ScrollView } from 'react-native';
 
-import DownloadIcon from '@/components/icons/DownloadIcon';
 import CopyIcon from '@/components/icons/CopyIcon';
+import DownloadIcon from '@/components/icons/DownloadIcon';
 import GradientSeparator from '@/components/icons/GradientSeparator';
 import ShareIcon from '@/components/icons/ShareIcon';
 import ThemeButton from '@/components/ThemedButton';
@@ -65,7 +65,7 @@ export default function TransactionDetail() {
         <View>
           <ThemeButton
             variant="primary"
-            onPress={() => { }}
+            onPress={() => {}}
             text="Share"
             LeftIcon={ShareIcon}
           />
@@ -86,7 +86,7 @@ export default function TransactionDetail() {
           </View>
           <ThemeButton
             variant="secondary"
-            onPress={() => { }}
+            onPress={() => {}}
             text="Download"
             LeftIcon={DownloadIcon}
           />

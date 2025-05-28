@@ -4,9 +4,9 @@ import { View } from 'react-native';
 
 import Svg, { Defs, RadialGradient, Stop, Rect } from 'react-native-svg';
 
+import WalletPlus from '@/components/icons/WalletPlus';
 import { ThemedText } from '@/components/ThemedText';
 import { Colors } from '@/constants/Colors';
-import WalletPlus from '@/components/icons/WalletPlus';
 
 type HeaderCardDetailHistoryProps = {
   amount: string;

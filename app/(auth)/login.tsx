@@ -1,7 +1,9 @@
 // Import polyfills FIRST, before any other imports
 import './../../polyfills';
 import { useEffect, useCallback, useRef, useState } from 'react';
+
 import { Image, View, Alert } from 'react-native';
+
 import {
   useWalletConnectModal,
   WalletConnectModal,
@@ -41,7 +43,7 @@ export default function LoginScreen() {
   useEffect(() => {
     const initializeAuth = async () => {
       // Wait for stores to properly initialize
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 500));
       setInitialLoadComplete(true);
     };
 
@@ -62,12 +64,16 @@ export default function LoginScreen() {
           currentRole,
           currentWalletConnected,
           isConnected,
-          initialLoadComplete
+          initialLoadComplete,
         });
 
         // Case 1: User has role AND wallet is connected (returning user) - SKIP successUser
         if (currentRole && (currentWalletConnected || isConnected)) {
-          console.log('🚀 Returning user found! Role:', currentRole, '- Going directly to tabs');
+          console.log(
+            '🚀 Returning user found! Role:',
+            currentRole,
+            '- Going directly to tabs'
+          );
           setHasNavigated(true);
           router.replace('/(tabs)');
           return;
@@ -75,7 +81,9 @@ export default function LoginScreen() {
 
         // Case 2: User has role but no wallet connection (wallet disconnected externally)
         if (currentRole && !currentWalletConnected && !isConnected) {
-          console.log('⚠️ User has role but no wallet connection, clearing role');
+          console.log(
+            '⚠️ User has role but no wallet connection, clearing role'
+          );
           const { clearRole } = useAuthStore.getState();
           clearRole();
         }
@@ -96,15 +104,32 @@ export default function LoginScreen() {
   useEffect(() => {
     if (!initialLoadComplete) return;
 
-    console.log('📊 Role or connection changed:', { role, walletStoreConnected, isConnected });
+    console.log('📊 Role or connection changed:', {
+      role,
+      walletStoreConnected,
+      isConnected,
+    });
 
     // If we have a role and wallet connection and haven't navigated yet
-    if (role && (walletStoreConnected || isConnected) && !hasNavigated && !isCheckingAuth) {
+    if (
+      role &&
+      (walletStoreConnected || isConnected) &&
+      !hasNavigated &&
+      !isCheckingAuth
+    ) {
       console.log('🔄 Role/connection changed - redirecting to tabs');
       setHasNavigated(true);
       router.replace('/(tabs)');
     }
-  }, [role, walletStoreConnected, isConnected, hasNavigated, isCheckingAuth, initialLoadComplete, router]);
+  }, [
+    role,
+    walletStoreConnected,
+    isConnected,
+    hasNavigated,
+    isCheckingAuth,
+    initialLoadComplete,
+    router,
+  ]);
 
   // Reset state when screen comes into focus
   useFocusEffect(
@@ -137,8 +162,16 @@ export default function LoginScreen() {
     });
 
     // FIRST-TIME LOGIN: Wallet connected but no role yet
-    if (isConnected && !hasNavigated && !isConnecting && !isCheckingAuth && !role) {
-      console.log('🔥 First-time wallet connection - no role exists, navigating to successUser');
+    if (
+      isConnected &&
+      !hasNavigated &&
+      !isConnecting &&
+      !isCheckingAuth &&
+      !role
+    ) {
+      console.log(
+        '🔥 First-time wallet connection - no role exists, navigating to successUser'
+      );
       setHasNavigated(true);
 
       setTimeout(() => {
@@ -148,8 +181,18 @@ export default function LoginScreen() {
     }
 
     // RETURNING USER: Wallet connected and user already has a role
-    else if (isConnected && !hasNavigated && !isConnecting && !isCheckingAuth && role) {
-      console.log('🔥 Returning user - wallet connected and role exists:', role, '- going directly to tabs');
+    else if (
+      isConnected &&
+      !hasNavigated &&
+      !isConnecting &&
+      !isCheckingAuth &&
+      role
+    ) {
+      console.log(
+        '🔥 Returning user - wallet connected and role exists:',
+        role,
+        '- going directly to tabs'
+      );
       setHasNavigated(true);
       router.replace('/(tabs)');
     }

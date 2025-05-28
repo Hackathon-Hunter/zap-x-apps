@@ -3,28 +3,28 @@ import useAuthStore from '@/store/authStore';
 
 // Get current role
 export const useRole = () => {
-    return useAuthStore(state => state.role);
+  return useAuthStore((state) => state.role);
 };
 
 // Check if user is merchant
 export const useIsMerchant = () => {
-    return useAuthStore(state => state.role === 'merchant');
+  return useAuthStore((state) => state.role === 'merchant');
 };
 
 // Check if user is regular user
 export const useIsUser = () => {
-    return useAuthStore(state => state.role === 'user');
+  return useAuthStore((state) => state.role === 'user');
 };
 
 // Get role actions
 export const useRoleActions = () => {
-    const { setRole, clearRole } = useAuthStore();
-    return { setRole, clearRole };
+  const { setRole, clearRole } = useAuthStore();
+  return { setRole, clearRole };
 };
 
 // Check if user has selected a role
 export const useHasRole = () => {
-    return useAuthStore(state => state.role !== null);
+  return useAuthStore((state) => state.role !== null);
 };
 
 /* 

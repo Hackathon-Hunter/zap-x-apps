@@ -29,9 +29,10 @@ const TransactionItemCard = ({
   const router = useRouter();
 
   const handlePress = () => {
-    const path = role === USER_ROLE.MERCHANT
-      ? '/(merchant)/transactionDetails'
-      : '/(user)/transactionDetail';
+    const path =
+      role === USER_ROLE.MERCHANT
+        ? '/(merchant)/transactionDetails'
+        : '/(user)/transactionDetail';
 
     router.push(path);
   };

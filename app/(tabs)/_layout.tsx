@@ -1,8 +1,10 @@
+import { useEffect, useState } from 'react';
+
 import { View } from 'react-native';
+
 import { useNavigationState } from '@react-navigation/native';
 import { useRouter, useSegments } from 'expo-router';
 import { Tabs, TabTrigger, TabSlot, TabList } from 'expo-router/ui';
-import { useEffect, useState } from 'react';
 
 import FileIcon from '@/components/icons/FileIcon';
 import HomeIcon from '@/components/icons/HomeIcon';
@@ -32,7 +34,10 @@ export default function TabLayout() {
   useEffect(() => {
     const checkAuthAndRole = async () => {
       try {
-        console.log('TabLayout: Checking auth and role:', { role, isConnected });
+        console.log('TabLayout: Checking auth and role:', {
+          role,
+          isConnected,
+        });
 
         if (!role) {
           console.log('TabLayout: No role found, redirecting to login');
@@ -41,7 +46,9 @@ export default function TabLayout() {
         }
 
         if (role && !isConnected) {
-          console.log('TabLayout: Role exists but wallet not connected, clearing role and redirecting');
+          console.log(
+            'TabLayout: Role exists but wallet not connected, clearing role and redirecting'
+          );
           const { clearRole } = useAuthStore.getState();
           clearRole();
           router.replace('/(auth)/login');
@@ -170,7 +177,8 @@ export default function TabLayout() {
       {__DEV__ && (
         <View className="mb-2 p-2 bg-gray-800 rounded">
           <ThemedText color={Colors.dark.text.secondary} className="text-xs">
-            Debug: Role: {role || 'None'} | Connected: {isConnected ? 'Yes' : 'No'}
+            Debug: Role: {role || 'None'} | Connected:{' '}
+            {isConnected ? 'Yes' : 'No'}
           </ThemedText>
         </View>
       )}
