@@ -43,7 +43,7 @@ const DynamicQRModal: React.FC<PaymentSuccessModalProps> = ({
   visible,
   onClose,
   qrData,
-  onDownloadReceipt = () => { },
+  onDownloadReceipt = () => {},
 }) => {
   const qrRef = useRef<QRCodeRef>(null);
 
@@ -73,9 +73,8 @@ const DynamicQRModal: React.FC<PaymentSuccessModalProps> = ({
     }
   };
   const qrValue = JSON.stringify(qrData);
-  const size = "200x200";
+  const size = '200x200';
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(qrValue)}&size=${size}`;
-
 
   return (
     <Modal

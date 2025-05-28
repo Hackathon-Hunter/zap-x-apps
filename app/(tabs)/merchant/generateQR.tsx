@@ -158,9 +158,9 @@ const GenerateQRForm = () => {
               <FilterDropdown
                 selectedValue={DEFAULT_CURRENCY_OPTIONS[0]}
                 options={DEFAULT_CURRENCY_OPTIONS}
-                onSelect={() => { }}
+                onSelect={() => {}}
                 isOpen={false}
-                onToggle={() => { }}
+                onToggle={() => {}}
                 LeftIcon={WalletIcon}
               />
             </View>
@@ -240,7 +240,7 @@ const GenerateQRForm = () => {
       <View className="bg-black">
         <ThemeButton
           variant="primary"
-          onPress={() => { }}
+          onPress={() => {}}
           text="Generate Static QR"
           LeftIcon={QRIcon}
         />
