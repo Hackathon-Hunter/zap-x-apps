@@ -6,6 +6,8 @@ import { useNavigationState } from '@react-navigation/native';
 import { Stack, Redirect, useRouter, useSegments } from 'expo-router';
 
 import ThemedHeader from '@/components/ThemedHeader';
+import { getCurrentUser, Role } from '../../constants/auth';
+
 export default function MerchantLayout() {
   const router = useRouter();
   const segments = useSegments();
@@ -13,23 +15,23 @@ export default function MerchantLayout() {
 
   const currentRoute = segments[segments.length - 1];
 
-  // const [user, setUser] = useState<{ role: Role; name: string } | null>(null);
-  // const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<{ role: Role; name: string } | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  // useEffect(() => {
-  //   const fetchUser = async () => {
-  //     const data = await getCurrentUser();
-  //     setUser(data);
-  //     setLoading(false);
-  //   };
-  //   fetchUser();
-  // }, []);
+  useEffect(() => {
+    const fetchUser = async () => {
+      const data = await getCurrentUser();
+      setUser(data);
+      setLoading(false);
+    };
+    fetchUser();
+  }, []);
 
-  // if (loading) return null;
+  if (loading) return null;
 
-  // if (!user || user.role !== 'user') {
-  //   return <Redirect href="/(auth)/login" />;
-  // }
+  if (!user || user.role !== 'merchant') {
+    return <Redirect href="/(auth)/login" />;
+  }
 
   return (
     <View className="flex-1 px-4">
