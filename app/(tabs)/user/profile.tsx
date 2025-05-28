@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-
-import { View, Text, ScrollView } from 'react-native';
+import React, { useState, useCallback } from 'react';
+import { View, Text, ScrollView, Alert } from 'react-native';
+import { useRouter } from 'expo-router';
+import { useWalletConnectModal } from '@walletconnect/modal-react-native';
 
 import CopyIcon from '@/components/icons/CopyIcon';
 import DisconnectIcon from '@/components/icons/DisconnectIcon';
@@ -17,6 +18,8 @@ import ThemeInputField from '@/components/ThemedInputField';
 import { ThemedText } from '@/components/ThemedText';
 import SettingCardProfile from '@/components/ui/SettingCardProfile';
 import { Colors } from '@/constants/Colors';
+import useWalletStore from '@/store/walletStore';
+import useAuthStore from '@/store/authStore';
 
 // Dummy data
 const DUMMY_TRANSACTIONS = [
@@ -53,7 +56,108 @@ const DUMMY_TRANSACTIONS = [
 ];
 
 const UserProfile = () => {
-  const [inputValue, setInputValue] = useState('0xA13...8F9c');
+  const router = useRouter();
+  const { provider, isConnected } = useWalletConnectModal();
+
+  // Zustand stores
+  const { disconnect: disconnectWallet, truncatedAddress, provider: walletProvider } = useWalletStore();
+  const { clearRole } = useAuthStore();
+
+  // State for disconnect process
+  const [isDisconnecting, setIsDisconnecting] = useState(false);
+
+  // Use truncated address from wallet store, fallback to dummy data
+  const [inputValue, setInputValue] = useState(truncatedAddress || '0xA13...8F9c');
+
+  // Update input value when truncated address changes
+  React.useEffect(() => {
+    if (truncatedAddress) {
+      setInputValue(truncatedAddress);
+    }
+  }, [truncatedAddress]);
+
+  // Handle disconnect wallet
+  const handleDisconnectWallet = useCallback(async () => {
+    if (isDisconnecting) return;
+
+    try {
+      setIsDisconnecting(true);
+
+      // Show confirmation dialog
+      Alert.alert(
+        'Disconnect Wallet',
+        'Are you sure you want to disconnect your wallet? You will be redirected to the login screen.',
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel',
+            onPress: () => setIsDisconnecting(false),
+          },
+          {
+            text: 'Disconnect',
+            style: 'destructive',
+            onPress: async () => {
+              try {
+                // Disconnect from WalletConnect if connected
+                if (provider && isConnected) {
+                  await provider.disconnect();
+
+                  // Clear any residual session data
+                  if (provider.session) {
+                    try {
+                      await provider.client?.core?.pairing?.disconnect({
+                        topic: provider.session.topic,
+                      });
+                    } catch (error) {
+                      console.log('Error disconnecting pairing:', error);
+                    }
+                  }
+                }
+
+                // Alternative: try using walletProvider from store if main provider doesn't work
+                if (walletProvider && walletProvider !== provider) {
+                  try {
+                    await walletProvider.disconnect();
+                  } catch (error) {
+                    console.log('Error disconnecting wallet provider:', error);
+                  }
+                }
+
+                // Clear Zustand stores
+                disconnectWallet(); // Clear wallet store
+                clearRole(); // Clear role from auth store
+
+                console.log('Wallet disconnected successfully');
+
+                // Navigate to login screen
+                router.replace('/(auth)/login');
+              } catch (error) {
+                console.error('Error during disconnect:', error);
+
+                // Still clear stores and navigate even if WalletConnect disconnect fails
+                disconnectWallet();
+                clearRole();
+                router.replace('/(auth)/login');
+              } finally {
+                setIsDisconnecting(false);
+              }
+            },
+          },
+        ]
+      );
+    } catch (error) {
+      console.error('Error showing disconnect dialog:', error);
+      setIsDisconnecting(false);
+    }
+  }, [
+    isDisconnecting,
+    provider,
+    isConnected,
+    walletProvider,
+    disconnectWallet,
+    clearRole,
+    router,
+  ]);
 
   return (
     <ScrollView>
@@ -67,16 +171,18 @@ const UserProfile = () => {
             inputValue={inputValue}
             onChangeText={setInputValue}
             LeftIcon={CopyIcon}
-            textButton="Edit"
+            textButton="Copy"
             rightButton={true}
             readOnly
           />
         </View>
+
         <ThemeButton
-          text="Custom Secondary Button"
-          onPress={() => {}}
+          text={isDisconnecting ? "Disconnecting..." : "Disconnect Wallet"}
+          onPress={handleDisconnectWallet}
           variant="secondary"
           LeftIcon={DisconnectIcon}
+          disabled={isDisconnecting}
         />
 
         <GradientSeparator />
