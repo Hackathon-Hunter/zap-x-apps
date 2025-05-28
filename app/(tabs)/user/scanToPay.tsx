@@ -11,6 +11,7 @@ import PermissionScreen from '@/components/ui/PermissionScreen';
 import ScanControls from '@/components/ui/ScanControls';
 import ScanningOverlay from '@/components/ui/ScanningOverlay';
 import ScanStatusIndicator from '@/components/ui/ScanStatusIndicator';
+import { determineQRType, parseQRData } from '@/utils/parseQrCode';
 
 const UserScanToPay = () => {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
@@ -34,14 +35,45 @@ const UserScanToPay = () => {
     setScanned(true);
     setIsScanning(false);
 
-    Alert.alert(
-      'QR Code Scanned',
-      `Scanned data: ${data.substring(0, 100)}${data.length > 100 ? '...' : ''}`,
-      [
-        { text: 'Scan Again', onPress: resetScanner },
-        { text: 'OK', onPress: resetScanner },
-      ]
-    );
+    const qrData = parseQRData(data);
+
+    if (!qrData) {
+      Alert.alert(
+        'Invalid QR Code',
+        'The scanned QR code is not a valid payment QR code.',
+        [
+          { text: 'Scan Again', onPress: resetScanner },
+          { text: 'Cancel', onPress: () => {} },
+        ]
+      );
+      return;
+    }
+
+    const finalQRType = qrData.type || determineQRType(qrData);
+
+    if (finalQRType === 'dynamic') {
+      router.push({
+        pathname: '/(user)/paymentDetailDynamicQR',
+        params: {
+          merchant: qrData.merchant,
+          stableCoin: qrData.stableCoin,
+          amount: qrData.amount || '0',
+          adminFee: qrData.adminFee || '0',
+          total: qrData.total || '0',
+        },
+      });
+    } else {
+      router.push({
+        pathname: '/(user)/paymentDetailStaticQR',
+        params: {
+          merchant: qrData.merchant,
+          stableCoin: qrData.stableCoin,
+          amount: qrData.amount || '',
+          adminFee: qrData.adminFee || '',
+          total: qrData.total || '',
+        },
+      });
+    }
   };
 
   const resetScanner = () => {
@@ -56,19 +88,6 @@ const UserScanToPay = () => {
 
   const stopScanning = () => {
     setIsScanning(false);
-    try {
-      router.push({
-        pathname: '/(user)/paymentDetailStaticQR',
-        params: {
-          merchant: 'IDRX Money Changer',
-          amount: '100,000',
-          adminFee: '1,000',
-          total: '101,000',
-        },
-      });
-    } catch (error) {
-      console.log(error);
-    }
   };
 
   const pickImageFromGallery = async () => {
