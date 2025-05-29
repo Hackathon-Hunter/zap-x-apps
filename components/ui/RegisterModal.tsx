@@ -52,6 +52,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ visible, onClose }) => {
         return;
       }
     };
+
     checkClipboard();
     const interval = setInterval(checkClipboard, 2000);
 
@@ -117,10 +118,6 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ visible, onClose }) => {
     }
   };
 
-  const displayPrincipalId = principalId
-    ? `Principal ID: ${principalId.substring(0, 20)}...`
-    : '';
-
   return (
     <Modal
       visible={visible}
@@ -129,21 +126,6 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ visible, onClose }) => {
       title="Merchant Information"
     >
       <View className="flex flex-col gap-4">
-        {/* Show principal ID if available */}
-        {principalId && (
-          <View className="bg-green-900 p-3 rounded-md">
-            <ThemedText color={Colors.dark.text.primary} className="text-sm">
-              ✅ Authentication Successful
-            </ThemedText>
-            <ThemedText
-              color={Colors.dark.text.secondary}
-              className="text-xs mt-1"
-            >
-              {displayPrincipalId}
-            </ThemedText>
-          </View>
-        )}
-
         <View className="flex flex-col gap-2">
           <ThemedText color={Colors.dark.text.muted} type="subtitle">
             Display Name
