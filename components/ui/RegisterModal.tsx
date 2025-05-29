@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 
 import { Alert, View } from 'react-native';
 
 import * as Linking from 'expo-linking';
+import { useRouter } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
 
 import ArrowRightIcon from '@/components/icons/ArrowRightIcon';
@@ -13,6 +14,7 @@ import ThemeInputField from '@/components/ThemedInputField';
 import { ThemedText } from '@/components/ThemedText';
 import { Colors } from '@/constants/Colors';
 import { useAuth } from '@/hooks/useAuth';
+import useAuthStore from '@/store/authStore';
 import { icpAgent, Ed25519KeyIdentity } from '@/utils/icpAgent';
 
 import Modal from './ThemedModal';
@@ -25,14 +27,17 @@ interface RegisterModalProps {
 WebBrowser.maybeCompleteAuthSession();
 
 const RegisterModal: React.FC<RegisterModalProps> = ({ visible, onClose }) => {
+  const router = useRouter();
   const [inputValueName, setInputValueName] = useState('');
   const [inputValueEmail, setInputValueEmail] = useState('');
   const [principalId, setPrincipalId] = useState<string | null>(null);
   const [manualEntryMode, setManualEntryMode] = useState(false);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const [isRegistering, setIsRegistering] = useState(false);
+  const [isNavigating, setIsNavigating] = useState(false);
 
   const { authenticate, isLoading } = useAuth();
+  const { setRole } = useAuthStore();
 
   const handleAuthenticate = async () => {
     const result = await authenticate();
@@ -128,6 +133,23 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ visible, onClose }) => {
     }
   };
 
+  // Function to navigate to dashboard
+  const goToDashboard = useCallback(async () => {
+    if (isNavigating) return;
+
+    try {
+      setIsNavigating(true);
+      // Set role as merchant
+      setRole('merchant');
+      // Navigate to tabs (dashboard)
+      router.replace('/(tabs)');
+    } catch (error) {
+      console.error('Error going to dashboard:', error);
+      Alert.alert('Error', 'Failed to access dashboard. Please try again.');
+      setIsNavigating(false);
+    }
+  }, [router, setRole, isNavigating]);
+
   const handleRegisterMerchant = async () => {
     if (!inputValueName || !inputValueEmail) {
       Alert.alert('Error', 'Please fill in both name and email fields');
@@ -149,9 +171,22 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ visible, onClose }) => {
       setIsRegistering(false);
 
       if (result.success) {
-        Alert.alert('Success', 'Merchant registered successfully!');
         if (result.merchant && result.merchant.principal_id) {
           setPrincipalId(result.merchant.principal_id);
+          // Show success message and navigate
+          Alert.alert(
+            'Success',
+            'Merchant registered successfully! Redirecting to dashboard...',
+            [
+              {
+                text: 'OK',
+                onPress: () => goToDashboard(),
+              },
+            ]
+          );
+        } else {
+          Alert.alert('Success', 'Merchant registered successfully!');
+          goToDashboard();
         }
       } else {
         Alert.alert('Error', result.error || 'Registration failed');
@@ -201,7 +236,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ visible, onClose }) => {
             inputValue={inputValueName}
             onChangeText={setInputValueName}
             rightButton={false}
-            readOnly={false}
+            readOnly={isRegistering || isNavigating}
           />
         </View>
 
@@ -214,7 +249,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ visible, onClose }) => {
             inputValue={inputValueEmail}
             onChangeText={setInputValueEmail}
             rightButton={false}
-            readOnly={false}
+            readOnly={isRegistering || isNavigating}
           />
         </View>
 
@@ -223,9 +258,15 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ visible, onClose }) => {
             <ThemeButton
               variant="primary"
               onPress={handleRegisterMerchant}
-              text={isRegistering ? 'Registering...' : 'Register Merchant'}
+              text={
+                isNavigating
+                  ? 'Going to Dashboard...'
+                  : isRegistering
+                    ? 'Registering...'
+                    : 'Register Merchant'
+              }
               RightIcon={ArrowRightIcon}
-              disabled={isRegistering}
+              disabled={isRegistering || isNavigating}
             />
           </View>
 
