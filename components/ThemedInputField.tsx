@@ -1,6 +1,6 @@
 import React, { ElementType } from 'react';
 
-import { TextInput, View } from 'react-native';
+import { TextInput, View, KeyboardTypeOptions } from 'react-native';
 
 import ThemeButton from '@/components/ThemedButton';
 import { Colors } from '@/constants/Colors';
@@ -16,6 +16,7 @@ type ThemeInputFieldProps = {
   LeftIcon?: ElementType;
   readOnly?: boolean;
   prefix?: string;
+  keyboardType?: KeyboardTypeOptions;
 };
 
 const ThemeInputField: React.FC<ThemeInputFieldProps> = ({
@@ -27,6 +28,7 @@ const ThemeInputField: React.FC<ThemeInputFieldProps> = ({
   LeftIcon,
   readOnly,
   prefix,
+  keyboardType = 'default',
 }) => {
   return (
     <View className="flex flex-row justify-between items-center w-full rounded-md border-gray-700 border-[0.5px]">
@@ -46,6 +48,7 @@ const ThemeInputField: React.FC<ThemeInputFieldProps> = ({
         onChangeText={onChangeText}
         placeholderTextColor={Colors.dark.text.muted}
         readOnly={readOnly}
+        keyboardType={keyboardType}
       />
       {rightButton && textButton && (
         <ThemeButton

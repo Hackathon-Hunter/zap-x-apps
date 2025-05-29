@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
+
 import { View, StyleSheet } from 'react-native';
+
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -9,6 +11,7 @@ import Animated, {
   interpolate,
   Easing,
 } from 'react-native-reanimated';
+
 import { ColorPalette } from '@/constants/Colors';
 
 interface ScanningOverlayProps {
@@ -27,7 +30,7 @@ const ScanningOverlay: React.FC<ScanningOverlayProps> = ({ isScanning }) => {
         withSequence(
           withTiming(1, {
             duration: 2500,
-            easing: Easing.inOut(Easing.quad)
+            easing: Easing.inOut(Easing.quad),
           }),
           withTiming(0, { duration: 0 })
         ),
@@ -65,11 +68,9 @@ const ScanningOverlay: React.FC<ScanningOverlayProps> = ({ isScanning }) => {
     const progress = scanLinePosition.value;
     return {
       top: `${progress * 82}%`,
-      opacity: interpolate(
-        progress,
-        [0, 0.1, 0.5, 0.9, 1],
-        [0, 0.8, 1, 0.8, 0]
-      ) * scanLineOpacity.value,
+      opacity:
+        interpolate(progress, [0, 0.1, 0.5, 0.9, 1], [0, 0.8, 1, 0.8, 0]) *
+        scanLineOpacity.value,
     };
   });
 
@@ -84,7 +85,7 @@ const ScanningOverlay: React.FC<ScanningOverlayProps> = ({ isScanning }) => {
       tl: 'top-0 left-0',
       tr: 'top-0 right-0',
       bl: 'bottom-0 left-0',
-      br: 'bottom-0 right-0'
+      br: 'bottom-0 right-0',
     };
 
     return (
@@ -93,21 +94,24 @@ const ScanningOverlay: React.FC<ScanningOverlayProps> = ({ isScanning }) => {
         <View className="absolute inset-0">
           {/* Horizontal line */}
           <View
-            className={`absolute w-8 h-1 bg-white rounded-full ${position.includes('t') ? 'top-0' : 'bottom-0'
-              } ${position.includes('l') ? 'left-0' : 'right-0'}`}
+            className={`absolute w-8 h-1 bg-white rounded-full ${
+              position.includes('t') ? 'top-0' : 'bottom-0'
+            } ${position.includes('l') ? 'left-0' : 'right-0'}`}
           />
           {/* Vertical line */}
           <View
-            className={`absolute w-1 h-8 bg-white rounded-full ${position.includes('t') ? 'top-0' : 'bottom-0'
-              } ${position.includes('l') ? 'left-0' : 'right-0'}`}
+            className={`absolute w-1 h-8 bg-white rounded-full ${
+              position.includes('t') ? 'top-0' : 'bottom-0'
+            } ${position.includes('l') ? 'left-0' : 'right-0'}`}
           />
         </View>
 
         {/* Glow effect */}
         <Animated.View style={[cornerGlowStyle]} className="absolute inset-0">
           <View
-            className={`absolute w-8 h-1 rounded-full ${position.includes('t') ? 'top-0' : 'bottom-0'
-              } ${position.includes('l') ? 'left-0' : 'right-0'}`}
+            className={`absolute w-8 h-1 rounded-full ${
+              position.includes('t') ? 'top-0' : 'bottom-0'
+            } ${position.includes('l') ? 'left-0' : 'right-0'}`}
             style={{
               backgroundColor: ColorPalette.green.accent,
               shadowColor: ColorPalette.green.accent,
@@ -118,8 +122,9 @@ const ScanningOverlay: React.FC<ScanningOverlayProps> = ({ isScanning }) => {
             }}
           />
           <View
-            className={`absolute w-1 h-8 rounded-full ${position.includes('t') ? 'top-0' : 'bottom-0'
-              } ${position.includes('l') ? 'left-0' : 'right-0'}`}
+            className={`absolute w-1 h-8 rounded-full ${
+              position.includes('t') ? 'top-0' : 'bottom-0'
+            } ${position.includes('l') ? 'left-0' : 'right-0'}`}
             style={{
               backgroundColor: ColorPalette.green.accent,
               shadowColor: ColorPalette.green.accent,

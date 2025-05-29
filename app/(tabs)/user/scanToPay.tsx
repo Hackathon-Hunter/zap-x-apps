@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
+
 import { View, Alert } from 'react-native';
+
 import { Camera, CameraView } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
+
 import CameraPlaceholder from '@/components/ui/CameraPlaceholder';
 import PermissionScreen from '@/components/ui/PermissionScreen';
 import ScanControls from '@/components/ui/ScanControls';
@@ -45,7 +48,6 @@ const UserScanToPay = () => {
 
   // Strict validation function
   const validateQRData = (data: any): data is ValidQRData => {
-
     // Must be an object
     if (!data || typeof data !== 'object') {
       return false;
@@ -56,20 +58,35 @@ const UserScanToPay = () => {
       return false;
     }
 
-    if (!data.merchant || typeof data.merchant !== 'string' || data.merchant.trim() === '') {
+    if (
+      !data.merchant ||
+      typeof data.merchant !== 'string' ||
+      data.merchant.trim() === ''
+    ) {
       return false;
     }
 
     if (data.type === 'dynamic') {
       const requiredFields = ['currency', 'amount', 'adminFee', 'total'];
       for (const field of requiredFields) {
-        if (!data[field] || typeof data[field] !== 'string' || data[field].trim() === '') {
+        if (
+          !data[field] ||
+          typeof data[field] !== 'string' ||
+          data[field].trim() === ''
+        ) {
           return false;
         }
       }
 
       // Check that we don't have extra unexpected fields (optional, but good practice)
-      const allowedFields = ['type', 'merchant', 'currency', 'amount', 'adminFee', 'total'];
+      const allowedFields = [
+        'type',
+        'merchant',
+        'currency',
+        'amount',
+        'adminFee',
+        'total',
+      ];
       const dataKeys = Object.keys(data);
       for (const key of dataKeys) {
         if (!allowedFields.includes(key)) {
@@ -84,7 +101,11 @@ const UserScanToPay = () => {
         return false;
       }
 
-      if (!data.adminFee || typeof data.adminFee !== 'string' || data.adminFee.trim() === '') {
+      if (
+        !data.adminFee ||
+        typeof data.adminFee !== 'string' ||
+        data.adminFee.trim() === ''
+      ) {
         return false;
       }
 
@@ -120,7 +141,7 @@ const UserScanToPay = () => {
           'This QR code format is not supported. Please scan a valid payment QR code.',
           [
             { text: 'Scan Again', onPress: resetScanner },
-            { text: 'Cancel', onPress: () => { } },
+            { text: 'Cancel', onPress: () => {} },
           ]
         );
         return;
@@ -133,7 +154,7 @@ const UserScanToPay = () => {
           'This QR code is not a valid payment QR code. Please scan a QR code from a supported merchant.',
           [
             { text: 'Scan Again', onPress: resetScanner },
-            { text: 'Cancel', onPress: () => { } },
+            { text: 'Cancel', onPress: () => {} },
           ]
         );
         return;
@@ -166,10 +187,10 @@ const UserScanToPay = () => {
     } catch (error) {
       Alert.alert(
         'QR Code Error',
-        'Failed to process the QR code. Please ensure it\'s a valid payment QR code.',
+        "Failed to process the QR code. Please ensure it's a valid payment QR code.",
         [
           { text: 'Scan Again', onPress: resetScanner },
-          { text: 'Cancel', onPress: () => { } },
+          { text: 'Cancel', onPress: () => {} },
         ]
       );
     }
@@ -191,7 +212,8 @@ const UserScanToPay = () => {
 
   const pickImageFromGallery = async () => {
     try {
-      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      const { status } =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
 
       if (status !== 'granted') {
         Alert.alert(
