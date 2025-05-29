@@ -30,9 +30,9 @@ export default function MerchantLayout() {
 
   if (loading) return null;
 
-  if (!user || user.role !== 'merchant') {
-    return <Redirect href="/(auth)/login" />;
-  }
+  // if (!user || user.role !== 'merchant') {
+  //   return <Redirect href="/(auth)/login" />;
+  // }
 
   return (
     <View className="flex-1 px-4">
