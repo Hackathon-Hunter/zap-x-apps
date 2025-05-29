@@ -34,7 +34,6 @@ export default function TabLayout() {
   useEffect(() => {
     const checkAuthAndRole = async () => {
       try {
-
         if (!role) {
           router.replace('/(auth)/login');
           return;

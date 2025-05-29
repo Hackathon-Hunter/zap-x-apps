@@ -168,7 +168,6 @@ export default function LoginScreen() {
 
   // Handle wallet connection/disconnection
   const handleLoginUser = useCallback(async () => {
-
     if (isConnecting) {
       return;
     }
