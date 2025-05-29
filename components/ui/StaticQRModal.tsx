@@ -21,7 +21,7 @@ interface PaymentSuccessModalProps {
   qrData: {
     type: 'static';
     merchant: string;
-    currency: 'IDR';
+    currency: string;
     adminFee: string;
   };
   onDownloadReceipt?: () => void;

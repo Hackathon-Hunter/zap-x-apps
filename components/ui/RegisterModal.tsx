@@ -34,7 +34,11 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ visible, onClose }) => {
   const [isRegistering, setIsRegistering] = useState(false);
 
   const router = useRouter();
-  const { setRole, setLocalPrincipalId } = useAuthStore();
+  const {
+    setRole,
+    setLocalPrincipalId,
+    principalId: principalIdIcp,
+  } = useAuthStore();
 
   const isNavigatingRef = useRef(false);
 
@@ -120,25 +124,27 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ visible, onClose }) => {
       return;
     }
 
+    // If no principalId, start authentication flow
+    if (!principalId) {
+      handleClipboardAuth();
+      return;
+    }
+
     try {
       setIsRegistering(true);
 
-      if (!principalId) {
-        const testIdentity = Ed25519KeyIdentity.generate();
-        await icpAgent.init(testIdentity);
-      }
+      await icpAgent.init();
       const result = await icpAgent.registerMerchant(
         inputValueName,
-        inputValueEmail
+        inputValueEmail,
+        principalId
       );
 
       setIsRegistering(false);
 
       if (result.success) {
         Alert.alert('Success', 'Merchant registered successfully!');
-        if (result.merchant && result.merchant.principal_id) {
-          setPrincipalId(result.merchant.principal_id);
-        }
+        goToDashboard();
       } else {
         Alert.alert('Error', result.error || 'Registration failed');
       }
@@ -191,7 +197,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ visible, onClose }) => {
               onPress={handleRegisterMerchant}
               text={isRegistering ? 'Registering...' : 'Register Merchant'}
               RightIcon={ArrowRightIcon}
-              disabled={isRegistering}
+              disabled={isRegistering || !inputValueName || !inputValueEmail}
             />
           </View>
 
