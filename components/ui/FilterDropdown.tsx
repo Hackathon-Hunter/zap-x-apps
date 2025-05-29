@@ -41,11 +41,13 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
 
       {isOpen && (
         <View className="absolute top-12 left-0 right-0 bg-black border border-gray-700 rounded-md z-10 max-h-40">
-          <ScrollView nestedScrollEnabled={true}>
+          <ScrollView>
             {options.map((option) => (
               <Pressable
                 key={option}
                 onPress={() => {
+                  console.log(option);
+
                   onSelect(option);
                   onToggle();
                 }}
