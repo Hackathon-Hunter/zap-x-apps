@@ -31,9 +31,11 @@ const TokenBalanceMerchant = ({
   token = 'BOME',
   amount = '2,000',
   onTokenChange, // Optional callback to parent component
+  showGenerateQR,
 }: {
   token?: string;
   amount?: string;
+  showGenerateQR: boolean;
   onTokenChange?: (newToken: string) => void;
 }) => {
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
@@ -94,12 +96,14 @@ const TokenBalanceMerchant = ({
         </View>
       </View>
       <View className="flex flex-row justify-around">
-        <ThemeButton
-          variant="primary"
-          onPress={() => {}}
-          text="Generate QR"
-          LeftIcon={QRIcon}
-        />
+        {showGenerateQR && (
+          <ThemeButton
+            variant="primary"
+            onPress={() => {}}
+            text="Generate QR"
+            LeftIcon={QRIcon}
+          />
+        )}
         <ThemeButton
           variant="primary"
           onPress={() => {}}
