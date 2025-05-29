@@ -60,39 +60,19 @@ export default function LoginScreen() {
         const currentRole = useAuthStore.getState().role;
         const currentWalletConnected = useWalletStore.getState().isConnected;
 
-        console.log('🔍 Checking auth status:', {
-          currentRole,
-          currentWalletConnected,
-          isConnected,
-          initialLoadComplete,
-        });
-
-        // Case 1: User has role AND wallet is connected (returning user) - SKIP successUser
         if (currentRole && (currentWalletConnected || isConnected)) {
-          console.log(
-            '🚀 Returning user found! Role:',
-            currentRole,
-            '- Going directly to tabs'
-          );
           setHasNavigated(true);
           router.replace('/(tabs)');
           return;
         }
 
-        // Case 2: User has role but no wallet connection (wallet disconnected externally)
         if (currentRole && !currentWalletConnected && !isConnected) {
-          console.log(
-            '⚠️ User has role but no wallet connection, clearing role'
-          );
           const { clearRole } = useAuthStore.getState();
           clearRole();
         }
 
-        // Case 3: No role or wallet connection (first time or after logout)
-        console.log('✅ No valid session found, showing login screen');
         setIsCheckingAuth(false);
       } catch (error) {
-        console.error('❌ Error checking auth status:', error);
         setIsCheckingAuth(false);
       }
     };
@@ -104,12 +84,6 @@ export default function LoginScreen() {
   useEffect(() => {
     if (!initialLoadComplete) return;
 
-    console.log('📊 Role or connection changed:', {
-      role,
-      walletStoreConnected,
-      isConnected,
-    });
-
     // If we have a role and wallet connection and haven't navigated yet
     if (
       role &&
@@ -117,7 +91,6 @@ export default function LoginScreen() {
       !hasNavigated &&
       !isCheckingAuth
     ) {
-      console.log('🔄 Role/connection changed - redirecting to tabs');
       setHasNavigated(true);
       router.replace('/(tabs)');
     }
@@ -134,7 +107,6 @@ export default function LoginScreen() {
   // Reset state when screen comes into focus
   useFocusEffect(
     useCallback(() => {
-      console.log('Login screen focused');
       setIsConnecting(false);
       setHasNavigated(false);
 
@@ -151,17 +123,7 @@ export default function LoginScreen() {
     }, [])
   );
 
-  // Navigation logic for wallet connection - UPDATED WITH ROLE CHECK
   useEffect(() => {
-    console.log('Connection state:', {
-      isConnected,
-      hasNavigated,
-      isConnecting,
-      isCheckingAuth,
-      role,
-    });
-
-    // FIRST-TIME LOGIN: Wallet connected but no role yet
     if (
       isConnected &&
       !hasNavigated &&
@@ -169,13 +131,9 @@ export default function LoginScreen() {
       !isCheckingAuth &&
       !role
     ) {
-      console.log(
-        '🔥 First-time wallet connection - no role exists, navigating to successUser'
-      );
       setHasNavigated(true);
 
       setTimeout(() => {
-        console.log('Executing navigation to successUser');
         router.replace('/(auth)/successUser');
       }, 100);
     }
@@ -188,11 +146,6 @@ export default function LoginScreen() {
       !isCheckingAuth &&
       role
     ) {
-      console.log(
-        '🔥 Returning user - wallet connected and role exists:',
-        role,
-        '- going directly to tabs'
-      );
       setHasNavigated(true);
       router.replace('/(tabs)');
     }
@@ -215,17 +168,13 @@ export default function LoginScreen() {
 
   // Handle wallet connection/disconnection
   const handleLoginUser = useCallback(async () => {
-    console.log('Button pressed:', { isConnected, isConnecting });
 
     if (isConnecting) {
-      console.log('Already connecting, ignoring');
       return;
     }
 
     try {
       if (isConnected && provider) {
-        // Disconnect wallet
-        console.log('Disconnecting wallet...');
         setIsConnecting(true);
         await provider.disconnect();
 
@@ -235,15 +184,11 @@ export default function LoginScreen() {
           setHasNavigated(false);
         }, 1000);
       } else {
-        // Connect wallet
-        console.log('Opening wallet modal...');
         setIsConnecting(true);
         setHasNavigated(false);
 
         try {
           await open();
-          console.log('Modal opened successfully');
-          // Don't reset isConnecting here - let the connection effect handle it
         } catch (error) {
           console.error('Error opening modal:', error);
           setIsConnecting(false);

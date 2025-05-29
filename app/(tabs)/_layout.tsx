@@ -34,21 +34,13 @@ export default function TabLayout() {
   useEffect(() => {
     const checkAuthAndRole = async () => {
       try {
-        console.log('TabLayout: Checking auth and role:', {
-          role,
-          isConnected,
-        });
 
         if (!role) {
-          console.log('TabLayout: No role found, redirecting to login');
           router.replace('/(auth)/login');
           return;
         }
 
         if (role && !isConnected) {
-          console.log(
-            'TabLayout: Role exists but wallet not connected, clearing role and redirecting'
-          );
           const { clearRole } = useAuthStore.getState();
           clearRole();
           router.replace('/(auth)/login');
@@ -56,15 +48,11 @@ export default function TabLayout() {
         }
 
         if (role && isConnected) {
-          console.log('TabLayout: User authenticated with role:', role);
           setIsCheckingAuth(false);
           return;
         }
-
-        console.log('TabLayout: Fallback redirect to login');
         router.replace('/(auth)/login');
       } catch (error) {
-        console.error('TabLayout: Error checking auth:', error);
         setAuthError('Authentication error occurred');
         setIsCheckingAuth(false);
       }
