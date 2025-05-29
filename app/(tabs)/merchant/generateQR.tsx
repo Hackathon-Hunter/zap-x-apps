@@ -9,6 +9,7 @@ import {
   Platform,
   PermissionsAndroid,
   ToastAndroid,
+  Alert,
 } from 'react-native';
 
 import { CameraRoll } from '@react-native-camera-roll/camera-roll';
@@ -26,6 +27,11 @@ import StaticQRModal from '@/components/ui/StaticQRModal';
 import { Colors } from '@/constants/Colors';
 
 const DEFAULT_CURRENCY_OPTIONS = ['IDR', 'USD'];
+const ADMIN_FEE_PERCENTAGE = 0.1; // 4% admin fee
+const MIN_TRANSFER_IDR = 10000;
+const MAX_TRANSFER_IDR = 1000000;
+const MIN_TRANSFER_USD = 1;
+const MAX_TRANSFER_USD = 100;
 
 function GradientBorderBox() {
   return (
@@ -51,13 +57,86 @@ const GenerateQRForm = () => {
   const [isStaticQRModalVisible, setStaticQRModalVisible] = useState(false);
   const [hasStoragePermission, setHasStoragePermission] = useState(false);
 
-  const options = ['IDR', 'USD'];
+  // Calculate admin fee and total
+  const calculateAdminFee = (amountValue: number) => {
+    return Math.round(amountValue * ADMIN_FEE_PERCENTAGE);
+  };
+
+  const calculateTotal = (amountValue: number) => {
+    return amountValue + calculateAdminFee(amountValue);
+  };
+
+  // Format number with thousand separators
+  const formatNumber = (num: number) => {
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  };
+
+  // Get min and max values based on currency
+  const getMinMax = () => {
+    if (selectedCurrency === 'IDR') {
+      return {
+        min: MIN_TRANSFER_IDR,
+        max: MAX_TRANSFER_IDR,
+        minFormatted: formatNumber(MIN_TRANSFER_IDR),
+        maxFormatted: formatNumber(MAX_TRANSFER_IDR),
+      };
+    } else {
+      return {
+        min: MIN_TRANSFER_USD,
+        max: MAX_TRANSFER_USD,
+        minFormatted: MIN_TRANSFER_USD.toString(),
+        maxFormatted: MAX_TRANSFER_USD.toString(),
+      };
+    }
+  };
 
   const toggleDropdown = () => setIsDropdownVisible(!isDropdownVisible);
 
   const handleSelectOption = (option: string) => {
     setSelectedCurrency(option);
     setIsDropdownVisible(false);
+    // Clear amount when currency changes
+    setAmount('');
+  };
+
+  const handleGenerateDynamicQR = () => {
+    const numericAmount = parseFloat(amount.replace(/\./g, '').replace(/,/g, ''));
+
+    if (!amount || isNaN(numericAmount) || numericAmount === 0) {
+      Alert.alert('Error', 'Please enter a valid amount');
+      return;
+    }
+
+    const { min, max } = getMinMax();
+
+    if (numericAmount < min) {
+      Alert.alert('Error', `Minimum amount is ${selectedCurrency} ${getMinMax().minFormatted}`);
+      return;
+    }
+
+    if (numericAmount > max) {
+      Alert.alert('Error', `Maximum amount is ${selectedCurrency} ${getMinMax().maxFormatted}`);
+      return;
+    }
+
+    setDynamicQRModalVisible(true);
+  };
+
+  const handleAmountChange = (text: string) => {
+    // Remove non-numeric characters except dots for thousand separators
+    let cleanedText = text.replace(/[^0-9]/g, '');
+
+    // Add thousand separators
+    if (cleanedText) {
+      const numericValue = parseInt(cleanedText, 10);
+      if (!isNaN(numericValue)) {
+        setAmount(formatNumber(numericValue));
+      } else {
+        setAmount('');
+      }
+    } else {
+      setAmount('');
+    }
   };
 
   useEffect(() => {
@@ -137,6 +216,24 @@ const GenerateQRForm = () => {
     }
   };
 
+  // Get dynamic QR data based on current amount
+  const getDynamicQRData = () => {
+    const numericAmount = parseFloat(amount.replace(/\./g, '').replace(/,/g, '')) || 0;
+    const adminFee = calculateAdminFee(numericAmount);
+    const total = calculateTotal(numericAmount);
+
+    return {
+      type: 'dynamic' as const,
+      merchant: 'Kos Bu Diarto',
+      currency: selectedCurrency,
+      amount: numericAmount.toString(),
+      adminFee: adminFee.toString(),
+      total: total.toString(),
+    };
+  };
+
+  const { minFormatted, maxFormatted } = getMinMax();
+
   return (
     <ScrollView>
       <GradientBorderBox />
@@ -149,7 +246,7 @@ const GenerateQRForm = () => {
           <View className="flex-row items-center">
             <TextInput
               value={amount}
-              onChangeText={setAmount}
+              onChangeText={handleAmountChange}
               keyboardType="numeric"
               placeholder="0"
               placeholderTextColor="#aaa"
@@ -158,11 +255,11 @@ const GenerateQRForm = () => {
             />
             <View>
               <FilterDropdown
-                selectedValue={DEFAULT_CURRENCY_OPTIONS[0]}
+                selectedValue={selectedCurrency}
                 options={DEFAULT_CURRENCY_OPTIONS}
-                onSelect={() => {}}
-                isOpen={false}
-                onToggle={() => {}}
+                onSelect={handleSelectOption}
+                isOpen={isDropdownVisible}
+                onToggle={toggleDropdown}
                 LeftIcon={WalletIcon}
               />
             </View>
@@ -183,13 +280,13 @@ const GenerateQRForm = () => {
                 color={Colors.dark.text.secondary}
                 className="text-right text-xs"
               >
-                IDR
+                {selectedCurrency}
               </ThemedText>
               <ThemedText
                 color={Colors.dark.text.primary}
                 className="text-right"
               >
-                100.000
+                {minFormatted}
               </ThemedText>
             </View>
           </View>
@@ -205,13 +302,13 @@ const GenerateQRForm = () => {
                 color={Colors.dark.text.secondary}
                 className="text-right text-xs"
               >
-                IDR
+                {selectedCurrency}
               </ThemedText>
               <ThemedText
                 color={Colors.dark.text.primary}
                 className="text-right"
               >
-                100.000
+                {maxFormatted}
               </ThemedText>
             </View>
           </View>
@@ -220,7 +317,7 @@ const GenerateQRForm = () => {
         {/* Generate QR Button */}
         <ThemeButton
           variant="primary"
-          onPress={() => setDynamicQRModalVisible(true)}
+          onPress={handleGenerateDynamicQR}
           text="Generate QR"
           RightIcon={QRIcon}
         />
@@ -247,44 +344,11 @@ const GenerateQRForm = () => {
         />
       </View>
 
-      {/* Dropdown */}
-      {isDropdownVisible && (
-        <View className="absolute top-16 right-6 left-6 bg-black border border-gray-700 rounded-md z-10 max-h-40">
-          <ScrollView nestedScrollEnabled={true}>
-            {options.map((option) => (
-              <Pressable
-                key={option}
-                onPress={() => handleSelectOption(option)}
-                className="p-3 border-b border-gray-800 last:border-b-0 items-center"
-              >
-                <ThemedText
-                  color={
-                    selectedCurrency === option
-                      ? Colors.dark.text.primary
-                      : Colors.dark.text.secondary
-                  }
-                  className="text-sm text-center"
-                >
-                  {option}
-                </ThemedText>
-              </Pressable>
-            ))}
-          </ScrollView>
-        </View>
-      )}
-
       {/* Dynamic QR Modal */}
       <DynamicQRModal
         visible={isDynamicQRModalVisible}
         onClose={() => setDynamicQRModalVisible(false)}
-        qrData={{
-          type: 'dynamic',
-          merchant: 'Kos Bu Diarto',
-          currency: 'IDR',
-          amount: '50000',
-          adminFee: '2000',
-          total: '52000',
-        }}
+        qrData={getDynamicQRData()}
         onDownloadReceipt={() => {
           saveQrToDisk();
         }}
@@ -297,7 +361,7 @@ const GenerateQRForm = () => {
         qrData={{
           type: 'static',
           merchant: 'Kos Bu Diarto',
-          currency: 'IDR',
+          currency: selectedCurrency,
           adminFee: '2000',
         }}
         onDownloadReceipt={() => {

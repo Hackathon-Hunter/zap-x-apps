@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 
-import { StyleSheet, ToastAndroid, TouchableOpacity, View } from 'react-native';
+import { ToastAndroid, TouchableOpacity, View } from 'react-native';
 
 import Share from 'react-native-share';
 
@@ -14,6 +14,7 @@ import ZapIcon from '../icons/ZapIcon'; // Import your ZapIcon
 import ThemeButton from '../ThemedButton';
 import { ThemedText } from '../ThemedText';
 import QRWithLogo from './QRWithLogo'; // Import the new component
+import { currencyFormatter } from '@/utils/numberUtils';
 
 interface PaymentSuccessModalProps {
   visible: boolean;
@@ -37,7 +38,7 @@ const DynamicQRModal: React.FC<PaymentSuccessModalProps> = ({
   visible,
   onClose,
   qrData,
-  onDownloadReceipt = () => {},
+  onDownloadReceipt = () => { },
 }) => {
   const qrRef = useRef<QRCodeRef>(null);
   const [isQRReady, setIsQRReady] = useState(false);
@@ -104,26 +105,68 @@ const DynamicQRModal: React.FC<PaymentSuccessModalProps> = ({
           onError={handleQRError}
         />
 
-        {/* Amount Display and Action Buttons - Only show when QR is ready */}
         {isQRReady && (
           <>
-            <View className="flex flex-row items-end gap-2 mt-4">
-              <ThemedText
-                color={Colors.dark.text.secondary}
-                numbersOnly
-                className="text-base font-medium"
-              >
-                IDR
-              </ThemedText>
-              <ThemedText
-                color={Colors.dark.text.primary}
-                numbersOnly
-                className="text-4xl font-medium mt-1"
-                style={{ textShadowColor: 'white', textShadowRadius: 10 }}
-              >
-                {qrData.amount}
-              </ThemedText>
+            <View className="flex flex-grow items-center justify-center mt-4 mb-6 w-full">
+              <View className="bg-gray-800 rounded-xl p-4 mb-6 w-full">
+                <ThemedText
+                  color={Colors.dark.text.secondary}
+                  className="text-sm mb-3"
+                >
+                  Payment Details
+                </ThemedText>
+
+                <View className="space-y-2">
+                  {/* ... (keep all your existing payment detail rows) */}
+                  <View className="flex-row justify-between">
+                    <ThemedText color={Colors.dark.text.secondary} className="text-sm">
+                      Merchant
+                    </ThemedText>
+                    <ThemedText color={Colors.dark.text.primary} className="text-sm font-medium">
+                      {qrData.merchant}
+                    </ThemedText>
+                  </View>
+
+                  <View className="flex-row justify-between">
+                    <ThemedText color={Colors.dark.text.secondary} className="text-sm">
+                      Amount
+                    </ThemedText>
+                    <ThemedText color={Colors.dark.text.primary} className="text-sm font-medium">
+                      {qrData.currency} {currencyFormatter(Number(qrData.amount))}
+                    </ThemedText>
+                  </View>
+
+                  <View className="flex-row justify-between">
+                    <ThemedText color={Colors.dark.text.secondary} className="text-sm">
+                      Admin Fee
+                    </ThemedText>
+                    <ThemedText color={Colors.dark.text.primary} className="text-sm font-medium">
+                      {qrData.currency} {currencyFormatter(Number(qrData.adminFee))}
+                    </ThemedText>
+                  </View>
+
+                  <View className="h-px bg-gray-700 my-2" />
+
+                  <View className="flex-row justify-between">
+                    <ThemedText color={Colors.dark.text.secondary} className="text-sm font-semibold">
+                      Total
+                    </ThemedText>
+                    <ThemedText color={Colors.dark.text.primary} className="text-base font-bold">
+                      {qrData.currency} {currencyFormatter(Number(qrData.total))}
+                    </ThemedText>
+                  </View>
+                </View>
+              </View>
             </View>
+
+            {/* Info Text */}
+            <ThemedText
+              color={Colors.dark.text.secondary}
+              className="text-xs text-center mb-6"
+            >
+              This QR code is valid for one-time use only.
+              Please ensure the payer scans it within 15 minutes.
+            </ThemedText>
 
             <View className="flex flex-row items-end gap-2 mt-4">
               <ThemeButton

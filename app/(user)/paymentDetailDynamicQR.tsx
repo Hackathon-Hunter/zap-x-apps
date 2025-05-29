@@ -381,9 +381,9 @@ const PaymentDetailDynamicQR: React.FC = () => {
     router.push('/(tabs)/user/transactionHistory');
   };
 
-  const handleShareReceipt = () => {};
+  const handleShareReceipt = () => { };
 
-  const handleDownloadReceipt = () => {};
+  const handleDownloadReceipt = () => { };
 
   const handleCancel = () => {
     router.back();

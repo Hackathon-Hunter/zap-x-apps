@@ -21,7 +21,7 @@ interface PaymentSuccessModalProps {
   qrData: {
     type: 'static';
     merchant: string;
-    currency: 'IDR';
+    currency: string;
     adminFee: string;
   };
   onDownloadReceipt?: () => void;
@@ -35,7 +35,7 @@ const StaticQRModal: React.FC<PaymentSuccessModalProps> = ({
   visible,
   onClose,
   qrData,
-  onDownloadReceipt = () => {},
+  onDownloadReceipt = () => { },
 }) => {
   const qrRef = useRef<QRCodeRef>(null);
   const [isQRReady, setIsQRReady] = useState(false);
