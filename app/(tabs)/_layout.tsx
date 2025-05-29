@@ -34,44 +34,19 @@ export default function TabLayout() {
   useEffect(() => {
     const checkAuthAndRole = async () => {
       try {
-        console.log('TabLayout: Checking auth and role:', {
-          role,
-          isConnected,
-        });
-
         if (!role) {
-          console.log('TabLayout: No role found, redirecting to login');
           router.replace('/(auth)/login');
           return;
         }
-
-        if (role && !isConnected) {
-          console.log(
-            'TabLayout: Role exists but wallet not connected, clearing role and redirecting'
-          );
-          const { clearRole } = useAuthStore.getState();
-          clearRole();
-          router.replace('/(auth)/login');
-          return;
-        }
-
-        if (role && isConnected) {
-          console.log('TabLayout: User authenticated with role:', role);
-          setIsCheckingAuth(false);
-          return;
-        }
-
-        console.log('TabLayout: Fallback redirect to login');
-        router.replace('/(auth)/login');
+        setIsCheckingAuth(false);
       } catch (error) {
-        console.error('TabLayout: Error checking auth:', error);
         setAuthError('Authentication error occurred');
         setIsCheckingAuth(false);
       }
     };
 
     checkAuthAndRole();
-  }, [role, isConnected, router]);
+  }, [role, router]);
 
   // Show loading while checking auth
   if (isCheckingAuth) {
@@ -178,7 +153,7 @@ export default function TabLayout() {
         {__DEV__ && (
           <View className="mb-2 p-2 bg-gray-800 rounded">
             <ThemedText color={Colors.dark.text.secondary} className="text-xs">
-              Debug: Role: {role || 'None'} | Connected:{' '}
+              Debug: Role: {role || 'None'} | Wallet Connected:{' '}
               {isConnected ? 'Yes' : 'No'}
             </ThemedText>
           </View>
