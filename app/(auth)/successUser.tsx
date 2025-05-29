@@ -160,7 +160,7 @@ export default function SuccessUser() {
       try {
         // @ts-ignore - WalletConnect types issue
         provider.on('connect', handleConnect);
-        provider.on('chainChanged', handleChainChange);
+        // provider.on('chainChanged', handleChainChange);
 
         // Handle disconnections
         const handleDisconnect = () => {
