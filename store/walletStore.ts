@@ -1,8 +1,9 @@
 // store/walletStore.ts
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { IProvider } from '@walletconnect/modal-react-native';
 import { Chain } from 'viem';
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { createJSONStorage, persist } from 'zustand/middleware';
 
 interface WalletState {
   isConnected: boolean;
@@ -81,6 +82,7 @@ const useWalletStore = create<WalletState>()(
     }),
     {
       name: 'wallet-storage',
+      storage: createJSONStorage(() => AsyncStorage),
       partialize: (state) => ({
         isConnected: state.isConnected,
         walletName: state.walletName,
