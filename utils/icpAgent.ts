@@ -15,7 +15,19 @@ const idlFactory = ({ IDL }: { IDL: any }) => {
 
   return IDL.Service({
     registerMerchant: IDL.Func(
-      [IDL.Record({ name: IDL.Text, email: IDL.Text })],
+      [
+        IDL.Opt(IDL.Principal),
+        IDL.Record({
+          name: IDL.Opt(IDL.Text),
+          businessType: IDL.Opt(IDL.Text),
+          email: IDL.Opt(IDL.Text),
+          website: IDL.Opt(IDL.Text),
+          registrationDate: IDL.Opt(IDL.Nat64),
+          phoneNumber: IDL.Opt(IDL.Text),
+          icpAddress: IDL.Opt(IDL.Text),
+          location: IDL.Opt(IDL.Text),
+        }),
+      ],
       [IDL.Bool],
       []
     ),
@@ -25,10 +37,19 @@ const idlFactory = ({ IDL }: { IDL: any }) => {
 };
 
 interface MerchantActor {
-  registerMerchant: (request: {
-    name: string;
-    email: string;
-  }) => Promise<boolean>;
+  registerMerchant: (
+    principal: [] | [Principal],
+    request: {
+      name: [] | [string];
+      businessType: [] | [string];
+      email: [] | [string];
+      website: [] | [string];
+      registrationDate: [] | [bigint];
+      phoneNumber: [] | [string];
+      icpAddress: [] | [string];
+      location: [] | [string];
+    }
+  ) => Promise<boolean>;
   getMerchant: (principalId: string) => Promise<any[]>;
   whoami: () => Promise<string>;
 }
@@ -80,13 +101,43 @@ class ICPAgent {
     }
 
     try {
-      const request = {
-        name,
-        email,
+      // Get the principal if available
+      let principalArg: [] | [Principal] = [];
+      if (this.identity) {
+        principalArg = [this.identity.getPrincipal()];
+      }
+
+      // Create request with all the fields the canister expects
+      const merchantData: {
+        name: [] | [string];
+        email: [] | [string];
+        businessType: [] | [string];
+        website: [] | [string];
+        registrationDate: [] | [bigint];
+        phoneNumber: [] | [string];
+        icpAddress: [] | [string];
+        location: [] | [string];
+      } = {
+        name: [name],
+        email: [email],
+        businessType: ['1'],
+        website: [''],
+        registrationDate: [BigInt(Date.now())],
+        phoneNumber: [''],
+        icpAddress: [''],
+        location: [''],
       };
 
-      const success = await this.actor.registerMerchant(request);
+      console.log('Sending merchant registration request:', {
+        principal: principalArg.length ? principalArg[0].toString() : 'none',
+        data: merchantData,
+      });
 
+      // Call the canister method
+      const success = await this.actor.registerMerchant(
+        principalArg,
+        merchantData
+      );
       console.log('Registration response:', success);
 
       if (success) {
@@ -94,12 +145,16 @@ class ICPAgent {
         let merchant = null;
 
         if (principal) {
-          merchant = await this.getMerchant(principal);
+          try {
+            merchant = await this.getMerchant(principal);
+          } catch (err) {
+            console.error('Error fetching merchant data:', err);
+          }
         }
 
         return {
           success: true,
-          merchant: merchant,
+          merchant: merchant || { principal_id: principal },
         };
       } else {
         return {
@@ -110,6 +165,7 @@ class ICPAgent {
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : 'Registration failed';
+      console.error('Registration error:', error);
       return {
         success: false,
         error: errorMessage,
