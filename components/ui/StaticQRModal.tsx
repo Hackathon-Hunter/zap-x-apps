@@ -35,7 +35,7 @@ const StaticQRModal: React.FC<PaymentSuccessModalProps> = ({
   visible,
   onClose,
   qrData,
-  onDownloadReceipt = () => { },
+  onDownloadReceipt = () => {},
 }) => {
   const qrRef = useRef<QRCodeRef>(null);
   const [isQRReady, setIsQRReady] = useState(false);

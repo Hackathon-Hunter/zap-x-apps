@@ -100,7 +100,9 @@ const GenerateQRForm = () => {
   };
 
   const handleGenerateDynamicQR = () => {
-    const numericAmount = parseFloat(amount.replace(/\./g, '').replace(/,/g, ''));
+    const numericAmount = parseFloat(
+      amount.replace(/\./g, '').replace(/,/g, '')
+    );
 
     if (!amount || isNaN(numericAmount) || numericAmount === 0) {
       Alert.alert('Error', 'Please enter a valid amount');
@@ -110,12 +112,18 @@ const GenerateQRForm = () => {
     const { min, max } = getMinMax();
 
     if (numericAmount < min) {
-      Alert.alert('Error', `Minimum amount is ${selectedCurrency} ${getMinMax().minFormatted}`);
+      Alert.alert(
+        'Error',
+        `Minimum amount is ${selectedCurrency} ${getMinMax().minFormatted}`
+      );
       return;
     }
 
     if (numericAmount > max) {
-      Alert.alert('Error', `Maximum amount is ${selectedCurrency} ${getMinMax().maxFormatted}`);
+      Alert.alert(
+        'Error',
+        `Maximum amount is ${selectedCurrency} ${getMinMax().maxFormatted}`
+      );
       return;
     }
 
@@ -218,7 +226,8 @@ const GenerateQRForm = () => {
 
   // Get dynamic QR data based on current amount
   const getDynamicQRData = () => {
-    const numericAmount = parseFloat(amount.replace(/\./g, '').replace(/,/g, '')) || 0;
+    const numericAmount =
+      parseFloat(amount.replace(/\./g, '').replace(/,/g, '')) || 0;
     const adminFee = calculateAdminFee(numericAmount);
     const total = calculateTotal(numericAmount);
 
