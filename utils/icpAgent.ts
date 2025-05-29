@@ -95,7 +95,7 @@ class ICPAgent {
     }
   }
 
-  async registerMerchant(name: string, email: string) {
+  async registerMerchant(name: string, email: string, principalId?: string) {
     if (!this.actor) {
       throw new Error('Agent not initialized. Call init() first.');
     }
@@ -103,7 +103,13 @@ class ICPAgent {
     try {
       // Get the principal if available
       let principalArg: [] | [Principal] = [];
-      if (this.identity) {
+      if (principalId) {
+        try {
+          principalArg = [Principal.fromText(principalId)];
+        } catch (err) {
+          console.error('Failed to convert principalId to Principal:', err);
+        }
+      } else if (this.identity) {
         principalArg = [this.identity.getPrincipal()];
       }
 
