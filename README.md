@@ -1,4 +1,4 @@
-# ZapX Wallet 🚀
+# ZapX 🚀
 
 <p align="center">
   <img src="./assets/images/logo.png" alt="ZapX Logo" width="120" height="120"/>
