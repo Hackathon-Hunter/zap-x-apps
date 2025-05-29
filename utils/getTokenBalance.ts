@@ -23,18 +23,11 @@ export const getTokenBalance = async (
     const balanceNumber = parseFloat(formattedBalance);
 
     return formatTokenBalance(balanceNumber, token.decimal);
-  } catch (error) {
-    console.log(error);
+  } catch {
     throw new Error(`Failed to fetch ${token.symbol} balance`);
   }
 };
 
-/**
- * Format token balance with appropriate decimal places
- * @param balance - The balance as a number
- * @param decimals - Token decimals for context
- * @returns Formatted balance string
- */
 const formatTokenBalance = (balance: number, decimals: number): string => {
   if (balance === 0) return '0';
 
@@ -57,11 +50,6 @@ const formatTokenBalance = (balance: number, decimals: number): string => {
   return formatLargeNumber(balance);
 };
 
-/**
- * Format large numbers with K, M, B abbreviations
- * @param num - The number to format
- * @returns Formatted string with abbreviation
- */
 const formatLargeNumber = (num: number): string => {
   if (num >= 1e9) {
     return (num / 1e9).toFixed(2) + 'B';

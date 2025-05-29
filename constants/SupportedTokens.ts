@@ -10,6 +10,12 @@ export type Token = {
   network: string;
 };
 
+export type Currency = {
+  canisterId: string;
+  name: string;
+  symbol: string;
+};
+
 export const ERC20_ABI = [
   {
     inputs: [
@@ -285,21 +291,21 @@ export const ERC20_ABI = [
 
 export const SUPPORTED_TOKENS: Token[] = [
   {
-    address: '80749828AdD3a8338576Db2a5DDEeB8AA1F23192',
+    address: '0x80749828AdD3a8338576Db2a5DDEeB8AA1F23192',
     name: 'Ethereum',
     symbol: 'ETH',
     decimal: 18,
     network: 'Sepolia',
   },
   {
-    address: '99A76D328867A1162946504E943540838da9Bcb1',
+    address: '0x99A76D328867A1162946504E943540838da9Bcb1',
     name: 'Wrapped BTC',
     symbol: 'wBTC',
     decimal: 18,
     network: 'Sepolia',
   },
   {
-    address: 'E182D351b3e49A468Ed31DD2D644a6aeA8F9cD53',
+    address: '0xE182D351b3e49A468Ed31DD2D644a6aeA8F9cD53',
     name: 'Pepe',
     symbol: 'PEPE',
     decimal: 18,
@@ -308,3 +314,16 @@ export const SUPPORTED_TOKENS: Token[] = [
 ];
 
 export const CHAINS: Chain[] = [sepolia];
+
+export const SUPPORTED_CURRENCIES: Currency[] = [
+  {
+    canisterId: 'abcd',
+    symbol: 'IDR',
+    name: 'Rupiah',
+  },
+  {
+    canisterId: 'abcd',
+    symbol: 'USD',
+    name: 'US Dollar',
+  },
+];

@@ -5,7 +5,6 @@ import { ToastAndroid, TouchableOpacity, View } from 'react-native';
 import Share from 'react-native-share';
 
 import { Colors } from '@/constants/Colors';
-import { currencyFormatter } from '@/utils/numberUtils';
 
 import Modal from './ThemedModal';
 import DownloadFileIcon from '../icons/DownloadIcon';
@@ -20,12 +19,10 @@ interface PaymentSuccessModalProps {
   visible: boolean;
   onClose: () => void;
   qrData: {
-    type: 'dynamic';
+    type: 'static';
     merchant: string;
     currency: string;
-    amount: string;
     adminFee: string;
-    total: string;
   };
   onDownloadReceipt?: () => void;
 }
@@ -34,7 +31,7 @@ type QRCodeRef = {
   toDataURL: (callback: (data: string) => void) => void;
 };
 
-const DynamicQRModal: React.FC<PaymentSuccessModalProps> = ({
+const StaticQRModal: React.FC<PaymentSuccessModalProps> = ({
   visible,
   onClose,
   qrData,
@@ -88,7 +85,7 @@ const DynamicQRModal: React.FC<PaymentSuccessModalProps> = ({
       visible={visible}
       onClose={onClose}
       showCloseButton={true}
-      title="Dynamic QR"
+      title="Static QR"
     >
       <View className="items-center mt-4">
         {/* QR Code with ZapIcon Logo */}
@@ -105,96 +102,9 @@ const DynamicQRModal: React.FC<PaymentSuccessModalProps> = ({
           onError={handleQRError}
         />
 
+        {/* Action Buttons - Only show when QR is ready */}
         {isQRReady && (
           <>
-            <View className="flex flex-grow items-center justify-center mt-4 mb-6 w-full">
-              <View className="bg-gray-800 rounded-xl p-4 mb-6 w-full">
-                <ThemedText
-                  color={Colors.dark.text.secondary}
-                  className="text-sm mb-3"
-                >
-                  Payment Details
-                </ThemedText>
-
-                <View className="space-y-2">
-                  {/* ... (keep all your existing payment detail rows) */}
-                  <View className="flex-row justify-between">
-                    <ThemedText
-                      color={Colors.dark.text.secondary}
-                      className="text-sm"
-                    >
-                      Merchant
-                    </ThemedText>
-                    <ThemedText
-                      color={Colors.dark.text.primary}
-                      className="text-sm font-medium"
-                    >
-                      {qrData.merchant}
-                    </ThemedText>
-                  </View>
-
-                  <View className="flex-row justify-between">
-                    <ThemedText
-                      color={Colors.dark.text.secondary}
-                      className="text-sm"
-                    >
-                      Amount
-                    </ThemedText>
-                    <ThemedText
-                      color={Colors.dark.text.primary}
-                      className="text-sm font-medium"
-                    >
-                      {qrData.currency}{' '}
-                      {currencyFormatter(Number(qrData.amount))}
-                    </ThemedText>
-                  </View>
-
-                  <View className="flex-row justify-between">
-                    <ThemedText
-                      color={Colors.dark.text.secondary}
-                      className="text-sm"
-                    >
-                      Admin Fee
-                    </ThemedText>
-                    <ThemedText
-                      color={Colors.dark.text.primary}
-                      className="text-sm font-medium"
-                    >
-                      {qrData.currency}{' '}
-                      {currencyFormatter(Number(qrData.adminFee))}
-                    </ThemedText>
-                  </View>
-
-                  <View className="h-px bg-gray-700 my-2" />
-
-                  <View className="flex-row justify-between">
-                    <ThemedText
-                      color={Colors.dark.text.secondary}
-                      className="text-sm font-semibold"
-                    >
-                      Total
-                    </ThemedText>
-                    <ThemedText
-                      color={Colors.dark.text.primary}
-                      className="text-base font-bold"
-                    >
-                      {qrData.currency}{' '}
-                      {currencyFormatter(Number(qrData.total))}
-                    </ThemedText>
-                  </View>
-                </View>
-              </View>
-            </View>
-
-            {/* Info Text */}
-            <ThemedText
-              color={Colors.dark.text.secondary}
-              className="text-xs text-center mb-6"
-            >
-              This QR code is valid for one-time use only. Please ensure the
-              payer scans it within 15 minutes.
-            </ThemedText>
-
             <View className="flex flex-row items-end gap-2 mt-4">
               <ThemeButton
                 variant="primary"
@@ -229,4 +139,4 @@ const DynamicQRModal: React.FC<PaymentSuccessModalProps> = ({
   );
 };
 
-export default DynamicQRModal;
+export default StaticQRModal;

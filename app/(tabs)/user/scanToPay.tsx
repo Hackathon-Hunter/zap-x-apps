@@ -12,11 +12,29 @@ import ScanControls from '@/components/ui/ScanControls';
 import ScanningOverlay from '@/components/ui/ScanningOverlay';
 import ScanStatusIndicator from '@/components/ui/ScanStatusIndicator';
 
+// Type definitions for valid QR data structures
+interface DynamicQRData {
+  type: 'dynamic';
+  merchant: string;
+  currency: string;
+  amount: string;
+  adminFee: string;
+  total: string;
+}
+
+interface StaticQRData {
+  type: 'static';
+  merchant: string;
+  currency: 'IDR';
+  adminFee: string;
+}
+
+type ValidQRData = DynamicQRData | StaticQRData;
+
 const UserScanToPay = () => {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [scanned, setScanned] = useState(false);
   const [isScanning, setIsScanning] = useState(false);
-
   const router = useRouter();
 
   useEffect(() => {
@@ -28,20 +46,154 @@ const UserScanToPay = () => {
     setHasPermission(status === 'granted');
   };
 
-  const handleBarCodeScanned = ({ data }: { type: string; data: string }) => {
+  // Strict validation function
+  const validateQRData = (data: any): data is ValidQRData => {
+    // Must be an object
+    if (!data || typeof data !== 'object') {
+      return false;
+    }
+
+    // Must have exact type field
+    if (!data.type || (data.type !== 'dynamic' && data.type !== 'static')) {
+      return false;
+    }
+
+    if (
+      !data.merchant ||
+      typeof data.merchant !== 'string' ||
+      data.merchant.trim() === ''
+    ) {
+      return false;
+    }
+
+    if (data.type === 'dynamic') {
+      const requiredFields = ['currency', 'amount', 'adminFee', 'total'];
+      for (const field of requiredFields) {
+        if (
+          !data[field] ||
+          typeof data[field] !== 'string' ||
+          data[field].trim() === ''
+        ) {
+          return false;
+        }
+      }
+
+      // Check that we don't have extra unexpected fields (optional, but good practice)
+      const allowedFields = [
+        'type',
+        'merchant',
+        'currency',
+        'amount',
+        'adminFee',
+        'total',
+      ];
+      const dataKeys = Object.keys(data);
+      for (const key of dataKeys) {
+        if (!allowedFields.includes(key)) {
+          return false;
+        }
+      }
+
+      return true;
+    } else if (data.type === 'static') {
+      // Static QR validations
+      if (data.currency !== 'IDR') {
+        return false;
+      }
+
+      if (
+        !data.adminFee ||
+        typeof data.adminFee !== 'string' ||
+        data.adminFee.trim() === ''
+      ) {
+        return false;
+      }
+
+      // Check that we don't have extra unexpected fields
+      const allowedFields = ['type', 'merchant', 'currency', 'adminFee'];
+      const dataKeys = Object.keys(data);
+      for (const key of dataKeys) {
+        if (!allowedFields.includes(key)) {
+          return false;
+        }
+      }
+
+      return true;
+    }
+    return false;
+  };
+
+  const handleBarCodeScanned = ({ data }: { data: string }) => {
     if (scanned) return;
 
     setScanned(true);
     setIsScanning(false);
 
-    Alert.alert(
-      'QR Code Scanned',
-      `Scanned data: ${data.substring(0, 100)}${data.length > 100 ? '...' : ''}`,
-      [
-        { text: 'Scan Again', onPress: resetScanner },
-        { text: 'OK', onPress: resetScanner },
-      ]
-    );
+    try {
+      let qrData;
+
+      // Only try JSON parsing - don't use parseQRData utility
+      try {
+        qrData = JSON.parse(data);
+      } catch (parseError) {
+        Alert.alert(
+          'Invalid QR Code',
+          'This QR code format is not supported. Please scan a valid payment QR code.',
+          [
+            { text: 'Scan Again', onPress: resetScanner },
+            { text: 'Cancel', onPress: () => {} },
+          ]
+        );
+        return;
+      }
+
+      // Strict validation
+      if (!validateQRData(qrData)) {
+        Alert.alert(
+          'Invalid QR Code',
+          'This QR code is not a valid payment QR code. Please scan a QR code from a supported merchant.',
+          [
+            { text: 'Scan Again', onPress: resetScanner },
+            { text: 'Cancel', onPress: () => {} },
+          ]
+        );
+        return;
+      }
+
+      // Navigate based on type
+      if (qrData.type === 'dynamic') {
+        const dynamicData = qrData as DynamicQRData;
+        router.push({
+          pathname: '/(user)/paymentDetailDynamicQR',
+          params: {
+            merchant: dynamicData.merchant,
+            currency: dynamicData.currency,
+            amount: dynamicData.amount,
+            adminFee: dynamicData.adminFee,
+            total: dynamicData.total,
+          },
+        });
+      } else if (qrData.type === 'static') {
+        const staticData = qrData as StaticQRData;
+        router.push({
+          pathname: '/(user)/paymentDetailStaticQR',
+          params: {
+            merchant: staticData.merchant,
+            currency: staticData.currency,
+            adminFee: staticData.adminFee,
+          },
+        });
+      }
+    } catch (error) {
+      Alert.alert(
+        'QR Code Error',
+        "Failed to process the QR code. Please ensure it's a valid payment QR code.",
+        [
+          { text: 'Scan Again', onPress: resetScanner },
+          { text: 'Cancel', onPress: () => {} },
+        ]
+      );
+    }
   };
 
   const resetScanner = () => {
@@ -56,19 +208,6 @@ const UserScanToPay = () => {
 
   const stopScanning = () => {
     setIsScanning(false);
-    try {
-      router.push({
-        pathname: '/(user)/paymentDetailStaticQR',
-        params: {
-          merchant: 'IDRX Money Changer',
-          amount: '100,000',
-          adminFee: '1,000',
-          total: '101,000',
-        },
-      });
-    } catch (error) {
-      console.log(error);
-    }
   };
 
   const pickImageFromGallery = async () => {

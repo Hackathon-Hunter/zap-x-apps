@@ -13,3 +13,6 @@ export const getCurrentUser = async () => {
     name,
   };
 };
+
+export const PRINCIPAL_ID =
+  'pzq44-pn54p-dv4ys-bjwvu-oi6ph-a23jl-n7dkp-jothd-jo5wq-ngmrm-iqe';
