@@ -275,8 +275,12 @@ const GenerateQRForm = () => {
         visible={isQRModalVisible}
         onClose={() => setQRModalVisible(false)}
         qrData={{
-          url: 'https://www.npmjs.com/package/react-native-qrcode-svg',
-          ammount: '5,000',
+          type: 'dynamic',
+          merchant: 'Kos Bu Diarto',
+          stableCoin: 'IDR',
+          amount: '50000',
+          adminFee: '2000',
+          total: '7000',
         }}
         onDownloadReceipt={() => {
           saveQrToDisk();

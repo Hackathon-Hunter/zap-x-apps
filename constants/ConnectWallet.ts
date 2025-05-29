@@ -1,7 +1,14 @@
-import { createPublicClient, http } from 'viem';
+import { createPublicClient, createWalletClient, http } from 'viem';
 import { sepolia } from 'viem/chains';
 
 export const publicClient = createPublicClient({
+  chain: sepolia,
+  transport: http(
+    `https://eth-sepolia.g.alchemy.com/v2/${process.env.EXPO_PUBLIC_ALCHEMY_API_KEY}`
+  ),
+});
+
+export const walletClient = createWalletClient({
   chain: sepolia,
   transport: http(
     `https://eth-sepolia.g.alchemy.com/v2/${process.env.EXPO_PUBLIC_ALCHEMY_API_KEY}`

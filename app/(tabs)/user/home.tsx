@@ -2,6 +2,7 @@ import React from 'react';
 
 import { ScrollView, View } from 'react-native';
 
+import { useRouter } from 'expo-router';
 import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
 
 import QRIcon from '@/components/icons/QRIcon';
@@ -10,6 +11,7 @@ import { ThemedText } from '@/components/ThemedText';
 import TokenBalanceCarousel from '@/components/ui/TokenBalanceCarousel';
 import TransactionItemCard from '@/components/ui/TransactionItemCard';
 import { ColorPalette, Colors } from '@/constants/Colors';
+import useWalletStore from '@/store/walletStore';
 
 // Dummy data
 const DUMMY_TRANSACTIONS = [
@@ -51,15 +53,23 @@ const DUMMY_TRANSACTIONS = [
 ];
 
 const UserHome = () => {
+  const router = useRouter();
+
+  const navigateToScan = () => {
+    router.push('/(tabs)/user/scanToPay');
+  };
+
+  const { address } = useWalletStore();
+
   return (
     <ScrollView>
       <View className="flex gap-6 pb-10">
         <View className="flex gap-6">
-          <TokenBalanceCarousel />
+          <TokenBalanceCarousel walletAddress={address} />
           <View>
             <ThemeButton
               variant="primary"
-              onPress={() => {}}
+              onPress={navigateToScan}
               text="Scan to Pay"
               LeftIcon={QRIcon}
             />
