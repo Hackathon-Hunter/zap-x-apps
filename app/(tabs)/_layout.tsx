@@ -38,19 +38,7 @@ export default function TabLayout() {
           router.replace('/(auth)/login');
           return;
         }
-
-        if (role && !isConnected) {
-          const { clearRole } = useAuthStore.getState();
-          clearRole();
-          router.replace('/(auth)/login');
-          return;
-        }
-
-        if (role && isConnected) {
-          setIsCheckingAuth(false);
-          return;
-        }
-        router.replace('/(auth)/login');
+        setIsCheckingAuth(false);
       } catch (error) {
         setAuthError('Authentication error occurred');
         setIsCheckingAuth(false);
@@ -58,7 +46,7 @@ export default function TabLayout() {
     };
 
     checkAuthAndRole();
-  }, [role, isConnected, router]);
+  }, [role, router]);
 
   // Show loading while checking auth
   if (isCheckingAuth) {
@@ -165,7 +153,7 @@ export default function TabLayout() {
         {__DEV__ && (
           <View className="mb-2 p-2 bg-gray-800 rounded">
             <ThemedText color={Colors.dark.text.secondary} className="text-xs">
-              Debug: Role: {role || 'None'} | Connected:{' '}
+              Debug: Role: {role || 'None'} | Wallet Connected:{' '}
               {isConnected ? 'Yes' : 'No'}
             </ThemedText>
           </View>
