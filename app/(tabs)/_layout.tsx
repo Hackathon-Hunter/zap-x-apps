@@ -20,7 +20,7 @@ export default function TabLayout() {
 
   const currentRoute = segments[segments.length - 1];
 
-  const role = USER_ROLE.MERCHANT;
+  const role = USER_ROLE.USER;
 
   const renderMerchantTabs = () => (
     <Tabs>
