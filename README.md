@@ -1,4 +1,4 @@
-# ZapX 🚀
+# ZapX Wallet 🚀
 
 <p align="center">
   <img src="./assets/images/logo.png" alt="ZapX Logo" width="120" height="120"/>
@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  ![Welcome screen](https://github.com/user-attachments/assets/fb2bf317-ad67-44e8-8af7-b55e07d9fbc2)
+  <img src="https://img.shields.io/badge/React%20Native-0.73-blue?style=flat-square&logo=react" alt="React Native"/>
   <img src="https://img.shields.io/badge/Expo-50.0-black?style=flat-square&logo=expo" alt="Expo"/>
   <img src="https://img.shields.io/badge/TypeScript-5.0-blue?style=flat-square&logo=typescript" alt="TypeScript"/>
   <img src="https://img.shields.io/badge/TailwindCSS-3.4-06B6D4?style=flat-square&logo=tailwindcss" alt="TailwindCSS"/>
@@ -18,7 +18,7 @@
 ## 📱 Screenshots
 
 <p align="center">
-  <img src="./docs/screenshots/login.png" alt="Login Screen" width="200"/>
+  ![Welcome screen](https://github.com/user-attachments/assets/fbd03342-be8d-4446-8a1a-c75a2363a9b9)
   <img src="./docs/screenshots/home.png" alt="Home Screen" width="200"/>
   <img src="./docs/screenshots/qr-scan.png" alt="QR Scanner" width="200"/>
   <img src="./docs/screenshots/transaction.png" alt="Transaction Details" width="200"/>
