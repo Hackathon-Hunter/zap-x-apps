@@ -29,7 +29,9 @@ import {
   waitForTransactionConfirmation,
 } from '@/utils/transferToken';
 
-const NETWORKS = [...new Set(SUPPORTED_TOKENS.map((token) => token.network))];
+const NETWORKS = Array.from(
+  new Set(SUPPORTED_TOKENS.map((token) => token.network))
+);
 const DEFAULT_VALUE = 'Not Found';
 const DEFAULT_NUMBER = '0';
 const MERCHANT_ADDRESS = '0x85E0FE0Ef81608A6C266373fC8A3B91dF622AF7a';
