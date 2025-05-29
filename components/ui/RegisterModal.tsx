@@ -37,7 +37,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ visible, onClose }) => {
   const [isNavigating, setIsNavigating] = useState(false);
 
   const { authenticate, isLoading } = useAuth();
-  const { setRole } = useAuthStore();
+  const { setRole, setLocalPrincipalId } = useAuthStore();
 
   const handleAuthenticate = async () => {
     const result = await authenticate();
@@ -141,6 +141,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ visible, onClose }) => {
       setIsNavigating(true);
       // Set role as merchant
       setRole('merchant');
+      setLocalPrincipalId(principalId || '');
       // Navigate to tabs (dashboard)
       router.replace('/(tabs)');
     } catch (error) {
