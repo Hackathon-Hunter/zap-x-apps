@@ -18,7 +18,7 @@
 ## 📱 Screenshots
 
 <p align="center">
-  ![Welcome screen](https://github.com/user-attachments/assets/fbd03342-be8d-4446-8a1a-c75a2363a9b9)
+  <img src="./docs/screenshots/login.png" alt="Login Screen" width="200"/>
   <img src="./docs/screenshots/home.png" alt="Home Screen" width="200"/>
   <img src="./docs/screenshots/qr-scan.png" alt="QR Scanner" width="200"/>
   <img src="./docs/screenshots/transaction.png" alt="Transaction Details" width="200"/>
