@@ -1,0 +1,20 @@
+<!-- res/drawable/splashscreen_logo.xml -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="120dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120">
+
+    <!-- White circle background -->
+    <circle
+        android:centerX="60"
+        android:centerY="60"
+        android:radius="50dp"
+        android:fillColor="#FFFFFF" />
+
+    <!-- Lightning bolt in black -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M45,45 L70,30 L58,55 L80,55 L70,75 L82,55 L45,45 Z" />
+        
+</vector>
