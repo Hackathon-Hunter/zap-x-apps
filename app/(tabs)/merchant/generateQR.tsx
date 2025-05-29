@@ -233,7 +233,7 @@ const GenerateQRForm = () => {
 
     return {
       type: 'dynamic' as const,
-      merchant: 'Kos Bu Diarto',
+      merchant: 'Soto Cak Har',
       currency: selectedCurrency,
       amount: numericAmount.toString(),
       adminFee: adminFee.toString(),
@@ -369,7 +369,7 @@ const GenerateQRForm = () => {
         onClose={() => setStaticQRModalVisible(false)}
         qrData={{
           type: 'static',
-          merchant: 'Kos Bu Diarto',
+          merchant: 'Soto Cak Har',
           currency: selectedCurrency,
           adminFee: '2000',
         }}
