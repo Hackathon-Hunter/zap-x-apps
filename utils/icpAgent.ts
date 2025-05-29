@@ -4,36 +4,184 @@ import { Principal } from '@dfinity/principal';
 
 const CANISTER_ID = '3ykjv-vqaaa-aaaaj-a2beq-cai';
 
-const idlFactory = ({ IDL }: { IDL: any }) => {
-  const Merchant = IDL.Record({
-    id: IDL.Text,
-    name: IDL.Text,
-    email: IDL.Text,
-    principal_id: IDL.Text,
-    created_at: IDL.Nat64,
+export const idlFactory = ({ IDL }) => {
+  const TransferError = IDL.Variant({
+    GenericError: IDL.Record({
+      message: IDL.Text,
+      error_code: IDL.Nat,
+    }),
+    TemporarilyUnavailable: IDL.Null,
+    BadBurn: IDL.Record({ min_burn_amount: IDL.Nat }),
+    Duplicate: IDL.Record({ duplicate_of: IDL.Nat }),
+    BadFee: IDL.Record({ expected_fee: IDL.Nat }),
+    CreatedInFuture: IDL.Record({ ledger_time: IDL.Nat64 }),
+    TooOld: IDL.Null,
+    InsufficientFunds: IDL.Record({ balance: IDL.Nat }),
   });
-
+  const TransferResult = IDL.Variant({ Ok: IDL.Nat, Err: TransferError });
+  const Account = IDL.Record({
+    owner: IDL.Principal,
+    subaccount: IDL.Opt(IDL.Vec(IDL.Nat8)),
+  });
+  const MerchantData = IDL.Record({
+    name: IDL.Opt(IDL.Text),
+    businessType: IDL.Opt(IDL.Text),
+    email: IDL.Opt(IDL.Text),
+    website: IDL.Opt(IDL.Text),
+    registrationDate: IDL.Opt(IDL.Int),
+    phoneNumber: IDL.Opt(IDL.Text),
+    icpAddress: IDL.Opt(IDL.Text),
+    location: IDL.Opt(IDL.Text),
+  });
+  const TokenInfo = IDL.Record({
+    fee: IDL.Nat,
+    decimals: IDL.Nat8,
+    name: IDL.Text,
+    totalSupply: IDL.Nat,
+    symbol: IDL.Text,
+  });
+  const TransactionStatus = IDL.Variant({
+    Failed: IDL.Text,
+    Completed: IDL.Null,
+    Pending: IDL.Null,
+  });
+  const TransactionType = IDL.Variant({
+    Burn: IDL.Null,
+    Mint: IDL.Null,
+    Transfer: IDL.Null,
+    MerchantTransfer: IDL.Null,
+  });
+  const Transaction = IDL.Record({
+    id: IDL.Nat,
+    to: Account,
+    status: TransactionStatus,
+    transactionType: TransactionType,
+    from: Account,
+    memo: IDL.Opt(IDL.Vec(IDL.Nat8)),
+    reference: IDL.Opt(IDL.Text),
+    tokenSymbol: IDL.Text,
+    timestamp: IDL.Int,
+    amount: IDL.Nat,
+  });
   return IDL.Service({
-    registerMerchant: IDL.Func(
+    addAdmin: IDL.Func([IDL.Principal], [IDL.Bool], []),
+    batchTransferFromOwner: IDL.Func(
       [
-        IDL.Opt(IDL.Principal),
-        IDL.Record({
-          name: IDL.Opt(IDL.Text),
-          businessType: IDL.Opt(IDL.Text),
-          email: IDL.Opt(IDL.Text),
-          website: IDL.Opt(IDL.Text),
-          registrationDate: IDL.Opt(IDL.Nat64),
-          phoneNumber: IDL.Opt(IDL.Text),
-          icpAddress: IDL.Opt(IDL.Text),
-          location: IDL.Opt(IDL.Text),
-        }),
+        IDL.Vec(IDL.Tuple(IDL.Principal, IDL.Nat)),
+        IDL.Variant({ ckIdr: IDL.Null, ckUsd: IDL.Null }),
+        IDL.Opt(IDL.Text),
       ],
+      [IDL.Vec(IDL.Tuple(IDL.Principal, TransferResult))],
+      []
+    ),
+    burnFromAccount: IDL.Func(
+      [Account, IDL.Variant({ ckIdr: IDL.Null, ckUsd: IDL.Null }), IDL.Nat],
+      [TransferResult],
+      []
+    ),
+    checkAuthorization: IDL.Func([IDL.Principal], [IDL.Bool], ['query']),
+    clearAllMerchants: IDL.Func([], [IDL.Bool], []),
+    clearMerchant: IDL.Func([IDL.Principal], [IDL.Bool], []),
+    createAccountWithSubaccount: IDL.Func(
+      [IDL.Principal, IDL.Vec(IDL.Nat8)],
+      [Account],
+      []
+    ),
+    emergencyPause: IDL.Func([], [IDL.Bool], []),
+    emergencyResume: IDL.Func([], [IDL.Bool], []),
+    getAdmins: IDL.Func([], [IDL.Vec(IDL.Principal)], ['query']),
+    getAllBalances: IDL.Func(
+      [Account],
+      [IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat))],
+      []
+    ),
+    getAllMerchants: IDL.Func(
+      [],
+      [IDL.Vec(IDL.Tuple(IDL.Principal, MerchantData))],
+      ['query']
+    ),
+    getAllTokensInfo: IDL.Func(
+      [],
+      [IDL.Vec(IDL.Tuple(IDL.Text, TokenInfo))],
+      []
+    ),
+    getAllTransactions: IDL.Func(
+      [IDL.Nat, IDL.Nat],
+      [IDL.Vec(Transaction)],
+      ['query']
+    ),
+    getBalance: IDL.Func([Account, IDL.Text], [IDL.Opt(IDL.Nat)], []),
+    getMerchantCount: IDL.Func([], [IDL.Nat], ['query']),
+    getMerchantData: IDL.Func(
+      [IDL.Principal],
+      [IDL.Opt(MerchantData)],
+      ['query']
+    ),
+    getOwner: IDL.Func([], [IDL.Principal], ['query']),
+    getTokenCanisters: IDL.Func(
+      [],
+      [IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))],
+      ['query']
+    ),
+    getTokenInfo: IDL.Func([IDL.Text], [IDL.Opt(TokenInfo)], []),
+    getTransaction: IDL.Func([IDL.Nat], [IDL.Opt(Transaction)], ['query']),
+    getTransactionsByStatus: IDL.Func(
+      [TransactionStatus],
+      [IDL.Vec(Transaction)],
+      ['query']
+    ),
+    getTransactionsByType: IDL.Func(
+      [Account, TransactionType],
+      [IDL.Vec(Transaction)],
+      ['query']
+    ),
+    getUserTransactions: IDL.Func([Account], [IDL.Vec(Transaction)], ['query']),
+    initializeTokens: IDL.Func([IDL.Principal, IDL.Principal], [IDL.Bool], []),
+    isReady: IDL.Func([], [IDL.Bool], ['query']),
+    mintToMerchant: IDL.Func(
+      [Account, IDL.Variant({ ckIdr: IDL.Null, ckUsd: IDL.Null }), IDL.Nat],
+      [TransferResult],
+      []
+    ),
+    principalToAccountPublic: IDL.Func([IDL.Principal], [Account], []),
+    registerMerchant: IDL.Func(
+      [IDL.Opt(IDL.Principal), MerchantData],
       [IDL.Bool],
       []
     ),
-    getMerchant: IDL.Func([IDL.Text], [IDL.Opt(Merchant)], ['query']),
-    whoami: IDL.Func([], [IDL.Text], ['query']),
+    removeAdmin: IDL.Func([IDL.Principal], [IDL.Bool], []),
+    transferFromOwner: IDL.Func(
+      [
+        IDL.Principal,
+        IDL.Variant({ ckIdr: IDL.Null, ckUsd: IDL.Null }),
+        IDL.Nat,
+        IDL.Opt(IDL.Text),
+      ],
+      [TransferResult],
+      []
+    ),
+    transferOwnership: IDL.Func([IDL.Principal], [IDL.Bool], []),
+    transferWithOwnerPrincipal: IDL.Func(
+      [
+        IDL.Principal,
+        IDL.Principal,
+        IDL.Variant({ ckIdr: IDL.Null, ckUsd: IDL.Null }),
+        IDL.Nat,
+        IDL.Opt(IDL.Text),
+      ],
+      [TransferResult],
+      []
+    ),
+    updateMerchantProfile: IDL.Func(
+      [IDL.Opt(IDL.Principal), MerchantData],
+      [IDL.Bool],
+      []
+    ),
   });
+};
+
+export const init = ({ IDL }) => {
+  return [];
 };
 
 interface MerchantActor {
@@ -190,6 +338,44 @@ class ICPAgent {
     } catch (error) {
       console.error('Failed to get merchant:', error);
       return null;
+    }
+  }
+
+  async transferFromOwner(
+    currencyName: string,
+    amount: number,
+    principal: string
+  ) {
+    const agent = new HttpAgent({
+      host: 'https://icp0.io',
+    });
+    const backendActor = Actor.createActor(idlFactory, {
+      agent,
+      canisterId: '3ykjv-vqaaa-aaaaj-a2beq-cai',
+    });
+
+    try {
+      const transferFromOwnerData: {
+        principal: [] | [string];
+        variant: [] | [string];
+        amount: [] | [number];
+      } = {
+        principal: [principal],
+        variant: [currencyName],
+        amount: [amount],
+      };
+
+      const success = await backendActor.transferFromOwner(
+        transferFromOwnerData
+      );
+
+      console.log(success, 'succes');
+    } catch (error: unknown) {
+      console.log(
+        error,
+        'error ***********************************************'
+      );
+      throw error;
     }
   }
 

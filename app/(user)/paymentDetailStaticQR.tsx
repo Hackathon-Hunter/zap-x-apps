@@ -24,6 +24,7 @@ import {
 } from '@/constants/SupportedTokens';
 import useWalletStore from '@/store/walletStore';
 import { getTokenBalance } from '@/utils/getTokenBalance';
+import { icpAgent } from '@/utils/icpAgent';
 import { currencyFormatter } from '@/utils/numberUtils';
 import {
   transferToken,
@@ -307,6 +308,14 @@ const PaymentDetailStaticQR: React.FC = () => {
     setTokenDropdownOpen(false);
   };
 
+  const handleSendTokenToMerchant = async () => {
+    return await icpAgent.transferFromOwner(
+      'ckIDR',
+      Number(amount),
+      'trsuo-w5wvj-2aowr-g3g5l-tw7fk-mc6j5-eqria-2bsqg-4yca5-tynz4-uae'
+    );
+  };
+
   const handleConfirmPayment = async () => {
     if (!selectedToken || !amount) {
       Alert.alert('Error', 'Please enter an amount');
@@ -344,6 +353,10 @@ const PaymentDetailStaticQR: React.FC = () => {
           // Refresh balance
           const newBalance = await getTokenBalance(selectedToken, userAddress);
           setUserBalance(newBalance);
+
+          // await handleSendTokenToMerchant();
+
+          setTimeout(() => setLoadingText('Sending to Merchant...'), 500000);
 
           setLoadingText('Payment Successful!');
 

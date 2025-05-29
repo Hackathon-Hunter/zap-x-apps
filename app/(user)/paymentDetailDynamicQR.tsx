@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 import { View, ScrollView, Alert, Modal, Animated, Easing } from 'react-native';
 
+import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { useWalletConnectModal } from '@walletconnect/modal-react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
@@ -13,6 +14,7 @@ import ThemeButton from '@/components/ThemedButton';
 import { ThemedText } from '@/components/ThemedText';
 import FilterDropdown from '@/components/ui/FilterDropdown';
 import PaymentSuccessModal from '@/components/ui/PaymentSuccessModal';
+import { OWNER } from '@/constants/auth';
 import { Colors } from '@/constants/Colors';
 import { EXCHANGE_RATES } from '@/constants/ExchangeRates';
 import {
@@ -23,6 +25,7 @@ import {
 } from '@/constants/SupportedTokens';
 import useWalletStore from '@/store/walletStore';
 import { getTokenBalance } from '@/utils/getTokenBalance';
+import { icpAgent } from '@/utils/icpAgent';
 import { currencyFormatter } from '@/utils/numberUtils';
 import {
   transferToken,
@@ -306,6 +309,16 @@ const PaymentDetailDynamicQR: React.FC = () => {
     setTokenDropdownOpen(false);
   };
 
+  const handleSendTokenToMerchant = async () => {
+    const result = await icpAgent.transferFromOwner(
+      'ckIDR',
+      qrData.amount,
+      'trsuo-w5wvj-2aowr-g3g5l-tw7fk-mc6j5-eqria-2bsqg-4yca5-tynz4-uae'
+    );
+
+    console.log(result);
+  };
+
   const handleConfirmPayment = async () => {
     if (!selectedToken) {
       return;
@@ -342,6 +355,10 @@ const PaymentDetailDynamicQR: React.FC = () => {
           // Refresh balance
           const newBalance = await getTokenBalance(selectedToken, userAddress);
           setUserBalance(newBalance);
+
+          setTimeout(() => setLoadingText('Sending to Merchant...'), 500000);
+
+          // await handleSendTokenToMerchant();
 
           setLoadingText('Payment Successful!');
 
