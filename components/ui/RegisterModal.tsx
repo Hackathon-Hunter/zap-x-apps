@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Alert, View } from 'react-native';
 
-import * as Linking from 'expo-linking';
+import * as Clipboard from 'expo-clipboard';
 import * as WebBrowser from 'expo-web-browser';
 
 import ArrowRightIcon from '@/components/icons/ArrowRightIcon';
@@ -12,7 +12,6 @@ import ThemeButton from '@/components/ThemedButton';
 import ThemeInputField from '@/components/ThemedInputField';
 import { ThemedText } from '@/components/ThemedText';
 import { Colors } from '@/constants/Colors';
-import { useAuth } from '@/hooks/useAuth';
 import { icpAgent, Ed25519KeyIdentity } from '@/utils/icpAgent';
 
 import Modal from './ThemedModal';
@@ -32,100 +31,54 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ visible, onClose }) => {
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const [isRegistering, setIsRegistering] = useState(false);
 
-  const { authenticate, isLoading } = useAuth();
-
-  const handleAuthenticate = async () => {
-    const result = await authenticate();
-
-    if (result.success && result.canisterId) {
-      console.log(result);
-      setPrincipalId(result.canisterId);
-      Alert.alert(
-        'Success',
-        `Authentication successful! Canister ID: ${result.canisterId}`
-      );
-    } else {
-      const errorMessage = result.error || 'Authentication failed';
-      console.log(errorMessage);
-
-      Alert.alert('Error', errorMessage);
-    }
-  };
-
-  // Auth web app URL
   const authWebAppUrl = 'https://zap-web-auth-two.vercel.app/';
 
-  const handleDeepLink = (url: string) => {
-    console.log('Received deep link:', url);
-
-    // Parse the URL to extract canisterId if needed
-    try {
-      const parsedUrl = new URL(url);
-      const canisterId = parsedUrl.searchParams.get('canisterId');
-
-      if (canisterId) {
-        console.log('Received canisterId:', canisterId);
-        // Handle the received canisterId
-        setPrincipalId(canisterId);
-      }
-    } catch (error) {
-      console.error('Error parsing deep link:', error);
-    }
-  };
+  const [isMonitoringClipboard, setIsMonitoringClipboard] = useState(false);
 
   useEffect(() => {
-    // Handle initial URL when app is opened from a deep link
-    const handleInitialUrl = async () => {
-      const initialUrl = await Linking.getInitialURL();
-      if (initialUrl) {
-        handleDeepLink(initialUrl);
+    if (!isMonitoringClipboard) return;
+
+    const checkClipboard = async () => {
+      const clipboardContent = await Clipboard.getStringAsync();
+
+      if (clipboardContent?.startsWith('zapx_auth:')) {
+        const principalId = clipboardContent.replace('zapx_auth:', '');
+
+        setPrincipalId(principalId);
+        setIsAuthenticating(false);
+        setIsMonitoringClipboard(false);
+
+        await Clipboard.setStringAsync('');
+        return;
       }
     };
+    checkClipboard();
+    const interval = setInterval(checkClipboard, 2000);
 
-    // Handle URLs when app is already open
-    const subscription = Linking.addEventListener('url', (event) => {
-      handleDeepLink(event.url);
-    });
+    return () => {
+      clearInterval(interval);
+    };
+  }, [isMonitoringClipboard]);
 
-    handleInitialUrl();
+  useEffect(() => {
+    if (!isAuthenticating && isMonitoringClipboard) {
+      setIsMonitoringClipboard(false);
+    }
+  }, [isAuthenticating, isMonitoringClipboard]);
 
-    return () => subscription?.remove();
-  }, []);
+  const handleClipboardAuth = async () => {
+    setIsAuthenticating(true);
+    setIsMonitoringClipboard(true);
 
-  // Handle modal close and pass principalId if available
+    await WebBrowser.openBrowserAsync(authWebAppUrl);
+  };
+
   const handleClose = () => {
     onClose(principalId || undefined);
-    // Reset state when closing
     setPrincipalId(null);
     setIsAuthenticating(false);
     setInputValueName('');
     setInputValueEmail('');
-  };
-
-  // Handle existing account button press
-  const handleExistingAccount = async () => {
-    try {
-      setIsAuthenticating(true);
-
-      const scheme = 'zapx'; // This should match your app.json scheme
-      const redirectUrl = `${scheme}://auth`; // or just `${scheme}`
-
-      console.log('📱 Opening auth with redirect:', redirectUrl);
-
-      const authUrlWithRedirect = `${authWebAppUrl}?redirectUrl=${encodeURIComponent(redirectUrl)}`;
-
-      console.log('📱 Full auth URL:', authUrlWithRedirect);
-
-      const result = await WebBrowser.openAuthSessionAsync(
-        authUrlWithRedirect,
-        redirectUrl
-      );
-
-      console.log('📱 Browser result:', result);
-    } catch (error) {
-      console.error('Authentication error:', error);
-      setIsAuthenticating(false); // Only stop loading on error
-    }
   };
 
   const handleRegisterMerchant = async () => {
@@ -164,7 +117,6 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ visible, onClose }) => {
     }
   };
 
-  // Show principal ID if we have it
   const displayPrincipalId = principalId
     ? `Principal ID: ${principalId.substring(0, 20)}...`
     : '';
@@ -250,7 +202,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ visible, onClose }) => {
               <View className="flex flex-row items-end gap-2 mt-4">
                 <ThemeButton
                   variant="primary"
-                  onPress={handleAuthenticate}
+                  onPress={handleClipboardAuth}
                   text={
                     isAuthenticating
                       ? 'Authenticating...'
