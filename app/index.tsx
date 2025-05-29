@@ -1,23 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import { Redirect } from 'expo-router';
+// import React, { useState, useEffect } from 'react';
+// import { Redirect } from 'expo-router';
 
-export default function Index() {
-  const [isReady, setIsReady] = useState(false);
+// export default function Index() {
+//   const [isReady, setIsReady] = useState(false);
 
-  useEffect(() => {
-    const prepareApp = async () => {
-      try {
-        await new Promise(resolve => setTimeout(resolve, 1000));
+//   useEffect(() => {
+//     const prepareApp = async () => {
+//       try {
+//         await new Promise(resolve => setTimeout(resolve, 1000));
         
-        setIsReady(true);
-      } catch (error) {
-        console.error('Error preparing app:', error);
-        setIsReady(true); 
-      }
-    };
+//         setIsReady(true);
+//       } catch (error) {
+//         console.error('Error preparing app:', error);
+//         setIsReady(true); 
+//       }
+//     };
 
-    prepareApp();
-  }, []);
+//     prepareApp();
+//   }, []);
 
-  return <Redirect href="/(auth)/login" />;
-}
+//   return <Redirect href="/(auth)/login" />;
+// }
