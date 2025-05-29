@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { Alert, View } from 'react-native';
 
 import * as Clipboard from 'expo-clipboard';
+import { useFocusEffect, useRouter } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
 
 import ArrowRightIcon from '@/components/icons/ArrowRightIcon';
@@ -12,6 +13,7 @@ import ThemeButton from '@/components/ThemedButton';
 import ThemeInputField from '@/components/ThemedInputField';
 import { ThemedText } from '@/components/ThemedText';
 import { Colors } from '@/constants/Colors';
+import useAuthStore from '@/store/authStore';
 import { icpAgent, Ed25519KeyIdentity } from '@/utils/icpAgent';
 
 import Modal from './ThemedModal';
@@ -31,6 +33,34 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ visible, onClose }) => {
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const [isRegistering, setIsRegistering] = useState(false);
 
+  const router = useRouter();
+  const { setRole, setLocalPrincipalId } = useAuthStore();
+
+  const isNavigatingRef = useRef(false);
+
+  useFocusEffect(
+    useCallback(() => {
+      isNavigatingRef.current = false;
+      return () => {
+        isNavigatingRef.current = false;
+      };
+    }, [])
+  );
+
+  const goToDashboard = useCallback(async () => {
+    if (isNavigatingRef.current) return;
+
+    try {
+      isNavigatingRef.current = true;
+      setRole('merchant');
+      setLocalPrincipalId(principalId!);
+      router.replace('/(tabs)');
+    } catch {
+      Alert.alert('Error', 'Failed to access dashboard. Please try again.');
+      isNavigatingRef.current = false;
+    }
+  }, [setRole, setLocalPrincipalId, principalId, router]);
+
   const authWebAppUrl = 'https://zap-web-auth-two.vercel.app/';
 
   const [isMonitoringClipboard, setIsMonitoringClipboard] = useState(false);
@@ -47,6 +77,8 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ visible, onClose }) => {
         setPrincipalId(principalId);
         setIsAuthenticating(false);
         setIsMonitoringClipboard(false);
+
+        goToDashboard();
 
         await Clipboard.setStringAsync('');
         return;
