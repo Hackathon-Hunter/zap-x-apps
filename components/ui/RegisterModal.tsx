@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { View } from 'react-native';
+import { Alert, View } from 'react-native';
 
 import * as Linking from 'expo-linking';
 import * as WebBrowser from 'expo-web-browser';
@@ -12,6 +12,7 @@ import ThemeButton from '@/components/ThemedButton';
 import ThemeInputField from '@/components/ThemedInputField';
 import { ThemedText } from '@/components/ThemedText';
 import { Colors } from '@/constants/Colors';
+import { useAuth } from '@/hooks/useAuth';
 
 import Modal from './ThemedModal';
 
@@ -29,30 +30,63 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ visible, onClose }) => {
   const [manualEntryMode, setManualEntryMode] = useState(false);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
 
+  const { authenticate, isLoading } = useAuth();
+
+  const handleAuthenticate = async () => {
+    const result = await authenticate();
+
+    if (result.success && result.canisterId) {
+      console.log(result);
+      Alert.alert(
+        'Success',
+        `Authentication successful! Canister ID: ${result.canisterId}`
+      );
+    } else {
+      const errorMessage = result.error || 'Authentication failed';
+      console.log(errorMessage);
+
+      Alert.alert('Error', errorMessage);
+    }
+  };
+
   // Auth web app URL
-  const authWebAppUrl = 'https://zap-web-auth-t8vc.vercel.app/';
+  const authWebAppUrl = 'https://zap-web-auth-two.vercel.app/';
+
+  const handleDeepLink = (url: string) => {
+    console.log('Received deep link:', url);
+
+    // Parse the URL to extract canisterId if needed
+    try {
+      const parsedUrl = new URL(url);
+      const canisterId = parsedUrl.searchParams.get('canisterId');
+
+      if (canisterId) {
+        console.log('Received canisterId:', canisterId);
+        // Handle the received canisterId
+        // You might want to store it in state or navigate to a specific screen
+      }
+    } catch (error) {
+      console.error('Error parsing deep link:', error);
+    }
+  };
 
   useEffect(() => {
-    WebBrowser.warmUpAsync();
-
-    // Handle deep linking when app is opened from external source
-    const handleUrl = (event: { url: string }) => {
-      console.log('Deep link received:', event.url);
-      const url = new URL(event.url);
-      const pid = url.searchParams.get('principalId');
-      if (pid) {
-        console.log('Principal ID from deep link:', pid);
-        setPrincipalId(pid);
-        setIsAuthenticating(false);
+    // Handle initial URL when app is opened from a deep link
+    const handleInitialUrl = async () => {
+      const initialUrl = await Linking.getInitialURL();
+      if (initialUrl) {
+        handleDeepLink(initialUrl);
       }
     };
 
-    const subscription = Linking.addEventListener('url', handleUrl);
+    // Handle URLs when app is already open
+    const subscription = Linking.addEventListener('url', (event) => {
+      handleDeepLink(event.url);
+    });
 
-    return () => {
-      WebBrowser.coolDownAsync();
-      subscription.remove();
-    };
+    handleInitialUrl();
+
+    return () => subscription?.remove();
   }, []);
 
   // Handle modal close and pass principalId if available
@@ -68,55 +102,24 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ visible, onClose }) => {
     try {
       setIsAuthenticating(true);
 
-      // Create redirect URL for your app
-      const redirectUrl = Linking.createURL('auth-callback');
-      console.log('Redirect URL:', redirectUrl);
+      const scheme = 'zapx'; // This should match your app.json scheme
+      const redirectUrl = `${scheme}://auth`; // or just `${scheme}`
 
-      // Append redirect URL to your auth web app
+      console.log('📱 Opening auth with redirect:', redirectUrl);
+
       const authUrlWithRedirect = `${authWebAppUrl}?redirectUrl=${encodeURIComponent(redirectUrl)}`;
-      console.log('Opening auth URL:', authUrlWithRedirect);
+
+      console.log('📱 Full auth URL:', authUrlWithRedirect);
 
       const result = await WebBrowser.openAuthSessionAsync(
         authUrlWithRedirect,
         redirectUrl
       );
 
-      console.log('Auth session result:', result);
-
-      if (result.type === 'success' && result.url) {
-        // Parse the returned URL for parameters
-        const parsedUrl = Linking.parse(result.url);
-        console.log('Parsed URL:', parsedUrl);
-
-        // Extract principalId from query params
-        const pid = parsedUrl.queryParams?.principalId as string;
-
-        if (pid) {
-          console.log('Authentication successful! Principal ID:', pid);
-          setPrincipalId(pid);
-        } else {
-          console.log('No principalId found in response');
-        }
-      } else if (result.type === 'dismiss') {
-        console.log('User dismissed the browser');
-
-        // Sometimes the URL might still be available even on dismiss
-        if (result.url) {
-          const parsedUrl = Linking.parse(result.url);
-          const pid = parsedUrl.queryParams?.principalId as string;
-
-          if (pid) {
-            console.log('Principal ID found on dismiss:', pid);
-            setPrincipalId(pid);
-          }
-        }
-      } else {
-        console.log('Authentication cancelled or failed:', result);
-      }
+      console.log('📱 Browser result:', result);
     } catch (error) {
       console.error('Authentication error:', error);
-    } finally {
-      setIsAuthenticating(false);
+      setIsAuthenticating(false); // Only stop loading on error
     }
   };
 
@@ -205,7 +208,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ visible, onClose }) => {
               <View className="flex flex-row items-end gap-2 mt-4">
                 <ThemeButton
                   variant="primary"
-                  onPress={handleExistingAccount}
+                  onPress={handleAuthenticate}
                   text={
                     isAuthenticating
                       ? 'Authenticating...'
