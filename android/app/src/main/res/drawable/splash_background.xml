@@ -1,0 +1,29 @@
+<!-- res/drawable/splash_background.xml -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    <!-- Black background -->
+    <item android:drawable="@android:color/black" />
+    
+    <!-- Logo in center -->
+    <item android:gravity="center">
+        <vector android:width="120dp"
+                android:height="120dp"
+                android:viewportWidth="120"
+                android:viewportHeight="120">
+
+            <!-- White circle -->
+            <circle
+                android:centerX="60"
+                android:centerY="60"
+                android:radius="50dp"
+                android:fillColor="#FFFFFF" />
+
+            <!-- Lightning bolt -->
+            <path
+                android:fillColor="#000000"
+                android:pathData="M45,45 L65,30 L58,50 L80,50 L65,75 L72,50 L45,45 Z" />
+                
+        </vector>
+    </item>
+    
+</layer-list>
