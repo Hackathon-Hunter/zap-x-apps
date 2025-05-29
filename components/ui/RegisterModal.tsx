@@ -13,6 +13,7 @@ import ThemeInputField from '@/components/ThemedInputField';
 import { ThemedText } from '@/components/ThemedText';
 import { Colors } from '@/constants/Colors';
 import { useAuth } from '@/hooks/useAuth';
+import { icpAgent, Ed25519KeyIdentity } from '@/utils/icpAgent';
 
 import Modal from './ThemedModal';
 
@@ -29,6 +30,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ visible, onClose }) => {
   const [principalId, setPrincipalId] = useState<string | null>(null);
   const [manualEntryMode, setManualEntryMode] = useState(false);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
+  const [isRegistering, setIsRegistering] = useState(false);
 
   const { authenticate, isLoading } = useAuth();
 
@@ -37,6 +39,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ visible, onClose }) => {
 
     if (result.success && result.canisterId) {
       console.log(result);
+      setPrincipalId(result.canisterId);
       Alert.alert(
         'Success',
         `Authentication successful! Canister ID: ${result.canisterId}`
@@ -63,7 +66,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ visible, onClose }) => {
       if (canisterId) {
         console.log('Received canisterId:', canisterId);
         // Handle the received canisterId
-        // You might want to store it in state or navigate to a specific screen
+        setPrincipalId(canisterId);
       }
     } catch (error) {
       console.error('Error parsing deep link:', error);
@@ -95,6 +98,8 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ visible, onClose }) => {
     // Reset state when closing
     setPrincipalId(null);
     setIsAuthenticating(false);
+    setInputValueName('');
+    setInputValueEmail('');
   };
 
   // Handle existing account button press
@@ -120,6 +125,42 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ visible, onClose }) => {
     } catch (error) {
       console.error('Authentication error:', error);
       setIsAuthenticating(false); // Only stop loading on error
+    }
+  };
+
+  const handleRegisterMerchant = async () => {
+    if (!inputValueName || !inputValueEmail) {
+      Alert.alert('Error', 'Please fill in both name and email fields');
+      return;
+    }
+
+    try {
+      setIsRegistering(true);
+
+      if (!principalId) {
+        const testIdentity = Ed25519KeyIdentity.generate();
+        await icpAgent.init(testIdentity);
+      }
+      const result = await icpAgent.registerMerchant(
+        inputValueName,
+        inputValueEmail
+      );
+
+      setIsRegistering(false);
+
+      if (result.success) {
+        Alert.alert('Success', 'Merchant registered successfully!');
+        if (result.merchant && result.merchant.principal_id) {
+          setPrincipalId(result.merchant.principal_id);
+        }
+      } else {
+        Alert.alert('Error', result.error || 'Registration failed');
+      }
+    } catch (error) {
+      setIsRegistering(false);
+      const errorMessage =
+        error instanceof Error ? error.message : 'Registration failed';
+      Alert.alert('Error', errorMessage);
     }
   };
 
@@ -181,9 +222,10 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ visible, onClose }) => {
           <View className="flex flex-row items-end gap-2 mt-4">
             <ThemeButton
               variant="primary"
-              onPress={handleClose}
-              text="Continue"
+              onPress={handleRegisterMerchant}
+              text={isRegistering ? 'Registering...' : 'Register Merchant'}
               RightIcon={ArrowRightIcon}
+              disabled={isRegistering}
             />
           </View>
 
