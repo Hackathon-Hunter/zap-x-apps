@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/React%20Native-0.73-blue?style=flat-square&logo=react" alt="React Native"/>
+  ![Welcome screen](https://github.com/user-attachments/assets/fb2bf317-ad67-44e8-8af7-b55e07d9fbc2)
   <img src="https://img.shields.io/badge/Expo-50.0-black?style=flat-square&logo=expo" alt="Expo"/>
   <img src="https://img.shields.io/badge/TypeScript-5.0-blue?style=flat-square&logo=typescript" alt="TypeScript"/>
   <img src="https://img.shields.io/badge/TailwindCSS-3.4-06B6D4?style=flat-square&logo=tailwindcss" alt="TailwindCSS"/>
