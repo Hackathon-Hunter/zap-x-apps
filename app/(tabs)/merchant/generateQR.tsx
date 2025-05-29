@@ -22,6 +22,7 @@ import ThemeButton from '@/components/ThemedButton';
 import { ThemedText } from '@/components/ThemedText';
 import DynamicQRModal from '@/components/ui/DynamicQRModal';
 import FilterDropdown from '@/components/ui/FilterDropdown';
+import StaticQRModal from '@/components/ui/StaticQRModal';
 import { Colors } from '@/constants/Colors';
 
 const DEFAULT_CURRENCY_OPTIONS = ['IDR', 'USD'];
@@ -46,7 +47,8 @@ const GenerateQRForm = () => {
   const svgRef = useRef<any>(null);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [selectedCurrency, setSelectedCurrency] = useState('IDR');
-  const [isQRModalVisible, setQRModalVisible] = useState(false);
+  const [isDynamicQRModalVisible, setDynamicQRModalVisible] = useState(false);
+  const [isStaticQRModalVisible, setStaticQRModalVisible] = useState(false);
   const [hasStoragePermission, setHasStoragePermission] = useState(false);
 
   const options = ['IDR', 'USD'];
@@ -218,7 +220,7 @@ const GenerateQRForm = () => {
         {/* Generate QR Button */}
         <ThemeButton
           variant="primary"
-          onPress={() => setQRModalVisible(true)}
+          onPress={() => setDynamicQRModalVisible(true)}
           text="Generate QR"
           RightIcon={QRIcon}
         />
@@ -236,11 +238,10 @@ const GenerateQRForm = () => {
       </View>
 
       {/* Generate Static QR */}
-
       <View className="bg-black">
         <ThemeButton
           variant="primary"
-          onPress={() => {}}
+          onPress={() => setStaticQRModalVisible(true)}
           text="Generate Static QR"
           LeftIcon={QRIcon}
         />
@@ -271,16 +272,33 @@ const GenerateQRForm = () => {
           </ScrollView>
         </View>
       )}
+
+      {/* Dynamic QR Modal */}
       <DynamicQRModal
-        visible={isQRModalVisible}
-        onClose={() => setQRModalVisible(false)}
+        visible={isDynamicQRModalVisible}
+        onClose={() => setDynamicQRModalVisible(false)}
         qrData={{
           type: 'dynamic',
           merchant: 'Kos Bu Diarto',
-          stableCoin: 'IDR',
+          currency: 'IDR',
           amount: '50000',
           adminFee: '2000',
-          total: '7000',
+          total: '52000',
+        }}
+        onDownloadReceipt={() => {
+          saveQrToDisk();
+        }}
+      />
+
+      {/* Static QR Modal */}
+      <StaticQRModal
+        visible={isStaticQRModalVisible}
+        onClose={() => setStaticQRModalVisible(false)}
+        qrData={{
+          type: 'static',
+          merchant: 'Kos Bu Diarto',
+          currency: 'IDR',
+          adminFee: '2000',
         }}
         onDownloadReceipt={() => {
           saveQrToDisk();

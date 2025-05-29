@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 
-import { StyleSheet, ToastAndroid, TouchableOpacity, View } from 'react-native';
+import { ToastAndroid, TouchableOpacity, View } from 'react-native';
 
 import Share from 'react-native-share';
 
@@ -19,12 +19,10 @@ interface PaymentSuccessModalProps {
   visible: boolean;
   onClose: () => void;
   qrData: {
-    type: 'dynamic';
+    type: 'static';
     merchant: string;
-    currency: string;
-    amount: string;
+    currency: 'IDR';
     adminFee: string;
-    total: string;
   };
   onDownloadReceipt?: () => void;
 }
@@ -33,7 +31,7 @@ type QRCodeRef = {
   toDataURL: (callback: (data: string) => void) => void;
 };
 
-const DynamicQRModal: React.FC<PaymentSuccessModalProps> = ({
+const StaticQRModal: React.FC<PaymentSuccessModalProps> = ({
   visible,
   onClose,
   qrData,
@@ -87,7 +85,7 @@ const DynamicQRModal: React.FC<PaymentSuccessModalProps> = ({
       visible={visible}
       onClose={onClose}
       showCloseButton={true}
-      title="Dynamic QR"
+      title="Static QR"
     >
       <View className="items-center mt-4">
         {/* QR Code with ZapIcon Logo */}
@@ -104,27 +102,9 @@ const DynamicQRModal: React.FC<PaymentSuccessModalProps> = ({
           onError={handleQRError}
         />
 
-        {/* Amount Display and Action Buttons - Only show when QR is ready */}
+        {/* Action Buttons - Only show when QR is ready */}
         {isQRReady && (
           <>
-            <View className="flex flex-row items-end gap-2 mt-4">
-              <ThemedText
-                color={Colors.dark.text.secondary}
-                numbersOnly
-                className="text-base font-medium"
-              >
-                IDR
-              </ThemedText>
-              <ThemedText
-                color={Colors.dark.text.primary}
-                numbersOnly
-                className="text-4xl font-medium mt-1"
-                style={{ textShadowColor: 'white', textShadowRadius: 10 }}
-              >
-                {qrData.amount}
-              </ThemedText>
-            </View>
-
             <View className="flex flex-row items-end gap-2 mt-4">
               <ThemeButton
                 variant="primary"
@@ -159,4 +139,4 @@ const DynamicQRModal: React.FC<PaymentSuccessModalProps> = ({
   );
 };
 
-export default DynamicQRModal;
+export default StaticQRModal;

@@ -8,6 +8,8 @@ import Animated, {
   withRepeat,
   withTiming,
   withSequence,
+  interpolate,
+  Easing,
 } from 'react-native-reanimated';
 
 import { ColorPalette } from '@/constants/Colors';
@@ -18,110 +20,208 @@ interface ScanningOverlayProps {
 
 const ScanningOverlay: React.FC<ScanningOverlayProps> = ({ isScanning }) => {
   const scanLinePosition = useSharedValue(0);
-  const pulseScale = useSharedValue(1);
+  const cornerGlow = useSharedValue(0);
+  const scanLineOpacity = useSharedValue(0);
 
   useEffect(() => {
     if (isScanning) {
-      // Start scanning line animation
+      // Smooth scanning line animation like Shopee/GoPay
       scanLinePosition.value = withRepeat(
         withSequence(
-          withTiming(1, { duration: 2000 }),
+          withTiming(1, {
+            duration: 2500,
+            easing: Easing.inOut(Easing.quad),
+          }),
           withTiming(0, { duration: 0 })
         ),
         -1,
         false
       );
 
-      // Start pulse animation for corners
-      pulseScale.value = withRepeat(
+      // Corner glow animation
+      cornerGlow.value = withRepeat(
         withSequence(
-          withTiming(1.1, { duration: 1000 }),
-          withTiming(1, { duration: 1000 })
+          withTiming(1, { duration: 1500 }),
+          withTiming(0.3, { duration: 1500 })
+        ),
+        -1,
+        true
+      );
+
+      // Scan line opacity animation
+      scanLineOpacity.value = withRepeat(
+        withSequence(
+          withTiming(1, { duration: 1000 }),
+          withTiming(0.6, { duration: 1000 })
         ),
         -1,
         true
       );
     } else {
       scanLinePosition.value = 0;
-      pulseScale.value = 1;
+      cornerGlow.value = 0.3;
+      scanLineOpacity.value = 0;
     }
   }, [isScanning]);
 
   const scanLineAnimatedStyle = useAnimatedStyle(() => {
+    const progress = scanLinePosition.value;
     return {
-      top: `${scanLinePosition.value * 85}%`,
+      top: `${progress * 82}%`,
+      opacity:
+        interpolate(progress, [0, 0.1, 0.5, 0.9, 1], [0, 0.8, 1, 0.8, 0]) *
+        scanLineOpacity.value,
     };
   });
 
-  const pulseAnimatedStyle = useAnimatedStyle(() => {
+  const cornerGlowStyle = useAnimatedStyle(() => {
     return {
-      transform: [{ scale: pulseScale.value }],
+      opacity: cornerGlow.value,
     };
   });
+
+  const renderCorner = (position: 'tl' | 'tr' | 'bl' | 'br') => {
+    const positionClasses = {
+      tl: 'top-0 left-0',
+      tr: 'top-0 right-0',
+      bl: 'bottom-0 left-0',
+      br: 'bottom-0 right-0',
+    };
+
+    return (
+      <View className={`absolute ${positionClasses[position]} w-8 h-8`}>
+        {/* Main corner brackets */}
+        <View className="absolute inset-0">
+          {/* Horizontal line */}
+          <View
+            className={`absolute w-8 h-1 bg-white rounded-full ${
+              position.includes('t') ? 'top-0' : 'bottom-0'
+            } ${position.includes('l') ? 'left-0' : 'right-0'}`}
+          />
+          {/* Vertical line */}
+          <View
+            className={`absolute w-1 h-8 bg-white rounded-full ${
+              position.includes('t') ? 'top-0' : 'bottom-0'
+            } ${position.includes('l') ? 'left-0' : 'right-0'}`}
+          />
+        </View>
+
+        {/* Glow effect */}
+        <Animated.View style={[cornerGlowStyle]} className="absolute inset-0">
+          <View
+            className={`absolute w-8 h-1 rounded-full ${
+              position.includes('t') ? 'top-0' : 'bottom-0'
+            } ${position.includes('l') ? 'left-0' : 'right-0'}`}
+            style={{
+              backgroundColor: ColorPalette.green.accent,
+              shadowColor: ColorPalette.green.accent,
+              shadowOffset: { width: 0, height: 0 },
+              shadowOpacity: 0.8,
+              shadowRadius: 4,
+              elevation: 8,
+            }}
+          />
+          <View
+            className={`absolute w-1 h-8 rounded-full ${
+              position.includes('t') ? 'top-0' : 'bottom-0'
+            } ${position.includes('l') ? 'left-0' : 'right-0'}`}
+            style={{
+              backgroundColor: ColorPalette.green.accent,
+              shadowColor: ColorPalette.green.accent,
+              shadowOffset: { width: 0, height: 0 },
+              shadowOpacity: 0.8,
+              shadowRadius: 4,
+              elevation: 8,
+            }}
+          />
+        </Animated.View>
+      </View>
+    );
+  };
 
   return (
     <View style={StyleSheet.absoluteFill}>
       {/* Background overlay */}
-      <View className="flex-1 bg-black bg-opacity-60" />
+      <View className="flex-1 bg-black/70" />
 
       {/* Scanning area */}
       <View className="flex-row">
-        <View className="flex-1 bg-black bg-opacity-60" />
-        <View className="w-72 h-72 relative">
-          {/* Corner brackets with pulse animation */}
-          <Animated.View style={[pulseAnimatedStyle]}>
-            {/* Top Left Corner */}
-            <View className="absolute top-0 left-0 w-12 h-12">
-              <View className="w-12 h-1 bg-white absolute top-0" />
-              <View className="w-1 h-12 bg-white absolute left-0" />
-            </View>
+        <View className="flex-1 bg-black/70" />
 
-            {/* Top Right Corner */}
-            <View className="absolute top-0 right-0 w-12 h-12">
-              <View className="w-12 h-1 bg-white absolute top-0" />
-              <View className="w-1 h-12 bg-white absolute right-0" />
-            </View>
+        <View className="w-80 h-80 relative">
+          {/* Corner brackets */}
+          {renderCorner('tl')}
+          {renderCorner('tr')}
+          {renderCorner('bl')}
+          {renderCorner('br')}
 
-            {/* Bottom Left Corner */}
-            <View className="absolute bottom-0 left-0 w-12 h-12">
-              <View className="w-12 h-1 bg-white absolute bottom-0" />
-              <View className="w-1 h-12 bg-white absolute left-0" />
-            </View>
-
-            {/* Bottom Right Corner */}
-            <View className="absolute bottom-0 right-0 w-12 h-12">
-              <View className="w-12 h-1 bg-white absolute bottom-0" />
-              <View className="w-1 h-12 bg-white absolute right-0" />
-            </View>
-          </Animated.View>
-
-          {/* Scanning line */}
+          {/* Scanning line - Shopee/GoPay style */}
           {isScanning && (
             <Animated.View
               style={[
                 scanLineAnimatedStyle,
                 {
                   position: 'absolute',
-                  left: 12,
-                  right: 12,
-                  height: 3,
+                  left: 8,
+                  right: 8,
+                  height: 2,
+                  borderRadius: 1,
+                },
+              ]}
+            >
+              {/* Main scan line */}
+              <View
+                className="flex-1 rounded-full"
+                style={{
                   backgroundColor: ColorPalette.green.accent,
-                  borderRadius: 2,
+                }}
+              />
+
+              {/* Glow effect for scan line */}
+              <View
+                className="absolute inset-0 rounded-full"
+                style={{
+                  backgroundColor: ColorPalette.green.accent,
                   shadowColor: ColorPalette.green.accent,
                   shadowOffset: { width: 0, height: 0 },
                   shadowOpacity: 1,
                   shadowRadius: 8,
-                  elevation: 8,
-                },
-              ]}
+                  elevation: 10,
+                }}
+              />
+
+              {/* Leading edge glow */}
+              <View
+                className="absolute -top-1 -bottom-1 right-0 w-4 rounded-full"
+                style={{
+                  backgroundColor: ColorPalette.green.accent,
+                  opacity: 0.6,
+                  shadowColor: ColorPalette.green.accent,
+                  shadowOffset: { width: 2, height: 0 },
+                  shadowOpacity: 0.8,
+                  shadowRadius: 6,
+                }}
+              />
+            </Animated.View>
+          )}
+
+          {/* Subtle frame border when scanning */}
+          {isScanning && (
+            <View
+              className="absolute inset-4 border rounded-2xl"
+              style={{
+                borderColor: ColorPalette.green.accent + '20',
+                borderWidth: 1,
+              }}
             />
           )}
         </View>
-        <View className="flex-1 bg-black bg-opacity-60" />
+
+        <View className="flex-1 bg-black/70" />
       </View>
 
       {/* Bottom overlay */}
-      <View className="flex-1 bg-black bg-opacity-60" />
+      <View className="flex-1 bg-black/70" />
     </View>
   );
 };
