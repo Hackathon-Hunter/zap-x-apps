@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 
-import { useRouter } from 'expo-router';
-
 import { View, Text, ScrollView } from 'react-native';
+
+import { useRouter } from 'expo-router';
 
 import PenIcon from '@/components/icons/PenIcon';
 import ZapIcon from '@/components/icons/ZapIcon';
@@ -59,15 +59,14 @@ const DUMMY_TRANSACTIONS = [
   },
 ];
 
-
 const MerchantProfile = () => {
   const router = useRouter();
   const [inputValueName, setInputValueName] = useState('IDRX Money Changer');
   const [inputValueEmail, setInputValueEmail] = useState('idrxmoney@gmail.com');
 
   const handleToTransaction = () => {
-    router.push('/merchant/transactionHistory')
-  }
+    router.push('/merchant/transactionHistory');
+  };
 
   return (
     <ScrollView>
@@ -101,18 +100,26 @@ const MerchantProfile = () => {
           />
         </View>
 
-        <TokenBalanceMerchant token="IDR" amount="2,000" showGenerateQR={false} />
+        <TokenBalanceMerchant
+          token="IDR"
+          amount="2,000"
+          showGenerateQR={false}
+        />
 
         <View className="flex gap-3 mt-8">
           <View className="flex flex-row justify-between">
             <ThemedText color={Colors.dark.text.muted} type="subtitle">
               Recent Withdrawal
             </ThemedText>
-            <ThemedText color={Colors.dark.text.primary} type="subtitle" onPress={handleToTransaction}>
+            <ThemedText
+              color={Colors.dark.text.primary}
+              type="subtitle"
+              onPress={handleToTransaction}
+            >
               See All
             </ThemedText>
           </View>
-          
+
           {DUMMY_TRANSACTIONS.map((item, i) => (
             <TransactionItemCard
               key={i}
@@ -124,7 +131,6 @@ const MerchantProfile = () => {
               role={item.role}
             />
           ))}
-
         </View>
 
         <View className="flex flex-col gap-2 justify-center items-center mt-4">

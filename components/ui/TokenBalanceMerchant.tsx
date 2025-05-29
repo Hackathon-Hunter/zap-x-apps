@@ -99,14 +99,14 @@ const TokenBalanceMerchant = ({
         {showGenerateQR && (
           <ThemeButton
             variant="primary"
-            onPress={() => { }}
+            onPress={() => {}}
             text="Generate QR"
             LeftIcon={QRIcon}
           />
         )}
         <ThemeButton
           variant="primary"
-          onPress={() => { }}
+          onPress={() => {}}
           text="Withdraw"
           LeftIcon={WithdawIcon}
         />

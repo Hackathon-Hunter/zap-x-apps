@@ -59,7 +59,11 @@ const MerchantHome = () => {
     <ScrollView>
       <View className="flex gap-6 pb-10">
         <View className="flex gap-6">
-          <TokenBalanceMerchant token="IDR" amount="2,000" showGenerateQR={true}/>
+          <TokenBalanceMerchant
+            token="IDR"
+            amount="2,000"
+            showGenerateQR={true}
+          />
         </View>
         <View className="flex gap-3">
           <View className="flex flex-row justify-between">
