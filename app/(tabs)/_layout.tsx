@@ -149,16 +149,6 @@ export default function TabLayout() {
           canGoBack={canGoBack}
         />
 
-        {/* Debug Info - Remove in production */}
-        {__DEV__ && (
-          <View className="mb-2 p-2 bg-gray-800 rounded">
-            <ThemedText color={Colors.dark.text.secondary} className="text-xs">
-              Debug: Role: {role || 'None'} | Wallet Connected:{' '}
-              {isConnected ? 'Yes' : 'No'}
-            </ThemedText>
-          </View>
-        )}
-
         {/* Merchant Tabs */}
         {role === 'merchant' && renderMerchantTabs()}
 

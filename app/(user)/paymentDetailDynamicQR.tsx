@@ -392,7 +392,7 @@ const PaymentDetailDynamicQR: React.FC = () => {
 
   const handleCloseSuccessModal = () => {
     setShowSuccessModal(false);
-    router.replace('/(tabs)');
+    router.dismiss();
   };
 
   const handleViewTransactionHistory = () => {
